@@ -1,0 +1,116 @@
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@300;500&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Exo:wght@100;200;300;400&display=swap');
+
+body {
+	box-sizing: border-box;
+	background-color: #f8f8f8;
+	margin: 0px;
+	padding: 0px;
+	color: #e0dfe7;
+	
+}
+
+
+.sginin_wrapper {
+	background-color: #1c1d21;
+	height: 100%;
+	margin: 0 auto; 
+	width: 100%;
+	display: flex;
+}
+
+.signin_wrapper {
+	align-self: center;
+	margin-inline: auto;
+}
+
+.signin_logo {
+	display: flex;
+    place-content: center;
+}
+
+.signin_text {
+    text-align: -webkit-center;
+}
+
+.signin_text h2 {
+	font-family: 'Montserrat', sans-serif;
+	font-size: 27px;
+	font-weight: normal;
+}
+
+.signin_text h3 {
+	font-family: 'Montserrat', sans-serif;
+	font-size: 13px;
+	font-weight: 100;
+}
+
+.signin_text_area {
+	display: inline-grid;
+}
+
+.sigin_forgot_password-container {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	margin-top: 20px;
+}
+
+.sigin_forgot_password {
+	cursor: pointer;
+	display: inline-block;
+	position: relative;
+}
+
+.sigin_forgot_password h2 {
+	font-family: 'Montserrat', sans-serif;
+	font-size: 14px;
+	font-weight: 100;
+}
+
+.sigin_forgot_password::after {
+	content: '';
+	position: absolute;
+	width: 100%;
+	transform: scaleX(0);
+	height: 1px;
+	bottom: 0;
+	left: 0;
+	margin-bottom: 8px;
+	background-color: #e0dfe7;
+	transform-origin: bottom right;
+	transition: transform 0.3s ease-out;
+}
+
+.sigin_forgot_password:hover::after {
+	transform: scaleX(1);
+	transform-origin: bottom left;
+}
+
+
+
+.signin_registration {
+	display: flex;
+	align-items: center;
+	margin-top: 30px;
+}
+
+.signin_registration h2 {
+	font-family: 'Montserrat', sans-serif;
+	font-size: 14px;
+	font-weight: 100;
+}
+
+.signin_registration_btn {
+	margin: 0 0 0 auto;
+}
+
+
+
+
+
+
+
+
+
+

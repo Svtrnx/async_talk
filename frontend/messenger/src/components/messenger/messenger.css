@@ -1,0 +1,168 @@
+@import url('https://fonts.googleapis.com/css2?family=Quicksand:wght@300;400;500&display=swap');
+
+body {
+	box-sizing: border-box;
+	background-color: #1c1d21;
+	margin: 0px;
+	padding: 0px;
+	color: #e0dfe7;
+	
+}
+
+.wrapper {
+	background-color: #1c1d21;
+	margin: 0 auto; 
+	width: 100%;
+	height: 100vh;
+	
+}
+
+.navbar {
+	height: 80px;
+	display: grid;
+	grid-template-columns: 22% 20% 28% 30%;
+	grid-template-rows: 100%;
+	align-items: center;
+	background-color: #1f2024;
+	border-radius: 10px;
+}
+
+.messenger-reg-logo {
+	display: inline-flex;
+	align-items: center;
+	margin-left: 15px;
+	width: 200px;
+	cursor: pointer;
+}
+
+.messenger-reg-logo h2 {
+	font-family: 'Exo', sans-serif;
+	font-size: 25px;
+	font-weight: normal;
+	margin: 0;
+}
+
+.messenger-reg-img{
+	width: 45px;
+	height: 45px;
+}
+
+.sidebar-option {
+	display: flex;
+	place-content: center;
+}
+
+.sidebar-option h2{
+	font-family: 'Montserrat', sans-serif;
+	font-size: 25px;
+	font-weight: normal;
+	margin: 0;
+	
+}
+
+.search-field {
+	display: flex;
+	place-content: center;
+}
+
+.custom-badge {
+	background-color: #f36364;
+	color: #e0dfe7;
+	box-shadow: 0px 0px 7px 0.5px #f36364;
+  }
+
+  
+
+
+.info-area {
+	display: flex;
+    margin-left: auto;
+    margin-right: 30px;
+    align-items: center;
+}
+
+.info-area img {
+	width: 24px;
+	/* height: 22px; */
+
+}
+
+.sidebar {
+	display: inline-flex;
+	width: 22%;
+	/* margin-left: 45px; */
+	background-color: #1f2024;
+	border-radius: 10px;
+	margin-top: 20px;
+	
+}
+
+.sidebar ul {
+	margin: 0;
+    padding: 0;
+	display: inline-grid;
+	grid-template-columns: 100%;
+	width: 100%;
+	margin: 15px 15px 15px 0px;
+}
+
+.list {
+	list-style: none;
+	display: flex;
+	margin-bottom: 7px;
+	align-items: center;
+	height: 50px;
+    /* width: 175px; */
+	cursor: pointer;
+	margin-left: 15px;
+	
+}
+
+.list h2 {
+	font-family: 'Quicksand', sans-serif;
+	font-size: 20px;
+	font-weight: 500;
+	margin: 0 auto;
+	margin-left: 10px;
+}
+
+.list img {
+	margin-left: 10px;
+	width: 22px;
+	margin-top: 2px;
+}
+
+.friendsImg {
+	width: 23.5px !important;
+}
+
+.favoritesImg {
+	width: 18.5px !important;
+}
+
+.list:hover {
+	background-color: #2D2E35 !important;
+	cursor: pointer;
+	border-radius: 6px;
+}
+
+.main-wrapper {
+    display: inline-block;
+    margin-inline: auto;
+    position: absolute;
+    background-color: #1f2024 !important;
+    height: 550px;
+    width: 878px;
+    margin: 20px 0px 0px 20px;
+    border-radius: 10px;
+	height: calc(100vh - 126px);
+}
+
+
+
+
+
+
+
+
+
