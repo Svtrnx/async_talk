@@ -30,8 +30,8 @@ userRouter = APIRouter()
 connections: Dict[str, WebSocket] = {}
 
 # WebSocket-маршрут для подключения клиента
-@userRouter.websocket("/ws/{user_id}")
-async def websocket_endpoint(websocket: WebSocket, user_id: str):
+@userRouter.websocket("/ws/{chat_id}/{user_id}")
+async def websocket_endpoint(websocket: WebSocket, chat_id: str, user_id: str):
     await websocket.accept()
     connections[user_id] = websocket
     try:

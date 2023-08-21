@@ -113,43 +113,45 @@ function Messages() {
   const [newWs, setNewWs] = useState(null);
   const [showRightside, setShowRightside] = useState('none')
   const [chatUsername, setChatUsername] = useState('')
-
-
+  console.log("USERNANNNNNNNNNNNNNNNNNNNNN:", username )
 
   useEffect(() => {
     const newUserId = generateUserId();
     setUserId(newUserId);
+  
+    if (chatId && dataUsername.username) {
+      // Проверяем, есть ли уже открытое соединение для данного chatId
+      if (!ws) {
+        const newWs = new WebSocket(`ws://localhost:8000/ws/${chatId}/${dataUsername.username}`);
+        setWs(newWs);
+  
+        newWs.onopen = () => {
+          console.log("WebSocket connected");
+        };
+  
+        newWs.onmessage = (event) => {
+          const receivedMessage = event.data;
+          setChatMessages(prevMessages => [...prevMessages, receivedMessage]);
+        };
+  
+        newWs.onclose = () => {
+          console.log("WebSocket disconnected");
+          setWs(null);
+        };
+      }
+  
+      // Закрытие соединения при размонтировании компонента
+      return () => {
+        if (ws) {
+          ws.close();
+        }
+      };
+    }
+  }, [chatId, dataUsername.username, ws]);
 
-    const newWs = new WebSocket(`ws://localhost:8000/ws/${username}`);
-    setWs(newWs);
-    console.log("WWWWWWWWW",username);
-
-    newWs.onopen = () => {
-      console.log("WebSocket connected");
-    };
-
-    newWs.onmessage = (event) => {
-      const receivedMessage = event.data;
-      setChatMessages(prevMessages => [...prevMessages, receivedMessage]);
-    };
-
-    newWs.onclose = () => {
-      console.log("WebSocket disconnected");
-      setWs(null);
-    };
-
-    // Закрытие соединения при размонтировании компонента
-    return () => {
-      newWs.close();
-    };
-  }, []);
-
-  const generateUserId = () => {
-    return Math.random().toString(36).substr(2, 9);
-  };
-
+  
   const sendMessage = () => {
-    if (ws) {
+    if (ws && ws.readyState === WebSocket.OPEN) {
       console.log("RESCIPIENT:", recipient)
       console.log("MESSAGE:", messageValue)
       ws.send(`${chatUsername}:${message}`);
@@ -157,7 +159,10 @@ function Messages() {
       setMessage('');
     }
   };
-
+  
+  const generateUserId = () => {
+    return Math.random().toString(36).substr(2, 9);
+  };
   // const sendMessage = () => {
   //   if (ws) {
   //     ws.send(`${recipient}:${message}`);
@@ -321,37 +326,37 @@ function Messages() {
       console.log(error);
     }
 
-    const generateUserId = () => {
-      return Math.random().toString(36).substr(2, 9);
-    };
+    // const generateUserId = () => {
+    //   return Math.random().toString(36).substr(2, 9);
+    // };
 
-    const newUserId = generateUserId();
-    setWebsocketUserId(dataUsername.username);
-    console.log('WebsocketUserId:', websocketUserId);
+    // const newUserId = generateUserId();
+    // setWebsocketUserId(username);
+    // console.log('WebsocketUserId:', websocketUserId);
 
-
-    const newWs = new WebSocket(`ws://localhost:8000/ws/${dataUsername.username}`);
-    setWs(newWs);
-    console.log('WEBSOCKET USERNAME:', newWs);
-
-    newWs.onopen = () => {
-      console.log("WebSocket connected");
-    };
-
-    newWs.onmessage = (event) => {
-      const receivedMessage = event.data;
-      setChatMessages(prevMessages => [...prevMessages, receivedMessage]);
-    };
-
-    newWs.onclose = () => {
-      console.log("WebSocket disconnected");
-      setWs(null);
-    };
-
-    // Закрытие соединения при размонтировании компонента
-    return () => {
-      newWs.close();
-    };
+    // if (chatId) {
+    //   const newWs = new WebSocket(`ws://localhost:8000/ws/${chatId}/${'s'}`);
+    //   setWs(newWs);
+  
+    //   newWs.onopen = () => {
+    //     console.log("WebSocket connected");
+    //   };
+  
+    //   newWs.onmessage = (event) => {
+    //     const receivedMessage = event.data;
+    //     setChatMessages(prevMessages => [...prevMessages, receivedMessage]);
+    //   };
+  
+    //   newWs.onclose = () => {
+    //     console.log("WebSocket disconnected");
+    //     setWs(null);
+    //   };
+  
+    //   // Закрытие соединения при размонтировании компонента
+    //   return () => {
+    //     newWs.close();
+    //   };
+    // }
 
 
 
@@ -535,6 +540,7 @@ function Messages() {
           
 
           return hasMatchingChat && (
+            <div onClick={() => getUsernameOnChats(displayedUsername)}>
             <div className="leftside-messages-users" style={{display: displayNoneChats}} key={chat.id}
               onClick={(event) => handleOpenChat(
                 chat.chat_id, chat.username, chat.partner_username, 
@@ -545,12 +551,13 @@ function Messages() {
               </div>
               <div className="leftside-messages-users-info">
                 <div className="leftside-messages-users-info-username">
-                  <h2 onClick={() => getUsernameOnChats(displayedUsername)}>{displayedUsername}</h2>
+                  <h2>{displayedUsername}</h2>
                 </div>
                 <div className="leftside-messages-users-info-message">
                   <h2>Привет, как дела?</h2>
                 </div>
               </div>
+            </div>
             </div>
           );
         })}
