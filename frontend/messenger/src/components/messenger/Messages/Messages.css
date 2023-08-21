@@ -61,7 +61,7 @@
 	border-top-left-radius: 10px;
     border-bottom-left-radius: 10px;
 }
-.rightside-messages {
+.rightside-wrapper {
 	/* background-color: #6563f3; */
 	
 	background-color: #1f2024;
@@ -267,7 +267,7 @@
 	background-color: #1f2024;
 	border-top-right-radius: 10px;
     border-bottom-right-radius: 10px;
-	border-left: 1px solid #333438;
+	/* border-left: 1px solid #333438; */
 	display: grid;
 	grid-template-columns: 100%;
 	grid-template-rows: 10% auto min-content;

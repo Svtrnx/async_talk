@@ -19,7 +19,6 @@ import InputAdornment from '@mui/material/InputAdornment';
 import { makeStyles } from '@mui/styles';
 import axios from "axios";
 
-// import Test12 from "./Test12.jsx";
 import './Messages.css';
 import { display } from "@mui/system";
 
@@ -91,6 +90,7 @@ function Messages() {
   const [recipient, setRecipient] = useState('');
   const [message, setMessage] = useState('');
   const [messageValue, setMessageValue] = useState('');
+  const [chatsDialogUsername, setChatsDialogUsername] = useState('');
   const [username, setUsername] = useState('');
   const [user_Id, setUser_Id] = useState(0);
   const [chatId, setChatId] = useState(0);
@@ -111,34 +111,38 @@ function Messages() {
   const [messagesData, setMessagesData] = useState([]);
   const [shouldHideBefore , setShouldHideBefore ] = useState(false);
   const [newWs, setNewWs] = useState(null);
+  const [showRightside, setShowRightside] = useState('none')
+  const [chatUsername, setChatUsername] = useState('')
 
 
-  // useEffect(() => {
-  //   const newUserId = generateUserId();
-  //   setUserId(newUserId);
 
-  //   const newWs = new WebSocket(`ws://localhost:8000/ws/${newUserId}`);
-  //   setWs(newWs);
+  useEffect(() => {
+    const newUserId = generateUserId();
+    setUserId(newUserId);
 
-  //   newWs.onopen = () => {
-  //     console.log("WebSocket connected");
-  //   };
+    const newWs = new WebSocket(`ws://localhost:8000/ws/${username}`);
+    setWs(newWs);
+    console.log("WWWWWWWWW",username);
 
-  //   newWs.onmessage = (event) => {
-  //     const receivedMessage = event.data;
-  //     setChatMessages(prevMessages => [...prevMessages, receivedMessage]);
-  //   };
+    newWs.onopen = () => {
+      console.log("WebSocket connected");
+    };
 
-  //   newWs.onclose = () => {
-  //     console.log("WebSocket disconnected");
-  //     setWs(null);
-  //   };
+    newWs.onmessage = (event) => {
+      const receivedMessage = event.data;
+      setChatMessages(prevMessages => [...prevMessages, receivedMessage]);
+    };
 
-  //   // Закрытие соединения при размонтировании компонента
-  //   return () => {
-  //     newWs.close();
-  //   };
-  // }, []);
+    newWs.onclose = () => {
+      console.log("WebSocket disconnected");
+      setWs(null);
+    };
+
+    // Закрытие соединения при размонтировании компонента
+    return () => {
+      newWs.close();
+    };
+  }, []);
 
   const generateUserId = () => {
     return Math.random().toString(36).substr(2, 9);
@@ -146,9 +150,19 @@ function Messages() {
 
   const sendMessage = () => {
     if (ws) {
-      ws.send(`${recipient}:${message}`);
+      console.log("RESCIPIENT:", recipient)
+      console.log("MESSAGE:", messageValue)
+      ws.send(`${chatUsername}:${message}`);
+      console.log("partnerUSERNAME:", chatUsername)
+      setMessage('');
     }
   };
+
+  // const sendMessage = () => {
+  //   if (ws) {
+  //     ws.send(`${recipient}:${message}`);
+  //   }
+  // };
 
   const createRoom = () => {
     // Ваша логика для создания комнаты
@@ -159,6 +173,7 @@ function Messages() {
   
   const handleSendMessage = () => {
     if (messageValue) {
+      sendMessage()
       // Отправка сообщения или выполнение другой логики
       console.log('Отправлено сообщение:', messageValue);
 
@@ -286,6 +301,7 @@ function Messages() {
   };
 
   const handleOpenChat = async (chat_Id, username, partner_Username, user_id, partner_user_id, event) => {
+    setShowRightside('')
     setChatId(chat_Id);
     setUsername(username);
     setPartnerUsername(partner_Username);
@@ -400,6 +416,24 @@ function Messages() {
 		}
   }
 
+  function getDisplayedUsername(chat, dataUsernameChats) {
+    if (dataUsernameChats === chat.username) {
+      return chat.partner_username;
+    } else {
+      return chat.username;
+    }
+  }
+
+  function getUsernameOnChats(username) {
+    console.log("CHSSSSSSSS:", username);
+    setChatUsername(username);
+  }
+
+
+  useEffect(() => {
+    console.log("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!CHSSSSSSSS:", chatUsername);
+  }, [chatUsername])
+
   // console.log(chats.partner_username)
 
   // const hasMatchingValues = chats.some(
@@ -410,7 +444,7 @@ function Messages() {
 	return (
 		<>
     {/*  */}
-      <div>
+      {/* <div>
         <h1>Chat</h1>
         <div>
           <button onClick={createRoom}>Create Room</button>
@@ -435,7 +469,7 @@ function Messages() {
           />
           <button onClick={handleSendMessage}>Send</button>
         </div>
-      </div>
+      </div> */}
       {/*  */}
 		<div className="messages">
 			<div className="leftside-messages">
@@ -492,12 +526,13 @@ function Messages() {
 
               </div>
           </div>
-          {/* <Test12/> */}
           {chats.map(chat => {
           const hasMatchingChat = chats.some(chatItem => (
             chatItem.user_id === dataUsername.id ||
             chatItem.partner_user_id === dataUsername.id 
           ));
+          const displayedUsername = getDisplayedUsername(chat, dataUsername.username);
+          
 
           return hasMatchingChat && (
             <div className="leftside-messages-users" style={{display: displayNoneChats}} key={chat.id}
@@ -508,10 +543,9 @@ function Messages() {
               <div className="leftside-messages-users-avatar">
                 <Avatar sx={{width: 50, height: 50}} alt="Remy Sharp" src="..." />
               </div>
-              <div className="leftside-messages-users-info" >
+              <div className="leftside-messages-users-info">
                 <div className="leftside-messages-users-info-username">
-                  <h2>{chat.partner_username}</h2>
-                  {/* <h2>wqewq</h2> */}
+                  <h2 onClick={() => getUsernameOnChats(displayedUsername)}>{displayedUsername}</h2>
                 </div>
                 <div className="leftside-messages-users-info-message">
                   <h2>Привет, как дела?</h2>
@@ -521,121 +555,160 @@ function Messages() {
           );
         })}
 			</div>
-			<div className="rightside-messages">
-        <div className="rightside-messages-header">
-          <div className="rightside-messages-header-user-info">
-            <Avatar sx={{width: 40, height: 40}} alt="Remy Sharp" src="..." />
-            <h2>Young</h2>
-          </div>
-          <div className="rightside-messages-header-info-buttons">
-            <img src={infoImg} alt=""/>
+      <div className="rightside-wrapper">
+        <div className="rightside-messages" style={{display: showRightside}}>
+          <div className="rightside-messages-header">
+            <div className="rightside-messages-header-user-info">
+              <Avatar sx={{width: 40, height: 40}} alt="" src="..." />
+              <h2>{partnerUsername}</h2>
+            </div>
+            <div className="rightside-messages-header-info-buttons">
+              <img src={infoImg} alt=""/>
+
+            </div>
 
           </div>
-
-        </div>
-        {/* LAST 28.06.23 */}
-        {/* DISABLE BEFORE */}
-        {showRightsideChat === true ? (
-          <div className="rightside-messages-main"> {/* Это div где появляются сообщения */} 
-          {chatMessages.slice().reverse().map((message, index) => (
-            <div className="rightside-messages-main-message" key={index}>
-              <div className="rightside-messages-main-avatar">
-                {/* {message.message_sender === message.current_user_id ? (
-                  <Avatar sx={{ width: 25, height: 25 }} alt="Pula" src="avatar" />
-                ) : (
-                  <Avatar sx={{ width: 25, height: 25 }} alt="Pula" src="avatar" />
-                )} */}
-              </div>
-              <div className="rightside-messages-main-message-text">
-                <div className="rightside-messages-main-message-text-container">
-                  <h2>{message}</h2>
+          {/* LAST 28.06.23 */}
+          {/* DISABLE BEFORE */}
+          {showRightsideChat === true ? (
+            <div className="rightside-messages-main"> {/* Это div где появляются сообщения */} 
+            {/*            
+            {chatMessages.slice().reverse().map((message, index) => (
+              <div className="rightside-messages-main-message" key={index}>
+                <div className="rightside-messages-main-avatar">
+                  {message.message_sender === message.current_user_id ? (
+                    <Avatar sx={{ width: 25, height: 25 }} alt="Pula" src="avatar" />
+                  ) : (
+                    <Avatar sx={{ width: 25, height: 25 }} alt="Pula" src="avatar" />
+                  )} 
+                </div>
+                <div className="rightside-messages-main-message-text">
+                  <div className="rightside-messages-main-message-text-container">
+                    <h2>{message}</h2>
+                  </div>
                 </div>
               </div>
-            </div>
-          ))}
-
-          {messagesData
-        .sort((a, b) => new Date(b.date_message) - new Date(a.date_message))
-        .map((message, index) => (
-          <div className="rightside-messages-main-message" key={message.id}>
-            <div className="rightside-messages-main-avatar">
-              {message.message_sender === message.current_user_id ? (
-                <Avatar sx={{ width: 25, height: 25 }} alt="Pula" src="avatar" />
-              ) : (
-                <Avatar sx={{ width: 25, height: 25 }} alt="Pula" src="avatar" />
-              )}
-            </div>
-            <div className="rightside-messages-main-message-text">
-              <div className="rightside-messages-main-message-text-container">
-                <h2>{message.text}</h2>
-              </div>
-            </div>
-          </div>
-        ))
-      }
-
-
-
-
-
-
-
-          </div>
-        ) : 
+            ))}
+          */}
+          <>
+		<div>
+        <h1>Chat</h1>
         <div>
-
+          <button onClick={createRoom}>Create Room</button>
         </div>
-      
-      }
-        
-        <div className="rightside-messages-footer">
-          <div className="rightside-messages-footer-wrapper">
-            <div className="rightside-messages-footer-wrapper-upload-file">
-              <img src={uploadImg} alt="" />
-            </div>
-            <div className="rightside-messages-footer-wrapper-textfield">
-            {/* <input
+        <div id="chat">
+          {chatMessages.map((message, index) => (
+            <p key={index}>{message}</p>
+          ))}
+        </div>
+        <div>
+          <input
             type="text"
             value={recipient}
             onChange={(e) => setRecipient(e.target.value)}
             placeholder="Recipient User ID"
-          /> */}
-            <ThemeProvider theme={theme}>
-              <TextField
-                // noValidate
-                autoComplete="off"
-                id="outlined-basic"
-                maxRows={5}
-                minRows={1}
-                multiline
-                value={messageValue}
-                onChange={(event) => setMessageValue(event.target.value)}
-                size="small"
-                label="Write a message"
-                variant="outlined"
-                InputLabelProps={{ style: { color: '#e0dfe7' } }}
-                InputProps={{ style: { color: '#e0dfe7', height: 'auto', maxHeight: 'auto', maxLines: 4 }, classes: { focused: 'focused-input',}, }}
-                sx={{ mx: 'auto', width: '100%', display: 'flex', mt: 2, mb: 2 }}
-              />
-              <span></span>
-            </ThemeProvider>
-            </div>
-            {/* <div className="rightside-messages-footer-wrapper-upload-picture">
-              <img src={picturesImg} alt="" />
-            </div> */}
-            <div className="rightside-messages-footer-wrapper-group">
-              { messageValue == '' &&
-                <img className="rightside-messages-footer-wrapper-group-audio-message" src={micImg} alt="" />
-              }
-              { messageValue != '' &&
-                <img className="rightside-messages-footer-wrapper-group-send-message" onClick={handleSendMessage} src={sendImg} alt="" />
-              } 
-            </div>
-          </div>
-
-
+          />
+          <input
+            type="text"
+            value={message}
+            onChange={(e) => setMessage(e.target.value)}
+            placeholder="Message"
+          />
+          <button onClick={sendMessage}>Send</button>
         </div>
-			</div>
+      </div>
+
+		</>
+
+{messagesData
+  .concat(chatMessages) // Объединяем оба массива сообщений
+  .sort((a, b) => new Date(b.date_message) - new Date(a.date_message))
+  .map((message, index, array) => {
+    const lastMessageSender = index > 0 ? array[index - 1].message_sender : null;
+    const isCurrentUser = message.current_user_id === message.message_sender;
+    const showAvatar = index === 0 || message.message_sender !== lastMessageSender;
+
+    return (
+      <div className="rightside-messages-main-message" key={message.id}>
+        <div className="rightside-messages-main-avatar">
+          {showAvatar && (
+            <Avatar
+              sx={{ width: 25, height: 25 }}
+              alt={isCurrentUser ? "Pula" : "Rula"}
+              src="avatar"
+            />
+          )}
+        </div>
+        <div className="rightside-messages-main-message-text">
+          <div className="rightside-messages-main-message-text-container">
+            <h2>{message.text}</h2>
+          </div>
+        </div>
+      </div>
+    );
+  })}
+
+
+
+
+            </div>
+          ) : 
+          <div>
+            {/* WRITE AN MESSAGE */}
+            WRITE AN MESSAGE
+          </div>
+        
+        }
+          
+          <div className="rightside-messages-footer">
+            <div className="rightside-messages-footer-wrapper">
+              <div className="rightside-messages-footer-wrapper-upload-file">
+                <img src={uploadImg} alt="" />
+              </div>
+              <div className="rightside-messages-footer-wrapper-textfield">
+              {/* <input
+              type="text"
+              value={recipient}
+              onChange={(e) => setRecipient(e.target.value)}
+              placeholder="Recipient User ID"
+            /> */}
+              <ThemeProvider theme={theme}>
+                <TextField
+                  // noValidate
+                  autoComplete="off"
+                  id="outlined-basic"
+                  maxRows={5}
+                  minRows={1}
+                  multiline
+                  value={messageValue}
+                  onChange={(event) => setMessageValue(event.target.value)}
+                  size="small"
+                  label="Write a message"
+                  variant="outlined"
+                  InputLabelProps={{ style: { color: '#e0dfe7' } }}
+                  InputProps={{ style: { color: '#e0dfe7', height: 'auto', maxHeight: 'auto', maxLines: 4 }, classes: { focused: 'focused-input',}, }}
+                  sx={{ mx: 'auto', width: '100%', display: 'flex', mt: 2, mb: 2 }}
+                />
+                <span></span>
+              </ThemeProvider>
+              </div>
+              {/* <div className="rightside-messages-footer-wrapper-upload-picture">
+                <img src={picturesImg} alt="" />
+              </div> */}
+              <div className="rightside-messages-footer-wrapper-group">
+                { messageValue == '' &&
+                  <img className="rightside-messages-footer-wrapper-group-audio-message" src={micImg} alt="" />
+                }
+                { messageValue != '' &&
+                  <img className="rightside-messages-footer-wrapper-group-send-message" onClick={sendMessage} src={sendImg} alt="" />
+                } 
+              </div>
+            </div>
+
+
+          </div>
+        </div>
+      </div>
 		</div>
 		
 		</>
