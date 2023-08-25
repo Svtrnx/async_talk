@@ -90,6 +90,7 @@ const settings = ['Profile', 'Account', 'Dashboard', 'Logout'];
 
 function Messenger() {
   const [anchorElUser, setAnchorElUser] = React.useState(null);
+  const [userInfo, setUserInfo] = React.useState([]);
 
   const [textOption, setTextOption] = React.useState('Messages');
   console.log(textOption)
@@ -159,7 +160,8 @@ function Messenger() {
           const response = await axios.get('http://localhost:8000/api/check_verification', {
             withCredentials: true,
           });
-          console.log(response.data);
+          console.log("RESPONSE HEADER:-", response.data);
+          setUserInfo(response.data.user);
         } catch (error) {
           navigate('/signin');
           console.error(error);
@@ -218,7 +220,7 @@ function Messenger() {
                     <Box sx={{ flexGrow: 0, ml: 5 }}>
                       <Tooltip title="Open settings">
                         <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                          <Avatar alt="Remy Sharp" src="..." />
+                          <Avatar alt="Remy Sharp" src={userInfo.avatar} />
                         </IconButton>
                       </Tooltip>
                       <ThemeProvider theme={theme}>

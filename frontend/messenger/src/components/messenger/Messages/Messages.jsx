@@ -18,6 +18,7 @@ import createChat from '../../../img/createChat.png';
 import InputAdornment from '@mui/material/InputAdornment';
 import { makeStyles } from '@mui/styles';
 import axios from "axios";
+import { Image } from '@cloudinary/react';
 
 import './Messages.css';
 import { display } from "@mui/system";
@@ -80,8 +81,15 @@ const buttonStyleGetStarted = {
   color: '#e0dfe7',
 };
   
+// export const cloudinary = new Cloudinary({
+//   cloud: {
+//     cloudName: 'dlwuhl9ez',
+//   },
+// });
+
 
 function Messages() {
+  const moment = require('moment');
 
   const [userId, setUserId] = useState(0);
   const [websocketUserId, setWebsocketUserId] = useState(0);
@@ -109,11 +117,33 @@ function Messages() {
   const [selectedUsers, setSelectedUsers] = useState([]);
   const [showRightsideChat, setShowRightsideChat] = useState(false);
   const [messagesData, setMessagesData] = useState([]);
-  const [shouldHideBefore , setShouldHideBefore ] = useState(false);
   const [newWs, setNewWs] = useState(null);
   const [showRightside, setShowRightside] = useState('none')
   const [chatUsername, setChatUsername] = useState('')
-  console.log("USERNANNNNNNNNNNNNNNNNNNNNN:", username )
+  const [imageUrl, setImageUrl] = useState('');
+  const [imageUrl2, setImageUrl2] = useState('');
+  const [userAvatarChat, setUserAvatarChat] = useState('');
+
+
+  useEffect(() => {
+    console.log('userAvatarChat:---', chats);
+
+  }, [])
+
+  useEffect(() => {
+    // Замените на свой public_id и cloud_name
+    const publicId = '825156941529614';
+    const cloudName = 'dlwuhl9ez';
+
+    const imageUrl = `https://res.cloudinary.com/dlwuhl9ez/image/upload/v1692995033/samples/woman-on-a-football-field.jpg`;
+    const imageUrl2 = `https://res.cloudinary.com/dlwuhl9ez/image/upload/v1692995029/samples/outdoor-woman.jpg`;
+    setImageUrl(imageUrl);
+    setImageUrl2(imageUrl2);
+  }, []);
+  
+
+  
+  console.log("USERNANNNNNNNNNNNNNNNNNNNNN:", dataUsername.avatar )
 
   useEffect(() => {
     const newUserId = generateUserId();
@@ -125,13 +155,27 @@ function Messages() {
         const newWs = new WebSocket(`ws://localhost:8000/ws/${chatId}/${dataUsername.username}`);
         setWs(newWs);
   
+        
+
         newWs.onopen = () => {
           console.log("WebSocket connected");
         };
   
+        // newWs.onmessage = (event) => {
+        //   const receivedMessage = event.data;
+        //   setChatMessages(prevMessages => [...prevMessages, receivedMessage]);
+        // };
+
         newWs.onmessage = (event) => {
           const receivedMessage = event.data;
-          setChatMessages(prevMessages => [...prevMessages, receivedMessage]);
+          const timestamp = new Date(); // Текущая временная метка
+          const websocketMessage = {
+            text: receivedMessage,
+            date_message: timestamp.toISOString(), // Преобразование времени в формат ISO строки
+            message_sender: chatUsername, // Предполагается, что отправитель - текущий пользователь
+            current_user_id: userId // Предполагается, что userId - это идентификатор пользователя
+          };
+          setChatMessages(prevMessages => [...prevMessages, websocketMessage]);
         };
   
         newWs.onclose = () => {
@@ -150,15 +194,7 @@ function Messages() {
   }, [chatId, dataUsername.username, ws]);
 
   
-  const sendMessage = () => {
-    if (ws && ws.readyState === WebSocket.OPEN) {
-      console.log("RESCIPIENT:", recipient)
-      console.log("MESSAGE:", messageValue)
-      ws.send(`${chatUsername}:${message}`);
-      console.log("partnerUSERNAME:", chatUsername)
-      setMessage('');
-    }
-  };
+  
   
   const generateUserId = () => {
     return Math.random().toString(36).substr(2, 9);
@@ -178,7 +214,6 @@ function Messages() {
   
   const handleSendMessage = () => {
     if (messageValue) {
-      sendMessage()
       // Отправка сообщения или выполнение другой логики
       console.log('Отправлено сообщение:', messageValue);
 
@@ -187,7 +222,7 @@ function Messages() {
           const response = await axios.post("http://localhost:8000/api/messages/send_message", {
             text: messageValue,
             chat_id: chatId,
-            message_sender:  userId.id,
+            message_sender:  dataUsername.id,
             current_user_id: currentUserId,
             partner_user_id: partnerUserId,
           }, {
@@ -200,13 +235,26 @@ function Messages() {
         catch (err) {
           console.log("SEND MESSAGE ERROR: ", err);
         }
-        
       }
       sendMessage();
+      if (ws && ws.readyState === WebSocket.OPEN) {
+      console.log("RESCIPIENT:", recipient)
+      console.log("MESSAGE:", messageValue)
+      ws.send(`${chatUsername}:${messageValue}`);
+      // const timestamp = new Date();
+      // const ownMessage = {
+      //   text: messageValue,
+      //   date_message: timestamp.toISOString(),
+      //   message_sender: chatUsername,
+      //   current_user_id: userId
+      // };
+      // setChatMessages(prevMessages => [...prevMessages, ownMessage]);
+
+
+      console.log("partnerUSERNAME:", chatUsername)
+      setMessage('');
+    }
       
-      if (ws) {
-        ws.send(`${partnerUsername}:${messageValue}`);
-      }
 
 
       // Очистка поля ввода
@@ -286,11 +334,12 @@ function Messages() {
 
   // console.log('CHATS: ', chats)
 
-  const handleUserClickCreateChat = (userId, username, event) => {
+  const handleUserClickCreateChat = (userId, username, avatar, event) => {
     const isSelected = selectedUsers.includes(userId);
     setUser_Id(userId);
     setUsername(username);
-    console.log(user_Id, username);
+    setUserAvatarChat(avatar);
+    console.log(user_Id, username, avatar);
 
     chats.map(chat => {
       if (chat.username === username) {
@@ -305,7 +354,8 @@ function Messages() {
     }
   };
 
-  const handleOpenChat = async (chat_Id, username, partner_Username, user_id, partner_user_id, event) => {
+  const handleOpenChat = async (chat_Id, username, partner_Username, 
+                                user_id, partner_user_id, partner_avatar, event) => {
     setShowRightside('')
     setChatId(chat_Id);
     setUsername(username);
@@ -325,65 +375,6 @@ function Messages() {
     } catch (error) {
       console.log(error);
     }
-
-    // const generateUserId = () => {
-    //   return Math.random().toString(36).substr(2, 9);
-    // };
-
-    // const newUserId = generateUserId();
-    // setWebsocketUserId(username);
-    // console.log('WebsocketUserId:', websocketUserId);
-
-    // if (chatId) {
-    //   const newWs = new WebSocket(`ws://localhost:8000/ws/${chatId}/${'s'}`);
-    //   setWs(newWs);
-  
-    //   newWs.onopen = () => {
-    //     console.log("WebSocket connected");
-    //   };
-  
-    //   newWs.onmessage = (event) => {
-    //     const receivedMessage = event.data;
-    //     setChatMessages(prevMessages => [...prevMessages, receivedMessage]);
-    //   };
-  
-    //   newWs.onclose = () => {
-    //     console.log("WebSocket disconnected");
-    //     setWs(null);
-    //   };
-  
-    //   // Закрытие соединения при размонтировании компонента
-    //   return () => {
-    //     newWs.close();
-    //   };
-    // }
-
-
-
-    // const newWs = new WebSocket(`ws://localhost:8000/ws/${partner_Username}`);
-    // setNewWs(newWs);
-
-    // newWs.onopen = () => {
-    //   console.log("WebSocket connected");
-    // };
-
-    // newWs.onmessage = (event) => {
-    //   const receivedMessage = event.data;
-    //   // setChatMessages(prevMessages => [...prevMessages, receivedMessage]);
-    //   console.log("Received message:", receivedMessage);
-    //   // Обработка полученного сообщения
-    // };
-
-    // newWs.onclose = () => {
-    //   console.log("WebSocket disconnected");
-    //   setWs(null);
-    // };
-
-    // // Закрытие соединения при размонтировании компонента
-    // return () => {
-    //   newWs.close();
-    // };
-
 
   };
   
@@ -410,15 +401,24 @@ function Messages() {
 
   async function handleCreateChat() {
     try {
-		  const response = await axios.post(`http://localhost:8000/api/messages/create_chat/${user_Id}/${username}`, {
-		  	}, {
-			withCredentials: true,
-			headers: {'Content-Type': 'application/x-www-form-urlencoded'}
-		  	});
-		  	console.log(response.data);
-		} catch (error) {
-		  console.log("ERROR:", error);
-		}
+      const requestData = {
+        partner_user_id: user_Id,
+        partner_username: username,
+        partner_user_avatar: userAvatarChat
+      };
+      const response = await axios.post(
+        'http://localhost:8000/api/messages/create_chat/',
+        requestData,
+        {
+          withCredentials: true,
+          headers: {'Content-Type': 'application/json'}
+        }
+      );
+    
+      console.log(response.data);
+    } catch (error) {
+      console.log("ERROR:", error);
+    }    
   }
 
   function getDisplayedUsername(chat, dataUsernameChats) {
@@ -426,6 +426,14 @@ function Messages() {
       return chat.partner_username;
     } else {
       return chat.username;
+    }
+  }
+
+  function getDisplayedAvatar(chat, dataUsernameChats) {
+    if (dataUsernameChats === chat.avatar) {
+      return chat.partner_user_avatar;
+    } else {
+      return chat.user_avatar;
     }
   }
 
@@ -439,43 +447,15 @@ function Messages() {
     console.log("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!CHSSSSSSSS:", chatUsername);
   }, [chatUsername])
 
-  // console.log(chats.partner_username)
 
-  // const hasMatchingValues = chats.some(
-  //     // chats.map(chat => (
-  //     item => item.username === dataUsername.username && item.partner_username === 'zzzzzzzzzz'
-  //   // )
-  // );
+
+
+
+
+  
 	return (
+    
 		<>
-    {/*  */}
-      {/* <div>
-        <h1>Chat</h1>
-        <div>
-          <button onClick={createRoom}>Create Room</button>
-        </div>
-        <div id="chat">
-          {chatMessages.map((message, index) => (
-            <p key={index}>{message}</p>
-          ))}
-        </div>
-        <div>
-          <input
-            type="text"
-            value={recipient}
-            onChange={(e) => setRecipient(e.target.value)}
-            placeholder="Recipient User ID"
-          />
-          <input
-            type="text"
-            value={message}
-            onChange={(e) => setMessage(e.target.value)}
-            placeholder="Message"
-          />
-          <button onClick={handleSendMessage}>Send</button>
-        </div>
-      </div> */}
-      {/*  */}
 		<div className="messages">
 			<div className="leftside-messages">
 				<div className="leftside-messages-info">
@@ -493,10 +473,10 @@ function Messages() {
                     <div
                       className={`leftside-messages-create-chat-users ${selectedUsers.includes(user.id) ? 'selected' : ''}`}
                       key={user.id}
-                      onClick={(event) => handleUserClickCreateChat(user.id, user.username, event)}
+                      onClick={(event) => handleUserClickCreateChat(user.id, user.username, user.avatar, event)}
                     >
                       <div className="leftside-messages-create-chat-users-avatar">
-                        <Avatar sx={{width: 42, height: 42, ml: 1}} alt="Remy Sharp" src="..." />
+                        <Avatar sx={{width: 42, height: 42, ml: 1}} alt="Remy Sharp" src={user.avatar} />
                       </div>
                       <div className="leftside-messages-create-chat-users-fullname">
                         <h2>{user.first_name}</h2>
@@ -537,6 +517,7 @@ function Messages() {
             chatItem.partner_user_id === dataUsername.id 
           ));
           const displayedUsername = getDisplayedUsername(chat, dataUsername.username);
+          const displayedAvatar = getDisplayedAvatar(chat, dataUsername.avatar);
           
 
           return hasMatchingChat && (
@@ -544,10 +525,11 @@ function Messages() {
             <div className="leftside-messages-users" style={{display: displayNoneChats}} key={chat.id}
               onClick={(event) => handleOpenChat(
                 chat.chat_id, chat.username, chat.partner_username, 
-                chat.user_id, chat.partner_user_id, event)}
+                chat.user_id, chat.partner_user_id, chat.partner_user_avatar,
+                event)}
               >
               <div className="leftside-messages-users-avatar">
-                <Avatar sx={{width: 50, height: 50}} alt="Remy Sharp" src="..." />
+                <Avatar sx={{width: 50, height: 50}} alt="" src={displayedAvatar}/>
               </div>
               <div className="leftside-messages-users-info">
                 <div className="leftside-messages-users-info-username">
@@ -575,94 +557,49 @@ function Messages() {
             </div>
 
           </div>
-          {/* LAST 28.06.23 */}
-          {/* DISABLE BEFORE */}
           {showRightsideChat === true ? (
             <div className="rightside-messages-main"> {/* Это div где появляются сообщения */} 
-            {/*            
-            {chatMessages.slice().reverse().map((message, index) => (
-              <div className="rightside-messages-main-message" key={index}>
-                <div className="rightside-messages-main-avatar">
-                  {message.message_sender === message.current_user_id ? (
-                    <Avatar sx={{ width: 25, height: 25 }} alt="Pula" src="avatar" />
-                  ) : (
-                    <Avatar sx={{ width: 25, height: 25 }} alt="Pula" src="avatar" />
-                  )} 
-                </div>
-                <div className="rightside-messages-main-message-text">
-                  <div className="rightside-messages-main-message-text-container">
-                    <h2>{message}</h2>
-                  </div>
+            
+            
+            {
+        messagesData
+        .concat(chatMessages)
+        .sort((a, b) => moment(b.date_message).valueOf() - moment(a.date_message).valueOf()) // Изменил порядок сортировки
+        .map((message, index, array) => {
+          const nextMessageSender = index < array.length - 1 ? array[index + 1].message_sender : null;
+          const isCurrentUser = message.current_user_id === message.message_sender;
+          const showAvatar = message.message_sender !== nextMessageSender; // Проверяем следующее сообщение
+
+          const isWebSocketMessage = chatMessages.includes(message);
+
+          return (
+            <div className={`rightside-messages-main-message${isWebSocketMessage ? " webSocketMessage" : ""}`} key={message.id}>
+              <div className="rightside-messages-main-avatar">
+                {showAvatar && (
+                  <Avatar
+                    sx={{ width: 25, height: 25 }}
+                    alt=""
+                    src={isCurrentUser ? dataUsername.avatar : imageUrl2}
+                  />
+                )}
+              </div>
+              <div className="rightside-messages-main-message-text">
+                <div className="rightside-messages-main-message-text-container">
+                  <h2>
+                    {message.text}
+                  </h2>
                 </div>
               </div>
-            ))}
-          */}
-          <>
-		<div>
-        <h1>Chat</h1>
-        <div>
-          <button onClick={createRoom}>Create Room</button>
-        </div>
-        <div id="chat">
-          {chatMessages.map((message, index) => (
-            <p key={index}>{message}</p>
-          ))}
-        </div>
-        <div>
-          <input
-            type="text"
-            value={recipient}
-            onChange={(e) => setRecipient(e.target.value)}
-            placeholder="Recipient User ID"
-          />
-          <input
-            type="text"
-            value={message}
-            onChange={(e) => setMessage(e.target.value)}
-            placeholder="Message"
-          />
-          <button onClick={sendMessage}>Send</button>
-        </div>
-      </div>
-
-		</>
-
-{messagesData
-  .concat(chatMessages) // Объединяем оба массива сообщений
-  .sort((a, b) => new Date(b.date_message) - new Date(a.date_message))
-  .map((message, index, array) => {
-    const lastMessageSender = index > 0 ? array[index - 1].message_sender : null;
-    const isCurrentUser = message.current_user_id === message.message_sender;
-    const showAvatar = index === 0 || message.message_sender !== lastMessageSender;
-
-    return (
-      <div className="rightside-messages-main-message" key={message.id}>
-        <div className="rightside-messages-main-avatar">
-          {showAvatar && (
-            <Avatar
-              sx={{ width: 25, height: 25 }}
-              alt={isCurrentUser ? "Pula" : "Rula"}
-              src="avatar"
-            />
-          )}
-        </div>
-        <div className="rightside-messages-main-message-text">
-          <div className="rightside-messages-main-message-text-container">
-            <h2>{message.text}</h2>
-          </div>
-        </div>
-      </div>
-    );
-  })}
-
-
-
-
+            </div>
+          );
+        })
+    }
             </div>
           ) : 
           <div>
             {/* WRITE AN MESSAGE */}
             WRITE AN MESSAGE
+            
           </div>
         
         }
@@ -707,7 +644,7 @@ function Messages() {
                   <img className="rightside-messages-footer-wrapper-group-audio-message" src={micImg} alt="" />
                 }
                 { messageValue != '' &&
-                  <img className="rightside-messages-footer-wrapper-group-send-message" onClick={sendMessage} src={sendImg} alt="" />
+                  <img className="rightside-messages-footer-wrapper-group-send-message" onClick={handleSendMessage} src={sendImg} alt="" />
                 } 
               </div>
             </div>
