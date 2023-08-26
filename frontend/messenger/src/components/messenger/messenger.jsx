@@ -107,7 +107,7 @@ function Messenger() {
     if (setting === 'Logout') {
       try {
         const response = await axios.post(
-          "http://kenzoback.onrender.com/logout",
+          "https://kenzoback.onrender.com/logout",
           {},
           {
             withCredentials: true,
@@ -197,7 +197,7 @@ function Messenger() {
     useEffect(() => {
       const fetchData = async () => {
         try {
-          const response = await axios.get('http://kenzoback.onrender.com/api/check_verification', {
+          const response = await axios.get('https://kenzoback.onrender.com/api/check_verification', {
             withCredentials: true,
           });
           console.log("RESPONSE HEADER:-", response.data);

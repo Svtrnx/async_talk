@@ -21,7 +21,6 @@ origins = [
     "https://youngkenzo.netlify.app/",
     "https://localhost:3000",
     "https://127.0.0.1:3000",
-    "https://kenzoback.onrender.com",
     ] 
 
 app.add_middleware(

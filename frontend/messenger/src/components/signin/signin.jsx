@@ -82,7 +82,7 @@ function Signin() {
 	const HandleSigninLocalStorage = async (event) => {
 		event.preventDefault();
 		try {
-		  const response = await axios.post("http://kenzoback.onrender.com/signin", {
+		  const response = await axios.post("https://kenzoback.onrender.com/signin", {
 			grant_type: 'password',
 			username: username,
 			password: password,
@@ -137,7 +137,7 @@ function Signin() {
 
 	const fetchData = async () => {
 		try {
-		  const response = await axios.get('http://kenzoback.onrender.com/api/check_verification', {
+		  const response = await axios.get('https://kenzoback.onrender.com/api/check_verification', {
 			withCredentials: true,
 		  });
 		  console.log(response.data);
