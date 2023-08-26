@@ -313,6 +313,23 @@ setUserId(response.data.user);
   
     fetchData();
 
+    const fetchData2 = async () => {
+      try {
+        const response = await axios.get('http://localhost:8000/api/check_verification', {
+  withCredentials: true,
+  headers: {
+    'accept': 'application/json',
+  }
+});
+
+
+      } catch (error) {
+        console.error(error);
+      }
+    };
+  
+    fetchData2();
+
     const fetchUsers = async () => {
     await axios.get('http://localhost:8000/api/messages/users_list', {
       withCredentials: true,
