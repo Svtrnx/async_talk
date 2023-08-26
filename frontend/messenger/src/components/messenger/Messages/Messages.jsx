@@ -111,7 +111,6 @@ function Messages() {
   const [dataUsername, setDataUsername] = useState([]);
   const [displayNone, setDisplayNone] = useState('none');
   const [displayNoneChats, setDisplayNoneChats] = useState('grid');
-  // const [displayNone2, setDisplayNone2] = useState('grid');
   const [leftsideButton, setLeftsideButton] = useState(plusImg);
   const [leftsideButtonChat, setLeftsideButtonChat] = useState(doneImg);
   const [selectedUsers, setSelectedUsers] = useState([]);
@@ -123,6 +122,22 @@ function Messages() {
   const [imageUrl, setImageUrl] = useState('');
   const [imageUrl2, setImageUrl2] = useState('');
   const [userAvatarChat, setUserAvatarChat] = useState('');
+  const [currentUserAvatar, setCurrentUserAvatar] = useState('');
+  const [currentUserAvatar5, setCurrentUserAvatar5] = useState('');
+  const [userAvatar, setUserAvatar] = useState('');
+  const [sortedMessages, setSortedMessages] = useState([]);
+  const [isClearingChat, setIsClearingChat] = useState(false);
+  const [chatCleared, setChatCleared] = useState(false); // Изначально считаем, что чат очищен
+
+
+
+
+
+  async function clearChatFunction() {
+    setChatMessages([]);
+  }
+
+
 
 
   useEffect(() => {
@@ -143,7 +158,7 @@ function Messages() {
   
 
   
-  console.log("USERNANNNNNNNNNNNNNNNNNNNNN:", dataUsername.avatar )
+  // console.log("USERNANNNNNNNNNNNNNNNNNNNNN:", dataUsername.avatar )
 
   useEffect(() => {
     const newUserId = generateUserId();
@@ -173,7 +188,7 @@ function Messages() {
             text: receivedMessage,
             date_message: timestamp.toISOString(), // Преобразование времени в формат ISO строки
             message_sender: chatUsername, // Предполагается, что отправитель - текущий пользователь
-            current_user_id: userId // Предполагается, что userId - это идентификатор пользователя
+            current_user_id: userId, // Предполагается, что userId - это идентификатор пользователя
           };
           setChatMessages(prevMessages => [...prevMessages, websocketMessage]);
         };
@@ -225,6 +240,8 @@ function Messages() {
             message_sender:  dataUsername.id,
             current_user_id: currentUserId,
             partner_user_id: partnerUserId,
+            user_avatar: dataUsername.avatar,
+            partner_user_avatar: currentUserAvatar
           }, {
             headers: {
               'Content-Type': 'application/x-www-form-urlencoded'
@@ -241,14 +258,17 @@ function Messages() {
       console.log("RESCIPIENT:", recipient)
       console.log("MESSAGE:", messageValue)
       ws.send(`${chatUsername}:${messageValue}`);
-      // const timestamp = new Date();
-      // const ownMessage = {
-      //   text: messageValue,
-      //   date_message: timestamp.toISOString(),
-      //   message_sender: chatUsername,
-      //   current_user_id: userId
-      // };
-      // setChatMessages(prevMessages => [...prevMessages, ownMessage]);
+      const timestamp = new Date();
+      const ownMessage = {
+        text: messageValue,
+        chat_id: chatId,
+        message_sender:  dataUsername.id,
+        current_user_id: currentUserId,
+        partner_user_id: partnerUserId,
+        date_message: timestamp.toISOString(),
+
+      };
+      setChatMessages(prevMessages => [...prevMessages, ownMessage]);
 
 
       console.log("partnerUSERNAME:", chatUsername)
@@ -262,6 +282,10 @@ function Messages() {
     }
   };
 
+
+  // const allMessages = [...messagesData, ...chatMessages]; // Объединяем массивы сообщений
+
+  // allMessages.sort((a, b) => moment(b.date_message).valueOf() - moment(a.date_message).valueOf());
 
   // USE EFFECT FOR CHATS QUERY
   useEffect(() => {
@@ -332,13 +356,61 @@ function Messages() {
   }
 
 
-  // console.log('CHATS: ', chats)
+//   useEffect(() => {
+//   async function sortAndProcessMessages() {
+//     const sortedMessages = await Promise.all(
+//       messagesData
+//         .concat(chatMessages)
+//         .sort((a, b) => moment(b.date_message).valueOf() - moment(a.date_message).valueOf())
+//         .map((message, index, array) => {
+//           const nextMessageSender = index < array.length - 1 ? array[index + 1].message_sender : null;
+//           const isCurrentUser = dataUsername.id === message.message_sender;
+//           const showAvatar = message.message_sender !== nextMessageSender;
+//           const isWebSocketMessage = chatMessages.includes(message);
+  
+//           const displayedAvatar = isCurrentUser ? dataUsername.avatar : currentUserAvatar;
+  
+//           return (
+//             <div className={`rightside-messages-main-message${isWebSocketMessage ? " webSocketMessage" : ""}`} key={message.id}>
+//               <div className="rightside-messages-main-avatar">
+//                 {showAvatar && (
+//                   <Avatar
+//                     sx={{ width: 25, height: 25 }}
+//                     alt=""
+//                     src={displayedAvatar}
+//                   />
+//                 )}
+//               </div>
+//               <div className="rightside-messages-main-message-text">
+//                 <div className="rightside-messages-main-message-text-container">
+//                   <h2>
+//                     {message.text}
+//                   </h2>
+//                 </div>
+//               </div>
+//             </div>
+//           );
+//         })
+//     );
+
+//     setSortedMessages(sortedMessages);
+//   }
+
+//   sortAndProcessMessages();
+// }, [messagesData, chatMessages]);
+
+
 
   const handleUserClickCreateChat = (userId, username, avatar, event) => {
+    if (avatar === null) {
+      setUserAvatarChat(username);
+    }
+    else {
+      setUserAvatarChat(avatar);
+    }
     const isSelected = selectedUsers.includes(userId);
     setUser_Id(userId);
     setUsername(username);
-    setUserAvatarChat(avatar);
     console.log(user_Id, username, avatar);
 
     chats.map(chat => {
@@ -355,13 +427,28 @@ function Messages() {
   };
 
   const handleOpenChat = async (chat_Id, username, partner_Username, 
-                                user_id, partner_user_id, partner_avatar, event) => {
+                                user_id, partner_user_id, partner_avatar, avatar, event) => {
+                                  setChatCleared(false);
+                                  
     setShowRightside('')
     setChatId(chat_Id);
     setUsername(username);
     setPartnerUsername(partner_Username);
     setPartnerUserId(partner_user_id);
     setCurrentUserId(user_id);
+    setCurrentUserAvatar5(partner_avatar)
+    setUserAvatar(avatar)
+
+
+    try {
+      await clearChatFunction();
+      // Очистка успешно завершена, теперь можно открыть чат
+      
+    } catch (error) {
+      // Обработка ошибок очистки чата, если необходимо
+      console.error("Error clearing chat:", error);
+      setIsClearingChat(false); // Возвращаем обратно, чтобы можно было попробовать снова
+    }
   
     try {
       const response = await axios.get(`http://localhost:8000/api/messages/messages_list/${chat_Id}`, {
@@ -375,7 +462,7 @@ function Messages() {
     } catch (error) {
       console.log(error);
     }
-
+    setChatCleared(true);
   };
   
   useEffect(() => {
@@ -429,17 +516,20 @@ function Messages() {
     }
   }
 
-  function getDisplayedAvatar(chat, dataUsernameChats) {
-    if (dataUsernameChats === chat.avatar) {
+  function getDisplayedAvatar(chat, dataAvatarChats) {
+    if (dataAvatarChats === chat.user_avatar) {
       return chat.partner_user_avatar;
-    } else {
+    } else if (dataAvatarChats === chat.partner_user_avatar) {
       return chat.user_avatar;
+    } else {
+      return '...';
     }
   }
 
-  function getUsernameOnChats(username) {
+  function getInfoOnChats(username, avatar) {
     console.log("CHSSSSSSSS:", username);
     setChatUsername(username);
+    setCurrentUserAvatar(avatar);
   }
 
 
@@ -521,15 +611,15 @@ function Messages() {
           
 
           return hasMatchingChat && (
-            <div onClick={() => getUsernameOnChats(displayedUsername)}>
+            <div onClick={() => getInfoOnChats(displayedUsername, displayedAvatar)}>
             <div className="leftside-messages-users" style={{display: displayNoneChats}} key={chat.id}
               onClick={(event) => handleOpenChat(
                 chat.chat_id, chat.username, chat.partner_username, 
-                chat.user_id, chat.partner_user_id, chat.partner_user_avatar,
+                chat.user_id, chat.partner_user_id, chat.partner_user_avatar, chat.user_avatar,
                 event)}
               >
               <div className="leftside-messages-users-avatar">
-                <Avatar sx={{width: 50, height: 50}} alt="" src={displayedAvatar}/>
+                <Avatar sx={{width: 50, height: 50}} alt={chat.partner_username} src={displayedAvatar}/>
               </div>
               <div className="leftside-messages-users-info">
                 <div className="leftside-messages-users-info-username">
@@ -545,10 +635,12 @@ function Messages() {
         })}
 			</div>
       <div className="rightside-wrapper">
-        <div className="rightside-messages" style={{display: showRightside}}>
+        
+      
+         <div className="rightside-messages" style={{display: showRightside}}>
           <div className="rightside-messages-header">
             <div className="rightside-messages-header-user-info">
-              <Avatar sx={{width: 40, height: 40}} alt="" src="..." />
+              <Avatar sx={{width: 40, height: 40}} alt={chatUsername} src={currentUserAvatar} />
               <h2>{partnerUsername}</h2>
             </div>
             <div className="rightside-messages-header-info-buttons">
@@ -557,21 +649,21 @@ function Messages() {
             </div>
 
           </div>
-          {showRightsideChat === true ? (
+           
+          { chatCleared ? (
             <div className="rightside-messages-main"> {/* Это div где появляются сообщения */} 
             
-            
-            {
-        messagesData
+            {messagesData
         .concat(chatMessages)
-        .sort((a, b) => moment(b.date_message).valueOf() - moment(a.date_message).valueOf()) // Изменил порядок сортировки
+        .sort((a, b) => moment(b.date_message).valueOf() - moment(a.date_message).valueOf())
         .map((message, index, array) => {
           const nextMessageSender = index < array.length - 1 ? array[index + 1].message_sender : null;
-          const isCurrentUser = message.current_user_id === message.message_sender;
-          const showAvatar = message.message_sender !== nextMessageSender; // Проверяем следующее сообщение
-
+          const isCurrentUser = dataUsername.id === message.message_sender;
+          const showAvatar = message.message_sender !== nextMessageSender;
           const isWebSocketMessage = chatMessages.includes(message);
-
+  
+          const displayedAvatar = isCurrentUser ? dataUsername.avatar : currentUserAvatar;
+  
           return (
             <div className={`rightside-messages-main-message${isWebSocketMessage ? " webSocketMessage" : ""}`} key={message.id}>
               <div className="rightside-messages-main-avatar">
@@ -579,7 +671,7 @@ function Messages() {
                   <Avatar
                     sx={{ width: 25, height: 25 }}
                     alt=""
-                    src={isCurrentUser ? dataUsername.avatar : imageUrl2}
+                    src={displayedAvatar}
                   />
                 )}
               </div>
@@ -592,17 +684,18 @@ function Messages() {
               </div>
             </div>
           );
-        })
-    }
-            </div>
-          ) : 
-          <div>
-            {/* WRITE AN MESSAGE */}
-            WRITE AN MESSAGE
-            
-          </div>
+        })}
         
-        }
+
+
+
+
+            </div>
+          ) : <span class="loader"></span>
+
+          
+          }
+          
           
           <div className="rightside-messages-footer">
             <div className="rightside-messages-footer-wrapper">
@@ -651,7 +744,10 @@ function Messages() {
 
 
           </div>
-        </div>
+          </div>
+          
+        
+        
       </div>
 		</div>
 		
