@@ -177,7 +177,7 @@ function Signup() {
 		setToSignin(true);
 		
 		try {
-			const response = await axios.post("http://kenzoback.onrender.com/signup", {
+			const response = await axios.post("https://kenzoback.onrender.com/signup", {
 				grant_type: 'password',
 				email: email,
 				username: username,
@@ -193,7 +193,7 @@ function Signup() {
 				client_secret: ''
 			}, {
 				headers: {
-					'Content-Type': 'application/x-www-form-urlencoded'
+					'Content-Type': 'application/json'
 				}
 			});
 			console.log("SIGNUP RESPONSE: ", response.data);
