@@ -2,8 +2,6 @@ from datetime import timedelta, datetime
 from fastapi import Depends, APIRouter, Request, Response, status, HTTPException, Cookie, Depends, HTTPException, status, WebSocket, Request, Body
 from sqlalchemy.orm import Session
 from sqlalchemy import or_
-from fastapi.templating import Jinja2Templates
-from sqlalchemy.ext.asyncio import AsyncSession
 from database.connection import get_db
 from fastapi.security import OAuth2PasswordRequestForm
 from controller import userController
@@ -18,7 +16,6 @@ from dotenv import load_dotenv
 from config import SECRET_KEY, ALGORITHM, ACCESS_TOKEN_EXPIRE_MINUTES
 from fastapi.staticfiles import StaticFiles
 from typing import Dict
-import httpx
 # import cloudinary
 # import cloudinary.uploader
 

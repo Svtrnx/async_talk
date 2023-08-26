@@ -1,8 +1,6 @@
 from fastapi import FastAPI
 from model import userModel
 from database.connection import engine
-from fastapi.staticfiles import StaticFiles
-from fastapi.templating import Jinja2Templates
 from routes import userRoute
 from fastapi.middleware.cors import CORSMiddleware
 import os
