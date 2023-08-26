@@ -177,7 +177,7 @@ function Signup() {
 		setToSignin(true);
 		
 		try {
-			const response = await axios.post("http://localhost:8000/signup", {
+			const response = await axios.post("http://kenzoback.onrender.com/signup", {
 				grant_type: 'password',
 				email: email,
 				username: username,
