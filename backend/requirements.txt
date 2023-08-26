@@ -36,3 +36,5 @@ typing_extensions==4.7.1
 urllib3==2.0.4
 uvicorn==0.22.0
 yarg==0.1.9
+python-jose==3.3.0
+jose==1.0.0
