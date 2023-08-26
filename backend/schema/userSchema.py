@@ -16,6 +16,7 @@ class UserSchema(BaseModel):
     last_name: Optional[str]=None
     gender: Optional[str]=None
     country: Optional[str]=None
+    avatar: Optional[str]=None
     date: Optional[str]=None
     date_reg: Optional[datetime] = None 
     is_Admin: Optional[bool]=None
@@ -31,6 +32,9 @@ class ChatSchema(BaseModel):
     user_id: Optional[int]=None
     partner_username: Optional[str]=None
     partner_user_id: Optional[int] = None
+    user_avatar: Optional[str] = None
+    partner_user_avatar: Optional[str] = None
+    
     user: "UserSchema"
     messages: List["MessageSchema"]
 
@@ -45,6 +49,8 @@ class MessageSchema(BaseModel):
     message_sender: Optional[int]=None
     current_user_id: Optional[int]=None
     partner_user_id: Optional[int]=None
+    user_avatar: Optional[str] = None
+    partner_user_avatar: Optional[str] = None
     date_message: Optional[datetime] = None 
     chat: ChatSchema
 

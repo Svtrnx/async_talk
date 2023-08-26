@@ -81,11 +81,19 @@ body {
     align-items: center;
 }
 
-.info-area img {
-	width: 24px;
+.info-area .badgeHeader {
+	width: 26px;
+	margin-bottom: 5px;
 	/* height: 22px; */
 
 }
+
+/* .headerAvatar  {
+	width: 45px !important;
+	height: auto;
+	height: auto !important;
+
+} */
 
 .sidebar {
 	display: inline-flex;

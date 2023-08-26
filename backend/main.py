@@ -5,6 +5,7 @@ from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 from routes import userRoute
 from fastapi.middleware.cors import CORSMiddleware
+import os
 
 #config DB
 userModel.Base.metadata.create_all(bind=engine)
@@ -13,7 +14,9 @@ userModel.Base.metadata.create_all(bind=engine)
 # Instance
 app = FastAPI()
 
-origins = ['http://localhost:3000', 'http://127.0.0.1:3000',
+
+origins = ['http://localhost:3000', 'https://res.cloudinary.com', 'https://cloudinary.com'
+           'http://127.0.0.1:3000',
            'https://localhost:3000', 'https://127.0.0.1:3000'] 
 
 app.add_middleware(

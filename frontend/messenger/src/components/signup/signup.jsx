@@ -49,6 +49,19 @@ import "./signup.css";
 	  const CSSTextField = withStyles(styles)(TextField);
 	  
 
+	  const themeGetStarted = createTheme({
+		typography: {
+			fontFamily: 'Montserrat',
+			fontSize: 15,
+			fontWeightBold: 300
+		},
+		});
+	
+	const buttonStyleGetStarted = {
+		backgroundColor: '#333438',
+		color: '#e0dfe7',
+	};
+
 	// Field Text settings
 	const theme = createTheme({
 		typography: {
@@ -100,7 +113,13 @@ function Signup() {
 	const [showPassword, setShowPassword] = React.useState(false);
 	const [toSignin, setToSignin] = useState(true);
 	const navigate = useNavigate();
-	
+	const [hasError, setHasError] = useState(false);
+	const [errorSnackBar, setErrorSnackBar] = useState(false);
+	const [errorSnackBarText, setErrorSnackBarText] = useState('Please, complete all inputs!');
+	const [headerButton, setHeaderButton] = useState('SIGN IN');
+
+	const isValidUsername = /^[A-Za-z]{5,}[A-Za-z0-9]*$/.test(username);
+
 	const handleSubmit = async (event) => {
 		event.preventDefault();
 		console.log('email: ' + email);
@@ -144,19 +163,23 @@ function Signup() {
 		}
 	  }
 
-
+	  
 	const handleOpenSnackbar = () => {
 		setOpen(true);
 	  };
 
-	const handleClose = (event, reason) => {
-	  if (reason === 'clickaway') {
-		return;
-	  }
-  
-	  setOpen(false);
-	};
+	  const handleClose = (event, reason) => {
+		if (reason === 'clickaway') {
+		  return;
+		}
+	
+		setErrorSnackBar(false);
+	  };
 
+	function handleLevel3() {
+		setLevel(3);
+		handleContinueClick();
+	}
 
 	const handleChangeOTPEmail = (value) => {
 		setOtpEmail(value)
@@ -182,30 +205,85 @@ function Signup() {
 		level2: 0,
 		level3: 0,
 	  });
-	  
+	console.log(level)
   	const handleContinueClick = () => {
-		if (level === 0) {
-		  setProgress((prevState) => ({ ...prevState, level1: 100 }));
-		  setLevel(1);
-		} else if (level === 1) {
-		  setProgress((prevState) => ({ ...prevState, level2: 100 }));
-		  setLevel(2);
-		} else if (level === 2) {
-		  setProgress((prevState) => ({ ...prevState, level3: 100 }));
-		  setLevel(3);
-		}
-	  };
+
+		// if (fName.length < 5 || fName.length > 15 
+		// 	|| lName.length < 5 || lName.length > 15 || country === null) {
+		// 	if (fName.length > 15 || lName.length > 15) {
+		// 		console.log('2')
+		// 		setErrorSnackBarText('Your text input is too long! Max length is 15 chars');
+		// 		setErrorSnackBar(true);
+		// 		setHasError(true);
+		// 	}
+		//   } else {
+			
+			setHasError(false);
+			if (level === 0) {
+				if (fName.length < 5 || fName.length > 15 
+					|| lName.length < 5 || lName.length > 15 || country === null || country.label === '') {
+					if (fName.length > 15 || lName.length > 15) {
+						setErrorSnackBarText('Your text input is too long! Max length is 15 chars');
+						setErrorSnackBar(true);
+						setHasError(true);
+					}
+					setErrorSnackBarText('Please complete all inputs!');
+					setErrorSnackBar(true);
+					setHasError(true);
+
+					console.log('w')
+				}
+				else {
+					setProgress((prevState) => ({ ...prevState, level1: 100 }));
+					setLevel(1);
+					setHeaderButton('SIGN IN');
+				}
+			} else if (level === 1) {
+				if (username.length < 5 || username.length > 15 
+					|| password.length < 5 || password.length > 15 || confirmPassword !== password) {
+					if (username.length > 15 || password.length > 15) {
+						console.log('2')
+						setErrorSnackBar(true);
+						setErrorSnackBarText('Your text input is too long! Max length is 15 chars');
+						setHasError(true);
+					}
+					else if (confirmPassword !== password) {
+						setErrorSnackBar(true);
+						setErrorSnackBarText('Passwords do not match');
+						setHasError(true);
+					}
+				}
+				else {
+					setProgress((prevState) => ({ ...prevState, level2: 100 }));
+					setLevel(2);
+					setHeaderButton('SKIP');
+				}
+			} else if (level === 2) {
+			  setProgress((prevState) => ({ ...prevState, level3: 100 }));
+			  setLevel(3);
+			  setHeaderButton('SIGN IN');
+			} else if (level === 3) {
+			  setHeaderButton('SIGN IN');
+			  console.log('333')
+			}
+		//   }
+		  
+
+	};
 	  
   	const handleBackClick = () => {
 		if (level === 1) {
 		  setProgress((prevState) => ({ ...prevState, level1: 0 }));
 		  setLevel(0);
+		  setHeaderButton('SIGN IN');
 		} else if (level === 2) {
 		  setProgress((prevState) => ({ ...prevState, level2: 0 }));
 		  setLevel(1);
+		  setHeaderButton('SIGN IN');
 		} else if (level === 3) {
 		  setProgress((prevState) => ({ ...prevState, level3: 0 }));
 		  setLevel(2);
+		  setHeaderButton('SKIP');
 		}
 	  };
 	  
@@ -268,6 +346,39 @@ function Signup() {
 				</div>
 			</div>
 			<div className="rightside_reg_wrapper">
+			{ headerButton === 'SIGN IN' ?
+			(<Button 
+				variant="contained" 
+				sx={{width: 130, height: 50, boxShadow: 2, borderRadius: '4px', 
+					position: 'absolute',
+					top: 0,
+					marginTop: '5px',
+					right: 0,
+					marginRight: '10px'
+				}} 
+				style={buttonStyleGetStarted} 
+				theme={themeGetStarted}
+				component={Link}
+				to="/signin"
+				>
+				SIGN IN
+			</Button>) : 
+			(<Button 
+				variant="contained" 
+				sx={{width: 130, height: 50, boxShadow: 2, borderRadius: '4px', 
+					position: 'absolute',
+					top: 0,
+					marginTop: '5px',
+					right: 0,
+					marginRight: '10px'
+				}} 
+				style={buttonStyleGetStarted} 
+				theme={themeGetStarted}
+				onClick={() => handleLevel3()}
+				>
+				SKIP
+			</Button>)
+			}
 				{level > 0 &&
 				<div className="backButton" onClick={handleBackClick}>
 					<img src={imgBack} alt="backBtn" />
@@ -295,6 +406,9 @@ function Signup() {
 								InputLabelProps={{style: { color: '#e0dfe7' },}} 
 								InputProps={{style: { color: '#e0dfe7' },}} 
 								sx={{mt: 2, width: 400, boxShadow: 2}}
+								error={fName.length > 0 && fName.length < 5}
+  								helperText={fName.length > 0 && fName.length < 5 && "First Name should be at least 5 characters"}
+								autoFocus
 								/>
 								<CSSTextField 
 								value={lName}
@@ -305,6 +419,9 @@ function Signup() {
 								InputLabelProps={{style: { color: '#e0dfe7' },}} 
 								InputProps={{style: { color: '#e0dfe7' },}} 
 								sx={{mt: 3, width: 400, boxShadow: 2}}
+								error={lName.length > 0 && lName.length < 5}
+  								helperText={lName.length > 0 && lName.length < 5 && "Last Name should be at least 5 characters"}
+								autoFocus
 								/>
 							</ThemeProvider>
 						</div>
@@ -344,6 +461,8 @@ function Signup() {
 								  }}
 								id="country-select-demo"
 								sx={{ width: 400, mt: 2 }}
+								
+								autoFocus
 								options={countries}
 								autoHighlight
 								getOptionLabel={(option) => option.label}
@@ -355,6 +474,7 @@ function Signup() {
 										src={`https://flagcdn.com/w20/${option.code.toLowerCase()}.png`}
 										srcSet={`https://flagcdn.com/w40/${option.code.toLowerCase()}.png 2x`}
 										alt=""
+										
 									/>
 									{option.label} ({option.code}) +{option.phone}
 									</Box>
@@ -363,6 +483,8 @@ function Signup() {
 									<CSSTextField
 									{...params}
 									label="Choose a country"
+									error={country === null}
+  									helperText={country === null && "Choose a country"}
 									inputProps={{
 										...params.inputProps,
 										autoComplete: 'new-password', 
@@ -377,19 +499,15 @@ function Signup() {
 								<LocalizationProvider dateAdapter={AdapterDayjs}>
 									<DatePicker sx={{ width: 400,}}
 									value={date}
-									// onChange={handleChangeDate}
 									onChange={(newValue) => setDate(newValue)}
-									
 									renderInput={(props) => (
 										<TextField
 										  {...props}
 										  label="Choose a date"
 										  color="#e0dfe7" // Измените цвет текста в поле для ввода
 										  variant="outlined"
-										  
 										/>
 									  )}
-									
 									/>
 								</LocalizationProvider>
 							</ThemeProvider>
@@ -427,6 +545,11 @@ function Signup() {
 							InputLabelProps={{style: { color: '#e0dfe7' },}} 
 							InputProps={{style: { color: '#e0dfe7' },}} 
 							sx={{mt: 3, width: 400, boxShadow: 2}}
+							error={!isValidUsername}
+							helperText={!isValidUsername && "Username should contain at least 5 letters, numbers should be only in the end"}
+
+
+							autoFocus
 						/>
 						<CSSTextField
 							type={showPassword ? "text" : "password"}
@@ -435,6 +558,9 @@ function Signup() {
 							value={password}
 							onChange={(event) => setPassword(event.target.value)}
 							InputLabelProps={{ style: { color: "#e0dfe7" } }}
+							error={password.length > 0 && password.length < 6}
+							helperText={password.length > 0 && password.length < 6 && "Username should be at least 6 characters"}
+
 							InputProps={{
 								style: { color: "#e0dfe7" },
 								endAdornment: (
@@ -680,13 +806,11 @@ function Signup() {
 					</div>
 				</div>
 			</div>
-			<Stack spacing={2} sx={{ width: '100%' }}>
-				<Snackbar open={open} autoHideDuration={3500} onClose={handleClose}>
-					<Alert onClose={handleClose} severity="success" sx={{ width: '100%' }}>
-					Verification completed!
-					</Alert>
-				</Snackbar>
-			</Stack>
+			<Snackbar open={errorSnackBar} autoHideDuration={8000} onClose={handleClose}>
+				<Alert onClose={handleClose} severity="error" sx={{ width: 'auto' }}>
+					{errorSnackBarText}
+				</Alert>
+			</Snackbar>
 		</div>
     </Container>
   );

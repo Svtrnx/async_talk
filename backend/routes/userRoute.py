@@ -1,5 +1,5 @@
 from datetime import timedelta, datetime
-from fastapi import Depends, APIRouter, Request, Response, status, HTTPException, Cookie, Depends, HTTPException, status, WebSocket, Request
+from fastapi import Depends, APIRouter, Request, Response, status, HTTPException, Cookie, Depends, HTTPException, status, WebSocket, Request, Body
 from sqlalchemy.orm import Session
 from sqlalchemy import or_
 from fastapi.templating import Jinja2Templates
@@ -18,9 +18,17 @@ from dotenv import load_dotenv
 from config import SECRET_KEY, ALGORITHM, ACCESS_TOKEN_EXPIRE_MINUTES
 from fastapi.staticfiles import StaticFiles
 from typing import Dict
+import httpx
+# import cloudinary
+# import cloudinary.uploader
 
 load_dotenv()
 
+# cloudinary.config( 
+#   cloud_name = "dlwuhl9ez", 
+#   api_key = "825156941529614", 
+#   api_secret = "8u__l69vN35HyPIjUWUEMaQq8PA" 
+# )
 
 # instance
 userRouter = APIRouter()
@@ -47,6 +55,17 @@ async def websocket_endpoint(websocket: WebSocket, chat_id: str, user_id: str):
         # Удаление соединения при отключении клиента
         del connections[user_id]
 
+
+
+# @userRouter.post("/upload")
+# async def upload_image(url: str):
+#     async with httpx.AsyncClient() as client:
+#         response = await client.get(url)
+#         if response.status_code == 200:
+#             uploaded_image = cloudinary.uploader.upload(response.content)
+#             return {"public_id": uploaded_image["public_id"]}
+#         else:
+#             raise HTTPException(status_code=400, detail="Failed to fetch image")
 
 
 @userRouter.get("/test")
@@ -106,7 +125,7 @@ def show_event(request: Request, username: str, current_user: User = Depends(get
 
 
 @userRouter.post('/api/messages/send_message')
-async def create_new_message( 
+async def create_new_message(
     db: Session = Depends(get_db), 
     form_data: userModel.MessageRequestForm = Depends()
     ):
@@ -116,13 +135,18 @@ async def create_new_message(
         message_sender=form_data.message_sender,
         current_user_id=form_data.current_user_id,
         partner_user_id=form_data.partner_user_id,
-        date_message=datetime.now()  # Текущее время создания сообщения
+        date_message=datetime.now(),  # Текущее время создания сообщения
+        user_avatar=form_data.user_avatar,
+        partner_user_avatar=form_data.partner_user_avatar
         )
     message = create_message(db=db, message=new_message)
     return {"user": message}, 200
     
-@userRouter.post('/api/messages/create_chat/{partner_user_id}/{partner_username}')
-async def create_new_chat(partner_user_id: int, partner_username: str, db: Session = Depends(get_db), current_user: User = Depends(get_current_user)):
+@userRouter.post('/api/messages/create_chat/')
+async def create_new_chat(
+        partner_user_id: int = Body(embed=True), partner_username: str = Body(embed=True), 
+        partner_user_avatar: str = Body(embed=True),
+        db: Session = Depends(get_db), current_user: User = Depends(get_current_user)):
     if current_user is None:
         return {"message": "Not authorized"}, 303
     else:
@@ -132,7 +156,9 @@ async def create_new_chat(partner_user_id: int, partner_username: str, db: Sessi
             user_id=current_user.id,
             partner_username=partner_username,
             partner_user_id=partner_user_id,
-            )
+            user_avatar=current_user.avatar,
+            partner_user_avatar=partner_user_avatar,
+        )
         chat = create_chat(db=db, chat=new_chat)
         return {"chat": chat}, 200
     

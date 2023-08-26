@@ -109,7 +109,7 @@ function Messages() {
   const [users, setUsers] = useState([]);
   const [chats, setChats] = useState([]);
   const [dataUsername, setDataUsername] = useState([]);
-  const [displayNone, setDisplayNone] = useState('none');
+  const [displayNoneAddChat, setDisplayNoneAddChat] = useState('none');
   const [displayNoneChats, setDisplayNoneChats] = useState('grid');
   const [leftsideButton, setLeftsideButton] = useState(plusImg);
   const [leftsideButtonChat, setLeftsideButtonChat] = useState(doneImg);
@@ -229,6 +229,9 @@ function Messages() {
   
   const handleSendMessage = () => {
     if (messageValue) {
+      if (messageValue.trim() !== '') { // Проверяем, что сообщение не пустое после удаления лишних пробелов
+        
+      
       // Отправка сообщения или выполнение другой логики
       console.log('Отправлено сообщение:', messageValue);
 
@@ -253,6 +256,9 @@ function Messages() {
           console.log("SEND MESSAGE ERROR: ", err);
         }
       }
+    
+
+
       sendMessage();
       if (ws && ws.readyState === WebSocket.OPEN) {
       console.log("RESCIPIENT:", recipient)
@@ -279,6 +285,7 @@ function Messages() {
 
       // Очистка поля ввода
       setMessageValue('');
+    }
     }
   };
 
@@ -327,24 +334,23 @@ function Messages() {
         .then(response => {
           const chatsData = response.data[0].chats;
           setChats(chatsData);
-          console.log(chatsData); // Проверьте содержимое response.data.chats
+          console.log(chatsData);
         })
       } catch (error) {
         console.error(error);
       }
     };
     
-    // Вызовите функцию fetchChats для получения списка чатов при монтировании компонента или в нужном месте в коде.
     fetchChats();
     
-    }, []);
+    }, [selectedUsers]);
 
   function handleFindUsers() {
-    if (displayNone === 'none') {
-      setDisplayNone('');
+    if (displayNoneAddChat === 'none') {
+      setDisplayNoneAddChat('');
       setLeftsideButton(closeImg)
     } else {
-      setDisplayNone('none');
+      setDisplayNoneAddChat('none');
       setLeftsideButton(plusImg)
     }
     
@@ -505,7 +511,12 @@ function Messages() {
       console.log(response.data);
     } catch (error) {
       console.log("ERROR:", error);
-    }    
+    }
+    setDisplayNoneAddChat('none')
+    setDisplayNoneChats('grid')
+    setLeftsideButton(plusImg)
+    setSelectedUsers([])
+    
   }
 
   function getDisplayedUsername(chat, dataUsernameChats) {
@@ -555,7 +566,7 @@ function Messages() {
             </div>
             <img className="leftside-messages-info-search-plusImg" src={leftsideButton} alt="" onClick={handleFindUsers}/>
 				  </div>
-          <div style={{display: displayNone}}>
+          <div style={{display: displayNoneAddChat}}>
             <div className="leftside-messages-header-text">
               <h2 className="leftside-messages-header-text-h2">Create Chat</h2>
             </div>
@@ -566,7 +577,7 @@ function Messages() {
                       onClick={(event) => handleUserClickCreateChat(user.id, user.username, user.avatar, event)}
                     >
                       <div className="leftside-messages-create-chat-users-avatar">
-                        <Avatar sx={{width: 42, height: 42, ml: 1}} alt="Remy Sharp" src={user.avatar} />
+                        <Avatar sx={{width: 42, height: 42, ml: 1}} alt={user.username} src={user.avatar} />
                       </div>
                       <div className="leftside-messages-create-chat-users-fullname">
                         <h2>{user.first_name}</h2>
@@ -594,7 +605,8 @@ function Messages() {
 								theme={themeGetStarted}
 								// component={Link}
                 // to="/signup"
-                onClick={() => setDisplayNone('none') || setDisplayNoneChats('grid') || setLeftsideButton(plusImg)}
+                onClick={() => setDisplayNoneAddChat('none') || setDisplayNoneChats('grid') || setSelectedUsers([])
+                 || setLeftsideButton(plusImg)}
 								>
 								Cancel
 							</Button>
@@ -719,6 +731,12 @@ function Messages() {
                   multiline
                   value={messageValue}
                   onChange={(event) => setMessageValue(event.target.value)}
+                  onKeyDown={(event) => {
+                    if (event.key === 'Enter' && !event.shiftKey) {
+                    event.preventDefault(); // Предотвращаем перенос строки
+                    handleSendMessage();
+                  }}
+                }
                   size="small"
                   label="Write a message"
                   variant="outlined"
@@ -729,9 +747,6 @@ function Messages() {
                 <span></span>
               </ThemeProvider>
               </div>
-              {/* <div className="rightside-messages-footer-wrapper-upload-picture">
-                <img src={picturesImg} alt="" />
-              </div> */}
               <div className="rightside-messages-footer-wrapper-group">
                 { messageValue == '' &&
                   <img className="rightside-messages-footer-wrapper-group-audio-message" src={micImg} alt="" />

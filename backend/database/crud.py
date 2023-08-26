@@ -95,7 +95,9 @@ def create_message(db: Session, message: userSchema.MessageSchema):
         message_sender      = message.message_sender,
         current_user_id     = message.current_user_id,
         partner_user_id     = message.partner_user_id,
-        date_message        = message.date_message
+        user_avatar         = message.user_avatar,
+        partner_user_avatar = message.partner_user_avatar,
+        date_message        = message.date_message,
     )
     db.add(new_message)
     db.commit()
@@ -105,11 +107,13 @@ def create_message(db: Session, message: userSchema.MessageSchema):
 
 def create_chat(db: Session, chat: userSchema.ChatSchema):
     new_chat = userModel.Chat(
-        chat_id           = chat.chat_id,
-        username          = chat.username,
-        user_id           = chat.user_id,
-        partner_username  = chat.partner_username,
-        partner_user_id   = chat.partner_user_id,
+        chat_id              = chat.chat_id,
+        username             = chat.username,
+        user_id              = chat.user_id,
+        partner_username     = chat.partner_username,
+        partner_user_id      = chat.partner_user_id,
+        user_avatar          = chat.user_avatar,
+        partner_user_avatar  = chat.partner_user_avatar,
     )
     db.add(new_chat)
     db.commit()

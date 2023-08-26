@@ -213,14 +213,14 @@ function Messenger() {
               <div className="info-area">
                   <IconButton aria-label={notificationsLabel(100)} sx={{mt: 1}}>
                       <Badge badgeContent={1} sx={{ "& .MuiBadge-badge": { fontFamily: 'Montserrat' }}} classes={{ badge: 'custom-badge' }}>
-                          <img src={notificationImg} alt="" />
+                          <img className="badgeHeader" src={notificationImg} alt="" />
                       </Badge>
                   </IconButton>
                   <div>
                     <Box sx={{ flexGrow: 0, ml: 5 }}>
                       <Tooltip title="Open settings">
                         <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                          <Avatar alt="Remy Sharp" src={userInfo.avatar} />
+                          <Avatar className="headerAvatar" alt={userInfo.username} src={userInfo.avatar} />
                         </IconButton>
                       </Tooltip>
                       <ThemeProvider theme={theme}>

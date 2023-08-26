@@ -388,6 +388,7 @@
     overflow: hidden; /* Hide any overflowing text */
     text-overflow: ellipsis; /* Display an ellipsis (...) for truncated text */
 	margin-left: 5px;
+	word-break: break-all;
 	
 }
 

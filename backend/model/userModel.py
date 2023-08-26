@@ -20,6 +20,7 @@ class User(Base):
     last_name = Column(String, unique=False, index=True)
     gender = Column(String, unique=False, index=True)
     country = Column(String, unique=False, index=True)
+    avatar = Column(String, unique=False, index=True)
     date = Column(String, unique=False, index=True)
     date_reg = Column(TIMESTAMP, default=datetime.utcnow, index=True)
     is_Admin = Column("is_Admin", Boolean, default=False)
@@ -44,6 +45,8 @@ class Chat(Base):
     user_id = Column(Integer, ForeignKey("users.id"))
     partner_username = Column(String, index=True)
     partner_user_id = Column(Integer, index=True)
+    user_avatar = Column(String, index=True)
+    partner_user_avatar = Column(String, index=True)
 
 
     user = relationship("User", foreign_keys=[user_id], back_populates="chats")
@@ -59,6 +62,8 @@ class Message(Base):
     message_sender = Column(Integer)
     current_user_id = Column(Integer)
     partner_user_id = Column(Integer)
+    user_avatar = Column(String, default='', index=True)
+    partner_user_avatar = Column(String, default='', index=True)    
     date_message= Column(TIMESTAMP, default=datetime.utcnow, index=True)
     
     chat = relationship("Chat", back_populates="messages")
@@ -72,12 +77,16 @@ class MessageRequestForm:
         message_sender: int = Form(),
         current_user_id: int = Form(),
         partner_user_id: int = Form(),
+        user_avatar: str = Form(),
+        partner_user_avatar: str = Form(),
     ):
         self.text = text
         self.chat_id = chat_id
         self.message_sender = message_sender
         self.current_user_id = current_user_id
         self.partner_user_id = partner_user_id
+        self.user_avatar = user_avatar
+        self.partner_user_avatar = partner_user_avatar
         
 # class ChatRequestForm:
 	
