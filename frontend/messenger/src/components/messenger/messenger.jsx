@@ -83,7 +83,9 @@ const searchTheme = createTheme({
     });
 
 
-const settings = ['Profile', 'Account', 'Dashboard', 'Logout'];
+    
+    
+    
 
 
 
@@ -93,10 +95,48 @@ function Messenger() {
   const [userInfo, setUserInfo] = React.useState([]);
 
   const [textOption, setTextOption] = React.useState('Messages');
-  console.log(textOption)
+  const navigate = useNavigate();
   
   const handleOpenUserMenu = (event) => {
     setAnchorElUser(event.currentTarget);
+  };
+
+  const settings = ['Profile', 'Account', 'Dashboard', 'Logout'];
+
+  async function handleMenuItemSettingsClick(setting) {
+    if (setting === 'Logout') {
+      try {
+        const response = await axios.post(
+          "http://localhost:8000/logout",
+          {},
+          {
+            withCredentials: true,
+            headers: {
+              "Content-Type": "application/json",
+            },
+          }
+        );
+        console.log("SIGNUP RESPONSE: ", response.data);
+        console.log("User logged out");
+        navigate('/signin');
+      } catch (err) {
+        console.log("ERROR: ", err);
+      }
+      
+      setAnchorElUser(null);
+    } 
+    else if (setting === 'Profile'){
+      // Обработка других пунктов меню
+      console.log(`Clicked on ${setting}`);
+    }
+    else if (setting === 'Account'){
+      // Обработка других пунктов меню
+      console.log(`Clicked on ${setting}`);
+    }
+    else if (setting === 'Dashboard'){
+      // Обработка других пунктов меню
+      console.log(`Clicked on ${setting}`);
+    }
   };
 
 
@@ -111,7 +151,7 @@ function Messenger() {
     },
   })(StyledMenu);
 
-    const navigate = useNavigate();
+    
 
     // useEffect(() => {
     //   const checkAuthentication = async () => {
@@ -240,7 +280,7 @@ function Messenger() {
                           onClose={handleCloseUserMenu}
                         >
                           {settings.map((setting) => (
-                            <MenuItem key={setting} onClick={handleCloseUserMenu}>
+                            <MenuItem key={setting} onClick={() => handleMenuItemSettingsClick(setting)}>
                               <Typography  textAlign="center">{setting}</Typography>
                             </MenuItem>
                           ))}

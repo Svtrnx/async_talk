@@ -52,7 +52,8 @@
 
 .leftside-messages {
 	/* background-color: #f36364; */
-	/* display: grid; */
+	/* display: grid;
+	
 	grid-template-rows: 12% 88%;
 	grid-template-columns: 100%;
 	background-color: #1f2024;
@@ -60,6 +61,13 @@
 	height: 100%;
 	border-top-left-radius: 10px;
     border-bottom-left-radius: 10px;
+	overflow: hidden; */
+    display: grid;
+    grid-template-rows: 70px auto auto;
+    background-color: #1f2024;
+    border-top-left-radius: 10px;
+    border-bottom-left-radius: 10px;
+    overflow: hidden;
 }
 .rightside-wrapper {
 	/* background-color: #6563f3; */
@@ -90,7 +98,8 @@
 .leftside-messages-info {
 	display: flex;
     place-content: center;
-	height: calc(10% - 1px);
+	height: 70px;
+	/* height: calc(10% - 1px); */
     align-items: center;
     border-bottom: 1px solid #333438;
 	width: 100%;
@@ -208,17 +217,16 @@
 }
 
 .leftside-messages-create-chat-footer {
-    display: grid;
-    background-color: #202126;
-    grid-template-columns: 60% 35%;
-    position: absolute;
-    bottom: 0;
-    width: 307px;
-    height: 70px;
-    border-bottom-left-radius: 10px;
-    border-top: 1px solid #3f4045;
-    align-items: center;
-    justify-items: center;
+	display: grid;
+	background-color: #202126;
+	grid-template-columns: 60% 35%;
+	position: relative; /* Измените на relative позиционирование */
+	width: 307px;
+	height: 70px;
+	border-bottom-left-radius: 10px;
+	border-top: 1px solid #3f4045;
+	align-items: center;
+	justify-items: center;
 }
 
 

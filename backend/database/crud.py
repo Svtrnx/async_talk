@@ -43,6 +43,7 @@ def create_user(db: Session, user: userSchema.UserSchema):
         email	   = user.email,
         first_name = user.first_name,
         last_name  = user.last_name,
+        avatar     = user.avatar,
         gender     = user.gender,
         country    = user.country,
         date       = user.date,
@@ -95,8 +96,6 @@ def create_message(db: Session, message: userSchema.MessageSchema):
         message_sender      = message.message_sender,
         current_user_id     = message.current_user_id,
         partner_user_id     = message.partner_user_id,
-        user_avatar         = message.user_avatar,
-        partner_user_avatar = message.partner_user_avatar,
         date_message        = message.date_message,
     )
     db.add(new_message)

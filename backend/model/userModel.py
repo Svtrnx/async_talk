@@ -61,9 +61,7 @@ class Message(Base):
     chat_id = Column(String, ForeignKey("chats.chat_id"))
     message_sender = Column(Integer)
     current_user_id = Column(Integer)
-    partner_user_id = Column(Integer)
-    user_avatar = Column(String, default='', index=True)
-    partner_user_avatar = Column(String, default='', index=True)    
+    partner_user_id = Column(Integer)  
     date_message= Column(TIMESTAMP, default=datetime.utcnow, index=True)
     
     chat = relationship("Chat", back_populates="messages")
@@ -77,16 +75,12 @@ class MessageRequestForm:
         message_sender: int = Form(),
         current_user_id: int = Form(),
         partner_user_id: int = Form(),
-        user_avatar: str = Form(),
-        partner_user_avatar: str = Form(),
     ):
         self.text = text
         self.chat_id = chat_id
         self.message_sender = message_sender
         self.current_user_id = current_user_id
         self.partner_user_id = partner_user_id
-        self.user_avatar = user_avatar
-        self.partner_user_avatar = partner_user_avatar
         
 # class ChatRequestForm:
 	
@@ -114,6 +108,7 @@ class OAuth2PasswordRequestFormSignup:
         password: str = Form(),
         first_name: str = Form(),
         last_name: str = Form(),
+        avatar: str = Form(default=""),
         gender: str = Form(default=""),
         country: str = Form(default=""),
         date: str = Form(default=""),
@@ -127,6 +122,7 @@ class OAuth2PasswordRequestFormSignup:
         self.password = password
         self.first_name = first_name
         self.last_name = last_name
+        self.avatar = avatar
         self.gender = gender
         self.country = country
         self.date = date

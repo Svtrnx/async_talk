@@ -136,8 +136,6 @@ async def create_new_message(
         current_user_id=form_data.current_user_id,
         partner_user_id=form_data.partner_user_id,
         date_message=datetime.now(),  # Текущее время создания сообщения
-        user_avatar=form_data.user_avatar,
-        partner_user_avatar=form_data.partner_user_avatar
         )
     message = create_message(db=db, message=new_message)
     return {"user": message}, 200
@@ -206,6 +204,7 @@ async def create_new_user(request: Request, db: Session = Depends(get_db), form_
             password=get_password_hash(form_data.password),
             first_name=form_data.first_name,
             last_name=form_data.last_name,
+            avatar=form_data.avatar,
             gender=form_data.gender,
             country=form_data.country,
             date=form_data.date,
@@ -240,7 +239,7 @@ async def login_for_access_token(response:Response, request:Request, db: Session
     return response    
 
 
-@userRouter.get("/logout")
+@userRouter.post("/logout")
 async def logout(response: Response):
     # Удаляем или очищаем значение cookie
     response.delete_cookie("access_token")

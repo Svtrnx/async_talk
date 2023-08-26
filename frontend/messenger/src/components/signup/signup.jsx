@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { Container, TextField, Button, Box, Snackbar, Stack, Autocomplete, Radio, InputAdornment,
-		FormControlLabel ,RadioGroup, FormLabel, FormControl, IconButton} from "@mui/material"
+		FormControlLabel ,RadioGroup, FormLabel, FormControl, IconButton, Avatar} from "@mui/material"
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { withStyles } from "@mui/styles";
 import logoImage from '../../img/logo2.png';
@@ -117,8 +117,47 @@ function Signup() {
 	const [errorSnackBar, setErrorSnackBar] = useState(false);
 	const [errorSnackBarText, setErrorSnackBarText] = useState('Please, complete all inputs!');
 	const [headerButton, setHeaderButton] = useState('SIGN IN');
+	const [selectedAvatar, setSelectedAvatar] = useState('');
 
 	const isValidUsername = /^[A-Za-z]{5,}[A-Za-z0-9]*$/.test(username);
+
+	const urlAvatars = [
+		"https://res.cloudinary.com/dlwuhl9ez/image/upload/v1693063471/1_whl3sd.jpg",
+		"https://res.cloudinary.com/dlwuhl9ez/image/upload/v1693059799/d6bc47035a7b5717db697ff8dbcf825c_xcwira.png",
+		"https://res.cloudinary.com/dlwuhl9ez/image/upload/v1693059800/maintaco-03_ckud8a.png",
+		"https://res.cloudinary.com/dlwuhl9ez/image/upload/v1693063251/12_xwcbr4.png",
+		"https://res.cloudinary.com/dlwuhl9ez/image/upload/v1693063252/15_sskykz.jpg",
+		"https://res.cloudinary.com/dlwuhl9ez/image/upload/v1693059799/a6c53e3fe6bf4ceeb35d81c8f0549368_u769g8.png",
+		"https://res.cloudinary.com/dlwuhl9ez/image/upload/v1693059799/b29cd0217558567b7cb547ceef16e0e6_co2pgt.png",
+		"https://res.cloudinary.com/dlwuhl9ez/image/upload/v1693059799/619313245c10e3cad2f43f3eb41d9b31_fi1svs.png",
+		"https://res.cloudinary.com/dlwuhl9ez/image/upload/v1693059799/7209a5de1fe5e279a1e98036a0aa54f2_zy8n6i.png",
+		"https://res.cloudinary.com/dlwuhl9ez/image/upload/v1693059799/6557815968da333d992476b7a86b3353_ugt1dd.png",
+		"https://res.cloudinary.com/dlwuhl9ez/image/upload/v1693059799/771f7cadf000c98b33056b3b4a805a7e_wjhe7i.png",
+		"https://res.cloudinary.com/dlwuhl9ez/image/upload/v1693059799/22501d6aaae1e40bce7cc9b96c295dc7_idi7mq.png",
+		"https://res.cloudinary.com/dlwuhl9ez/image/upload/v1693059799/3bee99575b38607e3d0c66e3c5c03a71_wwgklc.png",
+		"https://res.cloudinary.com/dlwuhl9ez/image/upload/v1693059665/932b59873a384f535dbd21e511a56c6b_x20pkq.png",
+		"https://res.cloudinary.com/dlwuhl9ez/image/upload/v1693059665/9bff7242a29e355c48f05e32307704a4_zydugm.png",
+		"https://res.cloudinary.com/dlwuhl9ez/image/upload/v1693059592/e15f7aace64583063055eaf558dc8c6d_higrct.png",
+		"https://res.cloudinary.com/dlwuhl9ez/image/upload/v1693059592/characters-01_oxpc1k.png",
+		"https://res.cloudinary.com/dlwuhl9ez/image/upload/v1693063252/17_hss0yt.png",
+		"https://res.cloudinary.com/dlwuhl9ez/image/upload/v1693059592/222f90e6b6299dae44dcec722a433875_mglozp.png",
+		"https://res.cloudinary.com/dlwuhl9ez/image/upload/v1693059592/91cb9dbe93a56078f25384bfab476335_pkbgb8.png",
+		"https://res.cloudinary.com/dlwuhl9ez/image/upload/v1693059539/33a724da873d79d3ab2ce735a2aec7f2_esezxm.png",
+		"https://res.cloudinary.com/dlwuhl9ez/image/upload/v1693063251/13_nxppfm.png",
+		"https://res.cloudinary.com/dlwuhl9ez/image/upload/v1693063251/14_vyytkh.png",
+		"https://res.cloudinary.com/dlwuhl9ez/image/upload/v1693063471/2_oszmyn.png",
+	]
+
+	console.log(selectedAvatar)
+
+
+	const handleAvatarClick = (avatarUrl) => {
+		if (selectedAvatar === avatarUrl) {
+		  setSelectedAvatar(null); // Если аватар уже был выбран, снимаем выбор
+		} else {
+		  setSelectedAvatar(avatarUrl); // Иначе выбираем аватар
+		}
+	  };
 
 	const handleSubmit = async (event) => {
 		event.preventDefault();
@@ -145,6 +184,7 @@ function Signup() {
 				password: password,
 				first_name: fName,
 				last_name: lName,
+				avatar: selectedAvatar,
 				gender: gender,
 				country: country.label,
 				date: formData,
@@ -222,14 +262,19 @@ function Signup() {
 			if (level === 0) {
 				if (fName.length < 5 || fName.length > 15 
 					|| lName.length < 5 || lName.length > 15 || country === null || country.label === '') {
-					if (fName.length > 15 || lName.length > 15) {
+						console.log('w')
+						if (fName.length > 15 || lName.length > 15) {
 						setErrorSnackBarText('Your text input is too long! Max length is 15 chars');
 						setErrorSnackBar(true);
 						setHasError(true);
-					}
-					setErrorSnackBarText('Please complete all inputs!');
-					setErrorSnackBar(true);
-					setHasError(true);
+						}
+						else {
+							setErrorSnackBarText('Please complete all inputs!');
+							setErrorSnackBar(true);
+							setHasError(true);
+						}
+						// if (fName.length < 5 || lName.length < 5) {
+						// }
 
 					console.log('w')
 				}
@@ -762,13 +807,35 @@ function Signup() {
 				{/* FINISH REGISTRATION */}
 				{ level === 3 &&
 					<div className='rightside_reg_finish'>
-						<div className="rightside_logo">
-							<img className="reg_logo" src={logoImage} alt="logo" />	
+						<div className='rightside-reg-finish-wrapper'>
+							<div className="rightside_logo">
+								<img className="reg_logo" src={logoImage} alt="logo" />	
+							</div>
+							<div className="rightside_reg_text">
+								<h1>Complete Registration</h1>
+								<h2>Choose an avatar, or upload your own</h2>
+							</div>
 						</div>
-						<div className="rightside_reg_text">
-							<h1>Complete Registration</h1>
-							<h2>You can edit your data</h2>
+
+						<div className='avatars-wrapper'>
+							<div className='avatars-box'>
+							{urlAvatars.map((avatar, index) => (
+								<Avatar
+									id="signupAvatarId"
+									className={`signupAvatar ${selectedAvatar === avatar ? 'clicked' : ''}`}
+									key={index}
+									sx={{width: 100, height: 100, ml: 4, mb: 2, mt: 2}}
+									alt=""
+									src={avatar}
+									onClick={() => handleAvatarClick(avatar)}
+								/>
+								))}
+
+							</div>
 						</div>
+
+
+
 						<div className='rightside_reg_finish_data'>
 						{
 							<Button 
@@ -786,13 +853,12 @@ function Signup() {
 						}
 
 						</div>
-
 					</div>
 				}
 
 				
 				<div className='rightside_reg_level'>
-					<div className="progress_level_footer">
+					<div className="progress_level_footer" style={{marginLeft: '-3px'}}>
 					<div className={`bar1_footer level-${level}`}></div>
 					</div>
 					<div className="progress_level_footer">

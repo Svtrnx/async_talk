@@ -242,9 +242,7 @@ function Messages() {
             chat_id: chatId,
             message_sender:  dataUsername.id,
             current_user_id: currentUserId,
-            partner_user_id: partnerUserId,
-            user_avatar: dataUsername.avatar,
-            partner_user_avatar: currentUserAvatar
+            partner_user_id: partnerUserId
           }, {
             headers: {
               'Content-Type': 'application/x-www-form-urlencoded'
@@ -566,7 +564,7 @@ function Messages() {
             </div>
             <img className="leftside-messages-info-search-plusImg" src={leftsideButton} alt="" onClick={handleFindUsers}/>
 				  </div>
-          <div style={{display: displayNoneAddChat}}>
+          <div style={{display: displayNoneAddChat, overflow: 'auto'}}>
             <div className="leftside-messages-header-text">
               <h2 className="leftside-messages-header-text-h2">Create Chat</h2>
             </div>
@@ -586,33 +584,11 @@ function Messages() {
                       <img className="leftside-messages-create-chat-users-img" src={isUserSelected(user.id) ? close2Img : doneImg} alt="" />
                     </div>
               ))}
-              <div className="leftside-messages-create-chat-footer">
-              <Button 
-								variant="contained" 
-								sx={{width: 150, height: 50, boxShadow: 2, borderRadius: '4px', ml: 1 }} 
-								style={buttonStyleGetStarted} 
-								theme={themeGetStarted}
-                onClick={handleCreateChat}
-								// component={Link}
-                // to="/signup"
-								>
-								Create Chat
-							</Button>
-              <Button 
-								variant="contained" 
-								sx={{width: 80, height: 50, boxShadow: 2, borderRadius: '4px', ml: 1, alignItems: 'center' }} 
-								style={buttonStyleGetStarted} 
-								theme={themeGetStarted}
-								// component={Link}
-                // to="/signup"
-                onClick={() => setDisplayNoneAddChat('none') || setDisplayNoneChats('grid') || setSelectedUsers([])
-                 || setLeftsideButton(plusImg)}
-								>
-								Cancel
-							</Button>
-
-              </div>
+              {/*  */}
           </div>
+          <div style={{overflow: "auto"}}>
+
+          
           {chats.map(chat => {
           const hasMatchingChat = chats.some(chatItem => (
             chatItem.user_id === dataUsername.id ||
@@ -645,7 +621,37 @@ function Messages() {
             </div>
           );
         })}
-			</div>
+        </div>
+			<div style={{position: 'relative', display: 'flex', marginBlockStart: 'auto'}}>
+                <div className="leftside-messages-create-chat-footer">
+                <Button 
+                  variant="contained" 
+                  sx={{width: 150, height: 50, boxShadow: 2, borderRadius: '4px', ml: 1 }} 
+                  style={buttonStyleGetStarted} 
+                  theme={themeGetStarted}
+                  onClick={handleCreateChat}
+                  // component={Link}
+                  // to="/signup"
+                  >
+                  Create Chat
+                </Button>
+                <Button 
+                  variant="contained" 
+                  sx={{width: 80, height: 50, boxShadow: 2, borderRadius: '4px', ml: 1, alignItems: 'center' }} 
+                  style={buttonStyleGetStarted} 
+                  theme={themeGetStarted}
+                  // component={Link}
+                  // to="/signup"
+                  onClick={() => setDisplayNoneAddChat('none') || setDisplayNoneChats('grid') || setSelectedUsers([])
+                  || setLeftsideButton(plusImg)}
+                  >
+                  Cancel
+                </Button>
+
+                </div>
+              </div>
+      </div>
+      
       <div className="rightside-wrapper">
         
       

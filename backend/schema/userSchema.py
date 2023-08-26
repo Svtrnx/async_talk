@@ -49,8 +49,6 @@ class MessageSchema(BaseModel):
     message_sender: Optional[int]=None
     current_user_id: Optional[int]=None
     partner_user_id: Optional[int]=None
-    user_avatar: Optional[str] = None
-    partner_user_avatar: Optional[str] = None
     date_message: Optional[datetime] = None 
     chat: ChatSchema
 
