@@ -294,41 +294,40 @@ function Messages() {
 
   // USE EFFECT FOR CHATS QUERY
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await axios.get('https://kenzoback.onrender.com/api/check_verification', {
-  withCredentials: true,
+
+axios.get('https://kenzoback.onrender.com/api/check_verification', {
   headers: {
-    'accept': 'application/json',
+    withCredentials: true,
+    'Accept': 'application/json',
+    'Cookie': 'access_token="Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJLaWtpRm9rYSIsImV4cCI6MTY5MzY5Mzk5M30.c-udV_cq6dosLBW1jZBeupvDtsSaPmUHvaHaeLtQfhE"'
   }
-});
+})
+  .then(response => {
+    // Обработка успешного ответа
+    console.log(response.data);
+  })
+  .catch(error => {
+    // Обработка ошибки
+    console.error(error);
+  });
 
-setDataUsername(response.data.user);
-setUserId(response.data.user);
 
-      } catch (error) {
-        console.error(error);
-      }
-    };
+//     const fetchData2 = async () => {
+//       try {
+//         const response = await axios.get('http://localhost:8000/api/check_verification', {
+//   withCredentials: true,
+//   headers: {
+//     'accept': 'application/json',
+//   }
+// });
+
+
+//       } catch (error) {
+//         console.error(error);
+//       }
+//     };
   
-    fetchData();
-
-    const fetchData2 = async () => {
-      try {
-        const response = await axios.get('http://localhost:8000/api/check_verification', {
-  withCredentials: true,
-  headers: {
-    'accept': 'application/json',
-  }
-});
-
-
-      } catch (error) {
-        console.error(error);
-      }
-    };
-  
-    fetchData2();
+//     fetchData2();
 
     const fetchUsers = async () => {
     await axios.get('http://localhost:8000/api/messages/users_list', {
