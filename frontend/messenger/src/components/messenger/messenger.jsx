@@ -105,23 +105,23 @@ function Messenger() {
 
   async function handleMenuItemSettingsClick(setting) {
     if (setting === 'Logout') {
-      try {
-        const response = await axios.post(
-          "https://kenzoback.onrender.com/logout",
-          {},
-          {
-            withCredentials: true,
-            headers: {
-              "Content-Type": "application/json",
-            },
-          }
-        );
-        console.log("SIGNUP RESPONSE: ", response.data);
-        console.log("User logged out");
-        navigate('/signin');
-      } catch (err) {
-        console.log("ERROR: ", err);
-      }
+      // try {
+      //   const response = await axios.post(
+      //     "http://localhost:8000/logout",
+      //     {},
+      //     {
+      //       withCredentials: true,
+      //       headers: {
+      //         "Content-Type": "application/json",
+      //       },
+      //     }
+      //   );
+      //   console.log("SIGNUP RESPONSE: ", response.data);
+      //   console.log("User logged out");
+      //   navigate('/signin');
+      // } catch (err) {
+      //   console.log("ERROR: ", err);
+      // }
       
       setAnchorElUser(null);
     } 
@@ -197,7 +197,7 @@ function Messenger() {
     useEffect(() => {
       const fetchData = async () => {
         try {
-          const response = await axios.get('https://kenzoback.onrender.com/api/check_verification', {
+          const response = await axios.get('http://localhost:8000/api/check_verification', {
             withCredentials: true,
           });
           console.log("RESPONSE HEADER:-", response.data);
