@@ -295,21 +295,28 @@ function Messages() {
   // USE EFFECT FOR CHATS QUERY
   useEffect(() => {
 
-axios.get('https://kenzoback.onrender.com/api/check_verification', {
-  headers: {
-    withCredentials: true,
-    'Accept': 'application/json',
-    'Cookie': 'access_token="Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJLaWtpRm9rYSIsImV4cCI6MTY5MzY5Mzk5M30.c-udV_cq6dosLBW1jZBeupvDtsSaPmUHvaHaeLtQfhE"'
-  }
-})
-  .then(response => {
-    // Обработка успешного ответа
-    console.log(response.data);
-  })
-  .catch(error => {
-    // Обработка ошибки
-    console.error(error);
-  });
+    const fetchData = async () => {
+      try {
+        const response = await axios.get(
+          'https://kenzoback.onrender.com/api/check_verification',
+          {
+            withCredentials: true,
+            headers: {
+              'accept': 'application/json',
+            },
+            credentials: 'include', // Добавляем эту опцию
+          }
+        );
+  
+        setDataUsername(response.data.user);
+        setUserId(response.data.user);
+  
+      } catch (error) {
+        console.error(error);
+      }
+    };
+  
+    fetchData();
 
 
 //     const fetchData2 = async () => {
