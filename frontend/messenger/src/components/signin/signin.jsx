@@ -91,7 +91,10 @@ function Signin() {
 			client_secret: ''
 		  	}, {
 			withCredentials: true,
-			headers: {'Content-Type': 'application/x-www-form-urlencoded'}
+			headers: {
+				'accept': 'application/json',
+				'Content-Type': 'application/x-www-form-urlencoded'
+			}
 		  	});
 		  	console.log(response.data);
 
