@@ -1,6 +1,6 @@
 {
-  "postinstall": "npm ci --prefix my-app",
-  "build": "npm run build --prefix my-app",
+  "postinstall": "npm ci --prefix frontend",
+  "build": "npm run build --prefix frontend",
   "name": "frontend",
   "version": "0.1.0",
   "private": true,
