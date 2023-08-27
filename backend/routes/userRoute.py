@@ -247,7 +247,7 @@ async def logout(response: Response):
 
 # POST chat info
 @userRouter.get("/api/check_verification")
-def show_event(current_user: User = Depends(get_current_user)):
+async def show_event(current_user: User = Depends(get_current_user)):
     if current_user is None:
         return {"message": "Not authorized"}, 303
     else:
