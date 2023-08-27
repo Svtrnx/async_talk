@@ -198,7 +198,7 @@ function Signup() {
 				}
 			});
 			console.log("SIGNUP RESPONSE: ", response.data);
-			// navigate("/signin");
+			navigate("/signin");
 		} catch (err) {
 		  console.log("ERROR: ", err);
 		}

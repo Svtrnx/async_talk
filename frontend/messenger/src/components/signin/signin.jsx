@@ -137,7 +137,7 @@ function Signin() {
 
 	const fetchData = async () => {
 		try {
-		  const response = await axios.get('', {
+		  const response = await axios.get('https://asynctalk-production.up.railway.app/api/check_verification', {
 			withCredentials: true,
 		  });
 		  console.log(response.data);

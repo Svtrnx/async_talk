@@ -167,7 +167,7 @@ function Messages() {
     if (chatId && dataUsername.username) {
       // Проверяем, есть ли уже открытое соединение для данного chatId
       if (!ws) {
-        const newWs = new WebSocket(`ws://kenzoback.onrender.com/ws/${chatId}/${dataUsername.username}`);
+        const newWs = new WebSocket(`ws://asynctalk-production.up.railway.app/ws/${chatId}/${dataUsername.username}`);
         setWs(newWs);
   
         
@@ -237,7 +237,7 @@ function Messages() {
 
       async function sendMessage() {
         try {
-          const response = await axios.post("http://localhost:8000/api/messages/send_message", {
+          const response = await axios.post("https://asynctalk-production.up.railway.app/api/messages/send_message", {
             text: messageValue,
             chat_id: chatId,
             message_sender:  dataUsername.id,
@@ -300,7 +300,7 @@ function Messages() {
 
   const fetchData = async () => {
     try {
-      const response = await axios.get('https://kenzoback.onrender.com/api/check_verification', {
+      const response = await axios.get('https://asynctalk-production.up.railway.app/api/check_verification', {
         headers: {
           'accept': 'application/json',
         }
@@ -318,25 +318,8 @@ function Messages() {
   fetchData();
 
 
-//     const fetchData2 = async () => {
-//       try {
-//         const response = await axios.get('http://localhost:8000/api/check_verification', {
-//   withCredentials: true,
-//   headers: {
-//     'accept': 'application/json',
-//   }
-// });
-
-
-//       } catch (error) {
-//         console.error(error);
-//       }
-//     };
-  
-//     fetchData2();
-
     const fetchUsers = async () => {
-    await axios.get('http://localhost:8000/api/messages/users_list', {
+    await axios.get('https://asynctalk-production.up.railway.app/api/messages/users_list', {
       withCredentials: true,
     })
     .then(response => {
@@ -352,7 +335,7 @@ function Messages() {
 
     const fetchChats = async () => {
       try {
-        const response = await axios.get('http://localhost:8000/api/messages/chats_list', {
+        const response = await axios.get('https://asynctalk-production.up.railway.app/api/messages/chats_list', {
           withCredentials: true,
         })
         .then(response => {
@@ -481,7 +464,7 @@ function Messages() {
     }
   
     try {
-      const response = await axios.get(`http://localhost:8000/api/messages/messages_list/${chat_Id}`, {
+      const response = await axios.get(`https://asynctalk-production.up.railway.app/api/messages/messages_list/${chat_Id}`, {
         withCredentials: true,
       });
   
@@ -524,7 +507,7 @@ function Messages() {
         partner_user_avatar: userAvatarChat
       };
       const response = await axios.post(
-        'http://localhost:8000/api/messages/create_chat/',
+        'https://asynctalk-production.up.railway.app/api/messages/create_chat/',
         requestData,
         {
           withCredentials: true,
