@@ -1,4 +1,6 @@
 {
+  "postinstall": "npm ci --prefix my-app",
+  "build": "npm run build --prefix my-app",
   "name": "frontend",
   "version": "0.1.0",
   "private": true,
@@ -6,6 +8,7 @@
     "@cloudinary/react": "^1.11.2",
     "@emotion/react": "^11.11.1",
     "@emotion/styled": "^11.11.0",
+    "@fastify/static": "^6.10.2",
     "@mui/icons-material": "^5.14.6",
     "@mui/material": "^5.14.6",
     "@mui/styled-engine": "^5.14.6",
