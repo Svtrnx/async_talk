@@ -22,28 +22,7 @@ import { Link, useNavigate  } from 'react-router-dom';
 import "./signup.css";
 
 
-	// Field Text settings
-	const styles = {
-		root: {
-		  "& label.Mui-focused": {
-			color: "#e0dfe7",
-		  },
-		  "& .MuiInput-underline:after": {
-			borderBottomColor: "#e0dfe7",
-		  },
-		  "& .MuiOutlinedInput-root": {
-			"& fieldset": {
-			  borderColor: "#e0dfe7",
-			},
-			"&:hover fieldset": {
-			  borderColor: "#946cdc",
-			},
-			"&.Mui-focused fieldset": {
-			  borderColor: "#7f56da",
-			},
-		  },
-		},
-	  };
+
 
 
 const TextFieldStyles = {
