@@ -177,36 +177,32 @@ function Signup() {
 		
 		setToSignin(true);
 		
-		const username = 'aaaaaaa';
-const password = 'aaaaaaa';
-
-const data = {
-  grant_type: 'password',
-  username: username,
-  password: password,
-  scope: '',
-  client_id: '',
-  client_secret: ''
-};
-
-const formattedData = qs.stringify(data);
-
-try {
-  const response = await axios.post(
-    'https://kenzoback.onrender.com/signin',
-    formattedData,
-    {
-      withCredentials: true,
-      headers: {
-        'Content-Type': 'application/x-www-form-urlencoded'
-      }
-    }
-  );
-
-  console.log(response.data);
-} catch (error) {
-  console.error(error);
-}}
+		try {
+			const response = await axios.post("https://asynctalk-production.up.railway.app/signup", {
+				grant_type: 'password',
+				email: email,
+				username: username,
+				password: password,
+				first_name: fName,
+				last_name: lName,
+				avatar: selectedAvatar,
+				gender: gender,
+				country: country.label,
+				date: formData,
+				scope: '',
+				client_id: '',
+				client_secret: ''
+			}, {
+				headers: {
+					'Content-Type': 'application/x-www-form-urlencoded'
+				}
+			});
+			console.log("SIGNUP RESPONSE: ", response.data);
+			// navigate("/signin");
+		} catch (err) {
+		  console.log("ERROR: ", err);
+		}
+	}
 	  
 	const handleOpenSnackbar = () => {
 		setOpen(true);
