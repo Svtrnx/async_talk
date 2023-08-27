@@ -2,7 +2,6 @@ import React, { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Container, TextField, Button, Box, Typography, Menu, MenuItem, Tooltip, Avatar, Badge, IconButton, styled} from "@mui/material"
 import NotificationsNoneOutlinedIcon from '@mui/icons-material/NotificationsNoneOutlined';
-import { withStyles } from "@mui/styles";
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import searchImg from '../../../img/search.png';
 import plusImg from '../../../img/plus.png';
@@ -16,12 +15,12 @@ import micImg from '../../../img/mic.png';
 import sendImg from '../../../img/send.png';
 import createChat from '../../../img/createChat.png';
 import InputAdornment from '@mui/material/InputAdornment';
-import { makeStyles } from '@mui/styles';
+// import { makeStyles } from '@mui/styles';
 import axios from "axios";
 import { Image } from '@cloudinary/react';
 
 import './Messages.css';
-import { display } from "@mui/system";
+// import { display } from "@mui/system";
 
 // Field Text settings
 const styles = {
@@ -46,7 +45,28 @@ const styles = {
   },
 };
 
-const CSSTextField = withStyles(styles)(TextField);
+// const CSSTextField = withStyles(styles)(TextField);
+
+
+const TextFieldStyles = {
+	"& label.Mui-focused": {
+	color: "orange",
+	},
+	"& .MuiInput-underline:after": {
+	borderBottomColor: "orange",
+	},
+	"& .MuiOutlinedInput-root": {
+	"& fieldset": {
+		borderColor: "#e0dfe7",
+	},
+	"&:hover fieldset": {
+		borderColor: "#946cdc",
+	},
+	"&.Mui-focused fieldset": {
+		borderColor: "#7f56da",
+	}},
+}
+
 
 // Field Text settings
 const theme = createTheme({
@@ -757,7 +777,8 @@ function Messages() {
                   variant="outlined"
                   InputLabelProps={{ style: { color: '#e0dfe7' } }}
                   InputProps={{ style: { color: '#e0dfe7', height: 'auto', maxHeight: 'auto', maxLines: 4 }, classes: { focused: 'focused-input',}, }}
-                  sx={{ mx: 'auto', width: '100%', display: 'flex', mt: 2, mb: 2 }}
+                  sx={{...TextFieldStyles, mx: 'auto',
+                  width: '100%', display: 'flex', mt: 2, mb: 2}}
                 />
                 <span></span>
               </ThemeProvider>

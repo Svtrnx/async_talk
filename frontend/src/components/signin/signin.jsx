@@ -2,16 +2,15 @@ import React, { Component, useState, useEffect } from "react";
 import "./signin.css"
 import { Container, Typography, TextField, Button, Box  } from "@mui/material"
 import { createTheme, ThemeProvider, styled } from '@mui/material/styles';
-import { withStyles } from "@mui/styles";
 import InputAdornment from '@mui/material/InputAdornment';
 import IconButton from '@mui/material/IconButton';
 import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
 import logoImage from '../../img/logo2.png';
-import Signup from '../signup/signup.jsx';
+// import Signup from '../signup/signup.jsx';
 import {Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import messenger from '../messenger/messenger.jsx'
+// import messenger from '../messenger/messenger.jsx'
 
 
 // Field Text settings
@@ -37,7 +36,25 @@ const styles = {
 	},
 	};
 
-const CSSTextField = withStyles(styles)(TextField);
+
+const TextFieldStyles = {
+	"& label.Mui-focused": {
+	color: "orange",
+	},
+	"& .MuiInput-underline:after": {
+	borderBottomColor: "orange",
+	},
+	"& .MuiOutlinedInput-root": {
+	"& fieldset": {
+		borderColor: "#e0dfe7",
+	},
+	"&:hover fieldset": {
+		borderColor: "#946cdc",
+	},
+	"&.Mui-focused fieldset": {
+		borderColor: "#7f56da",
+	}},
+}
 
 
 // Field Text settings
@@ -178,7 +195,7 @@ function Signin() {
 					</div>
 					<div className="signin_text_area">
 						<ThemeProvider theme={theme}>
-							<CSSTextField 
+							<TextField 
 							value={username}
 							onChange={(event) => setUsername(event.target.value)}
 							id="outlined-basic" 
@@ -186,9 +203,9 @@ function Signin() {
 							variant="outlined" 
 							InputLabelProps={{style: { color: '#e0dfe7' },}} 
 							InputProps={{style: { color: '#e0dfe7' },}} 
-							sx={{mt: 3, width: 400, boxShadow: 2}}
+							sx={{...TextFieldStyles, mt: 3, width: 400, boxShadow: 2}}
 							/>
-							<CSSTextField
+							<TextField
 							type={showPassword ? "text" : "password"}
 							value={password}
 							onChange={(event) => setPassword(event.target.value)}
@@ -210,7 +227,7 @@ function Signin() {
 									</InputAdornment>
 								),
 							}}
-							sx={{ mt: 3, width: 400, boxShadow: 2 }}
+							sx={{...TextFieldStyles, mt: 3, width: 400, boxShadow: 2}}
 							/>
 						</ThemeProvider>
 					</div>

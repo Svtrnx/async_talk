@@ -1,7 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
-import Signup from './components/signup/signup';
-import Signin from './components/signin/signin';
+// import Signup from './components/signup/signup';
+// import Signin from './components/signin/signin';
 import App from './App';
 import { BrowserRouter } from "react-router-dom";
 

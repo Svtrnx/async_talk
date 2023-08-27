@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Container, TextField, Button, Box, Typography, Menu, MenuItem, Tooltip, Avatar, Badge, IconButton, styled} from "@mui/material"
-import { withStyles } from "@mui/styles";
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import axios from "axios";
 import logoImage from '../../img/logo2.png';
@@ -37,30 +36,25 @@ const StyledMenu = styled(Menu)(({ theme }) => ({
 }));
 
 
-// Field Text settings
-const styles = {
-    root: {
-        "& label.Mui-focused": {
-        color: "#e0dfe7",
-        },
-        "& .MuiInput-underline:after": {
-        borderBottomColor: "#e0dfe7",
-        },
-        "& .MuiOutlinedInput-root": {
-        "& fieldset": {
-            borderColor: "#e0dfe7",
-        },
-        "&:hover fieldset": {
-            borderColor: "#946cdc",
-        },
-        "&.Mui-focused fieldset": {
-            borderColor: "#7f56da",
-        },
-        },
-    },
-};
 
-const CSSTextField = withStyles(styles)(TextField);
+const TextFieldStyles = {
+	"& label.Mui-focused": {
+	color: "orange",
+	},
+	"& .MuiInput-underline:after": {
+	borderBottomColor: "orange",
+	},
+	"& .MuiOutlinedInput-root": {
+	"& fieldset": {
+		borderColor: "#e0dfe7",
+	},
+	"&:hover fieldset": {
+		borderColor: "#946cdc",
+	},
+	"&.Mui-focused fieldset": {
+		borderColor: "#7f56da",
+	}},
+}
 
 // Field Text settings
 const theme = createTheme({
@@ -144,72 +138,40 @@ function Messenger() {
     setAnchorElUser(null);
   };
 
-
-  const CustomMenuContainer = withStyles({
-    paper: {
-      borderRadius: '15px',
+  const CustomMenuContainer = styled(StyledMenu)({
+    '& .MuiMenuItem-root': {
+      color: '#e0dfe7',
+      fontFamily: 'Exo',
+      '&:hover': {
+        color: '#ffffff',
+        backgroundColor: '#222328',
+      },
     },
-  })(StyledMenu);
+    '& .MuiPaper-root': {
+      backgroundColor: '#1c1d21',
+    },
+    // Дополнительные стили для CustomMenuContainer, если необходимо
+  });
+
 
     
 
     // useEffect(() => {
-    //   const checkAuthentication = async () => {
+    //   const fetchData = async () => {
     //     try {
-    //       const cookieValue = document.cookie;
-    //       const cookieParts = cookieValue.split(';');
-    //       let data = null;
-    
-    //       for (let i = 0; i < cookieParts.length; i++) {
-    //         const cookie = cookieParts[i].trim();
-    //         if (cookie.startsWith('data=')) {
-    //           const startIndex = cookie.indexOf('=') + 1;
-    //           const jsonSubstring = cookie.substring(startIndex);
-    //           data = JSON.parse(jsonSubstring);
-    //           break;
-    //         }
-    //       }
-    
-    //       if (data) {
-    //         const username = data.username;
-    //         console.log(username); // Вывод значения username
-    
-    //         try {
-    //           const response = await axios.get(`http://localhost:8000/api/messenger/${username}`, {
-    //             withCredentials: true,
-    //           });
-    //           console.log(response.data);
-    //         } catch (error) {
-    //           console.error(error);
-    //           navigate('/signin');
-    //         }
-    //       } else {
-    //         // Куки "data" не найдены
-    //       }
+    //       const response = await axios.get('https://asynctalk-production.up.railway.app/api/check_verification', {
+    //         withCredentials: true,
+    //       });
+    //       console.log("RESPONSE HEADER:-", response.data);
+    //       setUserInfo(response.data.user);
     //     } catch (error) {
-    //       // Обработка ошибок
     //       navigate('/signin');
+    //       console.error(error);
     //     }
     //   };
-    //   checkAuthentication();
-    // }, []);
-
-    useEffect(() => {
-      const fetchData = async () => {
-        try {
-          const response = await axios.get('https://asynctalk-production.up.railway.app/api/check_verification', {
-            withCredentials: true,
-          });
-          console.log("RESPONSE HEADER:-", response.data);
-          setUserInfo(response.data.user);
-        } catch (error) {
-          navigate('/signin');
-          console.error(error);
-        }
-      };
     
-      fetchData();
-    }, []);
+    //   fetchData();
+    // }, []);
    
     
 
@@ -238,7 +200,7 @@ function Messenger() {
               </div>
               <div className="search-field">
                 <ThemeProvider theme={searchTheme}>
-                  <CSSTextField
+                  <TextField
                     type="search"
                     size="small"
                     id="outlined-basic" 
@@ -246,7 +208,7 @@ function Messenger() {
                     variant="outlined" 
                     InputLabelProps={{style: { color: '#e0dfe7' },}} 
                     InputProps={{style: { color: '#e0dfe7' },}} 
-                    sx={{width: 250, boxShadow: 3}}
+                    sx={{...TextFieldStyles, mt: 2, width: 250, boxShadow: 3}}
                   />
                 </ThemeProvider>
               </div>
@@ -264,27 +226,27 @@ function Messenger() {
                         </IconButton>
                       </Tooltip>
                       <ThemeProvider theme={theme}>
-                        <CustomMenuContainer 
-                          sx={{ mt: 5, ml: 5 }}
-                          anchorEl={anchorElUser}
-                          anchorOrigin={{
-                            vertical: 'top',
-                            horizontal: 'right',
-                          }}
-                          keepMounted
-                          transformOrigin={{
-                            vertical: 'top',
-                            horizontal: 'right',
-                          }}
-                          open={Boolean(anchorElUser)}
-                          onClose={handleCloseUserMenu}
-                        >
-                          {settings.map((setting) => (
-                            <MenuItem key={setting} onClick={() => handleMenuItemSettingsClick(setting)}>
-                              <Typography  textAlign="center">{setting}</Typography>
-                            </MenuItem>
-                          ))}
-                        </CustomMenuContainer>
+                      <CustomMenuContainer 
+                        sx={{ mt: 5, ml: 5 }}
+                        anchorEl={anchorElUser}
+                        anchorOrigin={{
+                          vertical: 'top',
+                          horizontal: 'right',
+                        }}
+                        keepMounted
+                        transformOrigin={{
+                          vertical: 'top',
+                          horizontal: 'right',
+                        }}
+                        open={Boolean(anchorElUser)}
+                        onClose={handleCloseUserMenu}
+                      >
+                        {settings.map((setting) => (
+                          <MenuItem key={setting} onClick={() => handleMenuItemSettingsClick(setting)}>
+                            <Typography textAlign="center">{setting}</Typography>
+                          </MenuItem>
+                        ))}
+                      </CustomMenuContainer>
 
                       </ThemeProvider>
                     </Box>  

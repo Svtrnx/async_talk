@@ -2,7 +2,6 @@ import React, { useState, useRef, useEffect } from 'react';
 import { Container, TextField, Button, Box, Snackbar, Stack, Autocomplete, Radio, InputAdornment,
 		FormControlLabel ,RadioGroup, FormLabel, FormControl, IconButton, Avatar} from "@mui/material"
 import { createTheme, ThemeProvider } from '@mui/material/styles';
-import { withStyles } from "@mui/styles";
 import logoImage from '../../img/logo2.png';
 import imgDone from '../../img/leftside_reg_done.png';
 import imgActive from '../../img/leftside_reg_active.png';
@@ -21,7 +20,6 @@ import axios from "axios"
 import dayjs from 'dayjs';
 import { Link, useNavigate  } from 'react-router-dom';
 import "./signup.css";
-import qs from 'qs';
 
 
 	// Field Text settings
@@ -47,7 +45,26 @@ import qs from 'qs';
 		},
 	  };
 
-	  const CSSTextField = withStyles(styles)(TextField);
+
+const TextFieldStyles = {
+	"& label.Mui-focused": {
+	color: "orange",
+	},
+	"& .MuiInput-underline:after": {
+	borderBottomColor: "orange",
+	},
+	"& .MuiOutlinedInput-root": {
+	"& fieldset": {
+		borderColor: "#e0dfe7",
+	},
+	"&:hover fieldset": {
+		borderColor: "#946cdc",
+	},
+	"&.Mui-focused fieldset": {
+		borderColor: "#7f56da",
+	}},
+}
+
 	  
 
 	  const themeGetStarted = createTheme({
@@ -123,16 +140,17 @@ function Signup() {
 	const isValidUsername = /^[A-Za-z]{5,}[A-Za-z0-9]*$/.test(username);
 
 	const urlAvatars = [
-		"https://res.cloudinary.com/dlwuhl9ez/image/upload/v1693063471/1_whl3sd.jpg",
-		"https://res.cloudinary.com/dlwuhl9ez/image/upload/v1693059799/d6bc47035a7b5717db697ff8dbcf825c_xcwira.png",
-		"https://res.cloudinary.com/dlwuhl9ez/image/upload/v1693059800/maintaco-03_ckud8a.png",
+		"https://res.cloudinary.com/dlwuhl9ez/image/upload/v1693168301/original-623f94255643870746b3c5cc9814ad97_ehra7z.png",
+		"https://res.cloudinary.com/dlwuhl9ez/image/upload/v1693168301/original-ad24384bd09ca9d244b8a42e25abaa9d_ofgm46.png",
 		"https://res.cloudinary.com/dlwuhl9ez/image/upload/v1693063251/12_xwcbr4.png",
 		"https://res.cloudinary.com/dlwuhl9ez/image/upload/v1693063252/15_sskykz.jpg",
 		"https://res.cloudinary.com/dlwuhl9ez/image/upload/v1693059799/a6c53e3fe6bf4ceeb35d81c8f0549368_u769g8.png",
 		"https://res.cloudinary.com/dlwuhl9ez/image/upload/v1693059799/b29cd0217558567b7cb547ceef16e0e6_co2pgt.png",
 		"https://res.cloudinary.com/dlwuhl9ez/image/upload/v1693059799/619313245c10e3cad2f43f3eb41d9b31_fi1svs.png",
+		"https://res.cloudinary.com/dlwuhl9ez/image/upload/v1693168300/original-a019f343b7674d1e9111d0f39aedfcdc_cwfe0b.jpg",
 		"https://res.cloudinary.com/dlwuhl9ez/image/upload/v1693059799/7209a5de1fe5e279a1e98036a0aa54f2_zy8n6i.png",
 		"https://res.cloudinary.com/dlwuhl9ez/image/upload/v1693059799/6557815968da333d992476b7a86b3353_ugt1dd.png",
+		"https://res.cloudinary.com/dlwuhl9ez/image/upload/v1693168301/original-f53d3ce5cba80906902cee1f12733e51_metfgm.png",
 		"https://res.cloudinary.com/dlwuhl9ez/image/upload/v1693059799/771f7cadf000c98b33056b3b4a805a7e_wjhe7i.png",
 		"https://res.cloudinary.com/dlwuhl9ez/image/upload/v1693059799/22501d6aaae1e40bce7cc9b96c295dc7_idi7mq.png",
 		"https://res.cloudinary.com/dlwuhl9ez/image/upload/v1693059799/3bee99575b38607e3d0c66e3c5c03a71_wwgklc.png",
@@ -142,8 +160,12 @@ function Signup() {
 		"https://res.cloudinary.com/dlwuhl9ez/image/upload/v1693059592/characters-01_oxpc1k.png",
 		"https://res.cloudinary.com/dlwuhl9ez/image/upload/v1693063252/17_hss0yt.png",
 		"https://res.cloudinary.com/dlwuhl9ez/image/upload/v1693059592/222f90e6b6299dae44dcec722a433875_mglozp.png",
+		"https://res.cloudinary.com/dlwuhl9ez/image/upload/v1693059800/maintaco-03_ckud8a.png",
 		"https://res.cloudinary.com/dlwuhl9ez/image/upload/v1693059592/91cb9dbe93a56078f25384bfab476335_pkbgb8.png",
+		"https://res.cloudinary.com/dlwuhl9ez/image/upload/v1693168301/original-e312a23e7092797dde6ca8a66b0a5e85_ou34p0.png",
 		"https://res.cloudinary.com/dlwuhl9ez/image/upload/v1693059539/33a724da873d79d3ab2ce735a2aec7f2_esezxm.png",
+		"https://res.cloudinary.com/dlwuhl9ez/image/upload/v1693063471/1_whl3sd.jpg",
+		"https://res.cloudinary.com/dlwuhl9ez/image/upload/v1693059799/d6bc47035a7b5717db697ff8dbcf825c_xcwira.png",
 		"https://res.cloudinary.com/dlwuhl9ez/image/upload/v1693063251/13_nxppfm.png",
 		"https://res.cloudinary.com/dlwuhl9ez/image/upload/v1693063251/14_vyytkh.png",
 		"https://res.cloudinary.com/dlwuhl9ez/image/upload/v1693063471/2_oszmyn.png",
@@ -442,7 +464,7 @@ function Signup() {
 						</div>
 						<div className='rightside_reg_information_fieldtext'>
 							<ThemeProvider theme={theme}>
-								<CSSTextField 
+								<TextField 
 								value={fName}
 								onChange={(event) => setFName(event.target.value)}
 								id="outlined-basic" 
@@ -450,12 +472,12 @@ function Signup() {
 								variant="outlined" 
 								InputLabelProps={{style: { color: '#e0dfe7' },}} 
 								InputProps={{style: { color: '#e0dfe7' },}} 
-								sx={{mt: 2, width: 400, boxShadow: 2}}
+								sx={{...TextFieldStyles, mt: 2, width: 400, boxShadow: 2}}
 								error={fName.length > 0 && fName.length < 5}
   								helperText={fName.length > 0 && fName.length < 5 && "First Name should be at least 5 characters"}
 								autoFocus
 								/>
-								<CSSTextField 
+								<TextField 
 								value={lName}
 								onChange={(event) => setLName(event.target.value)}
 								id="outlined-basic" 
@@ -463,7 +485,7 @@ function Signup() {
 								variant="outlined" 
 								InputLabelProps={{style: { color: '#e0dfe7' },}} 
 								InputProps={{style: { color: '#e0dfe7' },}} 
-								sx={{mt: 3, width: 400, boxShadow: 2}}
+								sx={{...TextFieldStyles, mt: 3, width: 400, boxShadow: 2}}
 								error={lName.length > 0 && lName.length < 5}
   								helperText={lName.length > 0 && lName.length < 5 && "Last Name should be at least 5 characters"}
 								autoFocus
@@ -525,7 +547,7 @@ function Signup() {
 									</Box>
 								)}
 								renderInput={(params) => (
-									<CSSTextField
+									<TextField
 									{...params}
 									label="Choose a country"
 									error={country === null}
@@ -534,6 +556,7 @@ function Signup() {
 										...params.inputProps,
 										autoComplete: 'new-password', 
 									  }}
+									sx={{...TextFieldStyles, width: 400, boxShadow: 2}}
 									/>
 								)}
 								/>
@@ -542,7 +565,8 @@ function Signup() {
 						<div className='rightside_reg_information_date'>
 							<ThemeProvider theme={theme}>
 								<LocalizationProvider dateAdapter={AdapterDayjs}>
-									<DatePicker sx={{ width: 400,}}
+									<DatePicker
+									sx={{...TextFieldStyles, width: 400, boxShadow: 2}}
 									value={date}
 									onChange={(newValue) => setDate(newValue)}
 									renderInput={(props) => (
@@ -581,7 +605,7 @@ function Signup() {
 					</div>
 					<div className="rightside_fieldtext">
 						<ThemeProvider theme={theme}>
-						<CSSTextField 
+						<TextField 
 							value={username}
 							onChange={(event) => setUsername(event.target.value)}
 							id="outlined-basic" 
@@ -589,14 +613,14 @@ function Signup() {
 							variant="outlined" 
 							InputLabelProps={{style: { color: '#e0dfe7' },}} 
 							InputProps={{style: { color: '#e0dfe7' },}} 
-							sx={{mt: 3, width: 400, boxShadow: 2}}
+							sx={{...TextFieldStyles, mt: 3, width: 400, boxShadow: 2}}
 							error={!isValidUsername}
 							helperText={!isValidUsername && "Username should contain at least 5 letters, numbers should be only in the end"}
 
 
 							autoFocus
 						/>
-						<CSSTextField
+						<TextField
 							type={showPassword ? "text" : "password"}
 							label="Password"
 							variant="outlined"
@@ -621,10 +645,10 @@ function Signup() {
 									</InputAdornment>
 								),
 							}}
-							sx={{ mt: 3, width: 400, boxShadow: 2 }}
+							sx={{...TextFieldStyles, mt: 3, width: 400, boxShadow: 2}}
 							/>
 							{confirmPassword.length > 0 && (
-								<CSSTextField
+								<TextField
 									type={showPassword ? "text" : "password"}
 									label="Confirm password"
 									value={confirmPassword}
@@ -647,7 +671,7 @@ function Signup() {
 										</InputAdornment>
 									),
 									}}
-									sx={{ mt: 3, width: 400, boxShadow: 2 }}
+									sx={{...TextFieldStyles, mt: 2, width: 400, boxShadow: 2}}
 									error={confirmPassword !== password}
 									helperText={confirmPassword !== password && "Passwords do not match"}
 									autoFocus
@@ -655,7 +679,7 @@ function Signup() {
 								)}
 
 							{confirmPassword.length === 0 && (
-							<CSSTextField
+							<TextField
 								type={showPassword ? "text" : "password"}
 								label="Confirm password"
 								value={confirmPassword}
@@ -678,7 +702,7 @@ function Signup() {
 									</InputAdornment>
 								),
 								}}
-								sx={{ mt: 3, width: 400, boxShadow: 2 }}
+								sx={{...TextFieldStyles, mt: 3, width: 400, boxShadow: 2}}
 								autoFocus
 							/>
 								)}
@@ -710,7 +734,7 @@ function Signup() {
 						<>
 						<div className='rightside_details_fieldtext'>
 							<ThemeProvider theme={theme}>
-									<CSSTextField 
+									<TextField 
 									value={email}
 									onChange={(event) => setEmail(event.target.value)}
 									id="outlined-basic" 
@@ -718,7 +742,7 @@ function Signup() {
 									variant="outlined" 
 									InputLabelProps={{style: { color: '#e0dfe7' },}} 
 									InputProps={{style: { color: '#e0dfe7' },}} 
-									sx={{mt: 2, width: 400, boxShadow: 2}}
+									sx={{...TextFieldStyles, mt: 2, width: 400, boxShadow: 2}}
 									/>
 								</ThemeProvider>
 								<div className="rightside_button">
@@ -820,15 +844,23 @@ function Signup() {
 						<div className='avatars-wrapper'>
 							<div className='avatars-box'>
 							{urlAvatars.map((avatar, index) => (
-								<Avatar
-									id="signupAvatarId"
-									className={`signupAvatar ${selectedAvatar === avatar ? 'clicked' : ''}`}
-									key={index}
-									sx={{width: 100, height: 100, ml: 4, mb: 2, mt: 2}}
+								<label key={index} 
+								htmlFor={`signupAvatarId-${index}`} 
+								className={`avatarLabel ${selectedAvatar === avatar ? 'clicked' : ''}`}>
+									<input
+									type="checkbox"
+									id={`signupAvatarId-${index}`}
+									className="avatarCheckbox"
+									checked={selectedAvatar === avatar}
+									onChange={() => handleAvatarClick(avatar)}
+									/>
+									<Avatar
+									className="signupAvatar"
+									sx={{ width: 100, height: 100, ml: 2, mb: 2, mt: 2, mr: 2 }}
 									alt=""
 									src={avatar}
-									onClick={() => handleAvatarClick(avatar)}
-								/>
+									/>
+								</label>
 								))}
 
 							</div>
