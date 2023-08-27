@@ -232,7 +232,7 @@ async def login_for_access_token(response:Response, request:Request, db: Session
     response = RedirectResponse(url="/index",status_code=status.HTTP_302_FOUND)
     
     # to save token in cookie
-    response.set_cookie(key="access_token",value=f"Bearer {access_token}", httponly=True, 
+    response.set_cookie(key="access_token",value=f"Bearer {access_token}", httponly=True, samesite="none",
                         secure=True, max_age=ACCESS_TOKEN_EXPIRE_MINUTES * 60) 
     return response    
 
