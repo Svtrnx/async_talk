@@ -21,6 +21,7 @@ import axios from "axios"
 import dayjs from 'dayjs';
 import { Link, useNavigate  } from 'react-router-dom';
 import "./signup.css";
+import qs from 'qs';
 
 
 	// Field Text settings
@@ -176,33 +177,36 @@ function Signup() {
 		
 		setToSignin(true);
 		
-		try {
-			const response = await axios.post("https://kenzoback.onrender.com/signup", {
-				grant_type: 'password',
-				email: email,
-				username: username,
-				password: password,
-				first_name: fName,
-				last_name: lName,
-				avatar: selectedAvatar,
-				gender: gender,
-				country: country.label,
-				date: formData,
-				scope: '',
-				client_id: '',
-				client_secret: ''
-			}, {
-				headers: {
-					'Content-Type': 'application/json'
-				}
-			});
-			console.log("SIGNUP RESPONSE: ", response.data);
-			navigate("/signin");
-		} catch (err) {
-		  console.log("ERROR: ", err);
-		}
-	  }
+		const username = 'aaaaaaa';
+const password = 'aaaaaaa';
 
+const data = {
+  grant_type: 'password',
+  username: username,
+  password: password,
+  scope: '',
+  client_id: '',
+  client_secret: ''
+};
+
+const formattedData = qs.stringify(data);
+
+try {
+  const response = await axios.post(
+    'https://kenzoback.onrender.com/signin',
+    formattedData,
+    {
+      withCredentials: true,
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded'
+      }
+    }
+  );
+
+  console.log(response.data);
+} catch (error) {
+  console.error(error);
+}}
 	  
 	const handleOpenSnackbar = () => {
 		setOpen(true);

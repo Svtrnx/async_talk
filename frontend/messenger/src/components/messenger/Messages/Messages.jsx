@@ -295,28 +295,27 @@ function Messages() {
   // USE EFFECT FOR CHATS QUERY
   useEffect(() => {
 
-    const fetchData = async () => {
-      try {
-        const response = await axios.get(
-          'https://kenzoback.onrender.com/api/check_verification',
-          {
-            withCredentials: true,
-            headers: {
-              'accept': 'application/json',
-            },
-            credentials: 'include', // Добавляем эту опцию
-          }
-        );
-  
-        setDataUsername(response.data.user);
-        setUserId(response.data.user);
-  
-      } catch (error) {
-        console.error(error);
-      }
-    };
-  
-    fetchData();
+      // Устанавливаем глобально credentials для axios
+  axios.defaults.withCredentials = true;
+
+  const fetchData = async () => {
+    try {
+      const response = await axios.get('https://kenzoback.onrender.com/api/check_verification', {
+        headers: {
+          'accept': 'application/json',
+        }
+      });
+
+      setDataUsername(response.data.user);
+      setUserId(response.data.user);
+
+    } catch (error) {
+      console.error(error);
+      console.log(error)
+    }
+  };
+
+  fetchData();
 
 
 //     const fetchData2 = async () => {
