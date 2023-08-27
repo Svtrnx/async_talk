@@ -1,4 +1,5 @@
 {
+  "proxy": "https://asynctalk-production.up.railway.app",
   "name": "messenger",
   "version": "0.1.0",
   "private": true,

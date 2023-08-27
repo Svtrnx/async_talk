@@ -14,13 +14,13 @@ app = FastAPI()
 
 
 origins = [    
-    "http://localhost:3000/signin",
-    "http://localhost:3000/",
     "http://localhost:3000",
-    "https://res.cloudinary.com",
-    "https://cloudinary.com",
-    "http://127.0.0.1:3000",
-    "https://youngkenzo.netlify.app/",
+    # "http://localhost:3000/",
+    # "http://localhost:3000",
+    # "https://res.cloudinary.com",
+    # "https://cloudinary.com",
+    # "http://127.0.0.1:3000",
+    # "https://youngkenzo.netlify.app/",
     ] 
 
 app.add_middleware(
