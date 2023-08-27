@@ -156,22 +156,24 @@ function Messenger() {
 
     
 
-    // useEffect(() => {
-    //   const fetchData = async () => {
-    //     try {
-    //       const response = await axios.get('https://asynctalk-production.up.railway.app/api/check_verification', {
-    //         withCredentials: true,
-    //       });
-    //       console.log("RESPONSE HEADER:-", response.data);
-    //       setUserInfo(response.data.user);
-    //     } catch (error) {
-    //       navigate('/signin');
-    //       console.error(error);
-    //     }
-    //   };
+    useEffect(() => {
+      const fetchData = async () => {
+        try {
+          const response = await axios.get('https://asynctalk-production.up.railway.app/api/check_verification', {
+            withCredentials: true,
+          });
+          console.log("RESPONSE HEADER:-", response.data);
+          setUserInfo(response.data.user);
+          console.log("VERIF PASSED");
+
+        } catch (error) {
+          navigate('/signin');
+          console.error(error);
+        }
+      };
     
-    //   fetchData();
-    // }, []);
+      fetchData();
+    }, []);
    
     
 
