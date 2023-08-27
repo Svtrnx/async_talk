@@ -25,10 +25,21 @@ origins = [
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=origins,
+    allow_origins=['http://localhost:3000'],
     allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
+    allow_methods=["GET, POST, PUT, DELETE, UPDATE"],
+    allow_headers=[
+        "Accept",
+        "Accept-Encoding",
+        "Authorization",
+        "Content-Type",
+        "DNT",
+        "Origin",
+        "User-Agent",
+        "x-requested-with",
+        # Добавьте сюда другие заголовки, которые вам нужны
+    ],
+    expose_headers=["Content-Length", "Content-Range"],  # Дополнительные заголовки, доступные для чтения фронтендом
 )
 
 # config routes
