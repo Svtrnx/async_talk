@@ -4,11 +4,6 @@ import Signin from './components/signin/signin';
 import Messenger from './components/messenger/messenger';
 
 function App() {
-  // const fastifyStatic = require('@fastify/static');
-
-  // fastify.register(fastifyStatic, {
-  //   root: `${process.cwd()}/my-app/build`,
-  // });
 
   return (
       <Routes>
