@@ -92,7 +92,6 @@ function Signin() {
 		  	}, {
 			withCredentials: true,
 			headers: {
-				'accept': 'application/json',
 				'Content-Type': 'application/x-www-form-urlencoded'
 			}
 		  	});
