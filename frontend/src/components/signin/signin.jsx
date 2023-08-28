@@ -99,7 +99,7 @@ function Signin() {
 	const HandleSigninLocalStorage = async (event) => {
 		event.preventDefault();
 		try {
-		  const response = await axios.post("/signin?q=proxy", {
+		  const response = await axios.post("/signin", {
 			grant_type: 'password',
 			username: username,
 			password: password,
