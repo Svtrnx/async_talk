@@ -179,7 +179,7 @@ function Signup() {
 		setToSignin(true);
 		
 		try {
-			const response = await axios.post("https://asynctalk-production.up.railway.app/signup", {
+			const response = await axios.post("https://kenzoback.onrender.com/signup", {
 				grant_type: 'password',
 				email: email,
 				username: username,
