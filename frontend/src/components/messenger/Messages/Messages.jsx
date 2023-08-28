@@ -187,7 +187,7 @@ function Messages() {
     if (chatId && dataUsername.username) {
       // Проверяем, есть ли уже открытое соединение для данного chatId
       if (!ws) {
-        const newWs = new WebSocket(`ws://asynctalk-production.up.railway.app/ws/${chatId}/${dataUsername.username}`);
+        const newWs = new WebSocket(`wss://asynctalk-production.up.railway.app/ws/${chatId}/${dataUsername.username}`);
         setWs(newWs);
   
         
