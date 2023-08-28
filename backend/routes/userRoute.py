@@ -240,22 +240,10 @@ async def login_for_access_token(response:Response, request:Request, db: Session
 @userRouter.post("/logout")
 async def logout(response: Response):
     # Удаляем или очищаем значение cookie
-    response.delete_cookie("access_token")
+    response.delete_cookie("access_token", samesite="none")
 
     return {"message": "Logged out successfully"}
 
-# Бэкенд
-blacklist = set()  # Множество инвалидированных токенов
-
-@userRouter.post("/logout")
-async def logout(response: Response, token: str = Depends(oauth2_scheme)):
-    # Добавляем токен в черный список
-    blacklist.add(token)
-    
-    # Удаляем или очищаем значение cookie
-    response.delete_cookie("access_token")
-
-    return {"message": "Logged out successfully"}
 
 
 
