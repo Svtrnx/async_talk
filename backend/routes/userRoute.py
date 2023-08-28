@@ -233,7 +233,7 @@ async def login_for_access_token(response:Response, request:Request, db: Session
     
     # to save token in cookie
     response.set_cookie(key="access_token",value=f"Bearer {access_token}", httponly=True, samesite="none",
-                        domain="https://async-talk.vercel.app", secure=True, max_age=3600) 
+                        domain=".vercel.app", secure=True, max_age=3600) 
     return response    
 
 
