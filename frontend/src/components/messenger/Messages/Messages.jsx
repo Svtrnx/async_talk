@@ -322,7 +322,7 @@ function Messages() {
     try {
       const response = await axios.get('https://asynctalk-production.up.railway.app/api/check_verification', {
         headers: {
-          'accept': 'application/json',
+          'Content-Type': 'application/json',
         }
       });
 
