@@ -14,7 +14,27 @@ import axios from 'axios';
 
 
 // Field Text settings
-
+const styles = {
+	root: {
+		"& label.Mui-focused": {
+		color: "orange",
+		},
+		"& .MuiInput-underline:after": {
+		borderBottomColor: "orange",
+		},
+		"& .MuiOutlinedInput-root": {
+		"& fieldset": {
+			borderColor: "#e0dfe7",
+		},
+		"&:hover fieldset": {
+			borderColor: "#946cdc",
+		},
+		"&.Mui-focused fieldset": {
+			borderColor: "#7f56da",
+		},
+		},
+	},
+	};
 
 
 const TextFieldStyles = {
