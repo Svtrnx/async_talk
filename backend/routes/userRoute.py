@@ -240,7 +240,7 @@ async def login_for_access_token(response:Response, request:Request, db: Session
 @userRouter.post("/logout")
 async def logout(response: Response):
     # Удаляем или очищаем значение cookie
-    response.delete_cookie("access_token", samesite="none")
+    response.delete_cookie("access_token", samesite="none", secure=True, httponly=True)
 
     return {"message": "Logged out successfully"}
 
