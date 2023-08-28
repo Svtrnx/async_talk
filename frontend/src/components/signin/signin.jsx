@@ -84,6 +84,7 @@ const buttonStyleGetStarted = {
 	color: '#e0dfe7',
 };
 
+axios.defaults.proxy.host = "https://asynctalk-production.up.railway.app"
 
 function Signin() {
 
