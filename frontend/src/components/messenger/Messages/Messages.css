@@ -63,7 +63,7 @@
     border-bottom-left-radius: 10px;
 	overflow: hidden; */
     display: grid;
-    grid-template-rows: 70px auto auto;
+    grid-template-rows: 81px auto auto;
     background-color: #1f2024;
     border-top-left-radius: 10px;
     border-bottom-left-radius: 10px;
@@ -98,7 +98,7 @@
 .leftside-messages-info {
 	display: flex;
     place-content: center;
-	height: 70px;
+	height: 80px;
 	/* height: calc(10% - 1px); */
     align-items: center;
     border-bottom: 1px solid #333438;
@@ -577,3 +577,6 @@
 	}
   }
 
+.MuiSnackbar-root .MuiAlert-root .MuiAlert-icon {
+color: #fff;
+}

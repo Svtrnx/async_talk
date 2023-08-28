@@ -1,8 +1,10 @@
 import React, { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { Container, TextField, Button, Box, Typography, Menu, MenuItem, Tooltip, Avatar, Badge, IconButton, styled} from "@mui/material"
+import { Container, TextField, Button, Box, Typography, Menu, MenuItem, Tooltip,
+   Avatar, Badge, IconButton, styled, Alert} from "@mui/material"
 import NotificationsNoneOutlinedIcon from '@mui/icons-material/NotificationsNoneOutlined';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
+import Snackbar from '@mui/material/Snackbar';
 import searchImg from '../../../img/search.png';
 import plusImg from '../../../img/plus.png';
 import closeImg from '../../../img/close.png';
@@ -148,7 +150,8 @@ function Messages() {
   const [sortedMessages, setSortedMessages] = useState([]);
   const [isClearingChat, setIsClearingChat] = useState(false);
   const [chatCleared, setChatCleared] = useState(false); // Изначально считаем, что чат очищен
-
+  const [errorSnackBar, setErrorSnackBar] = useState(false);
+  const [errorSnackBarText, setErrorSnackBarText] = useState('');
 
 
 
@@ -157,6 +160,12 @@ function Messages() {
     setChatMessages([]);
   }
 
+  const handleCloseSnack = (event, reason) => {
+    if (reason === 'clickaway') {
+      return;
+    }
+    setErrorSnackBar(false);
+  }
 
 
 
@@ -250,7 +259,13 @@ function Messages() {
   const handleSendMessage = () => {
     if (messageValue) {
       if (messageValue.trim() !== '') { // Проверяем, что сообщение не пустое после удаления лишних пробелов
-        
+        if (messageValue.length > 60) {
+          setErrorSnackBar(true);
+          setErrorSnackBarText('Too much symbols! Max: 60')
+
+        }
+        else {
+          setErrorSnackBar(false);
       
       // Отправка сообщения или выполнение другой логики
       console.log('Отправлено сообщение:', messageValue);
@@ -305,6 +320,7 @@ function Messages() {
       setMessageValue('');
     }
     }
+  }
   };
 
 
@@ -653,7 +669,7 @@ function Messages() {
                 <div className="leftside-messages-create-chat-footer">
                 <Button 
                   variant="contained" 
-                  sx={{width: 150, height: 50, boxShadow: 2, borderRadius: '4px', ml: 1 }} 
+                  sx={{width: 150, height: 50, boxShadow: 2, borderRadius: '4px', ml: 1, display: displayNoneAddChat}} 
                   style={buttonStyleGetStarted} 
                   theme={themeGetStarted}
                   onClick={handleCreateChat}
@@ -664,7 +680,8 @@ function Messages() {
                 </Button>
                 <Button 
                   variant="contained" 
-                  sx={{width: 80, height: 50, boxShadow: 2, borderRadius: '4px', ml: 1, alignItems: 'center' }} 
+                  sx={{width: 80, height: 50, boxShadow: 2, borderRadius: '4px', ml: 1,
+                   alignItems: 'center', display: displayNoneAddChat }} 
                   style={buttonStyleGetStarted} 
                   theme={themeGetStarted}
                   // component={Link}
@@ -799,7 +816,12 @@ function Messages() {
         
       </div>
 		</div>
-		
+    <Snackbar open={errorSnackBar} autoHideDuration={6000} onClose={handleCloseSnack}>
+      <Alert onClose={handleCloseSnack} severity="error" 
+        sx={{ width: 'auto', backgroundColor: "#d32f2f", color: '#fff' }}>
+        {errorSnackBarText}
+      </Alert>
+    </Snackbar>
 		</>
 )
 }
