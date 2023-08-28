@@ -308,9 +308,7 @@ function Messages() {
   };
 
 
-  // const allMessages = [...messagesData, ...chatMessages]; // Объединяем массивы сообщений
-
-  // allMessages.sort((a, b) => moment(b.date_message).valueOf() - moment(a.date_message).valueOf());
+  
 
   // USE EFFECT FOR CHATS QUERY
   useEffect(() => {

@@ -20,7 +20,6 @@ app = FastAPI()
 #     # "https://res.cloudinary.com",
 #     # "https://cloudinary.com",
 #     # "http://127.0.0.1:3000",
-#     # "https://youngkenzo.netlify.app/",
 #     ] 
 
 app.add_middleware(
