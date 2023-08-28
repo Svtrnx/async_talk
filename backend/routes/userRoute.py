@@ -7,7 +7,7 @@ from fastapi.security import OAuth2PasswordRequestForm
 from controller import userController
 from model.userModel import User, MyResponse, Message, Chat
 from schema.userSchema import Token
-from security.authSecurity import create_access_token, get_current_user, get_user_by_username, get_password_hash
+from security.authSecurity import create_access_token, get_current_user, get_user_by_username, get_password_hash, oauth2_scheme
 from starlette.responses import RedirectResponse
 from model import userModel
 from database.crud import create_user, create_message, create_chat, get_all_users, get_all_chats, get_all_messages
@@ -233,7 +233,7 @@ async def login_for_access_token(response:Response, request:Request, db: Session
     
     # to save token in cookie
     response.set_cookie(key="access_token",value=f"Bearer {access_token}", httponly=True, samesite="none",
-                        path="/", domain="asynctalk-production.up.railway.app", secure=True, max_age=3600) 
+                        path="/", secure=True, max_age=3600) 
     return response    
 
 
@@ -243,6 +243,20 @@ async def logout(response: Response):
     response.delete_cookie("access_token")
 
     return {"message": "Logged out successfully"}
+
+# Бэкенд
+blacklist = set()  # Множество инвалидированных токенов
+
+@userRouter.post("/logout")
+async def logout(response: Response, token: str = Depends(oauth2_scheme)):
+    # Добавляем токен в черный список
+    blacklist.add(token)
+    
+    # Удаляем или очищаем значение cookie
+    response.delete_cookie("access_token")
+
+    return {"message": "Logged out successfully"}
+
 
 
 # POST chat info
