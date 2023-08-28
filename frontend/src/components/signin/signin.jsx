@@ -84,7 +84,6 @@ const buttonStyleGetStarted = {
 	color: '#e0dfe7',
 };
 
-axios.defaults.proxy.host = "https://asynctalk-production.up.railway.app"
 
 function Signin() {
 
@@ -100,7 +99,7 @@ function Signin() {
 	const HandleSigninLocalStorage = async (event) => {
 		event.preventDefault();
 		try {
-		  const response = await axios.post("/signin", {
+		  const response = await axios.post("/signin?q=proxy", {
 			grant_type: 'password',
 			username: username,
 			password: password,
