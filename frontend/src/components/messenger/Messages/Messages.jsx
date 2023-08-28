@@ -726,6 +726,10 @@ function Messages() {
   
           const displayedAvatar = isCurrentUser ? dataUsername.avatar : currentUserAvatar;
   
+          const messageTime = new Date(message.date_message);
+          const options = { hour: '2-digit', minute: '2-digit' };
+          const formattedTime = messageTime.toLocaleTimeString([], options);
+
           return (
             <div className={`rightside-messages-main-message${isWebSocketMessage ? " webSocketMessage" : ""}`} key={message.id}>
               <div className="rightside-messages-main-avatar">
@@ -739,10 +743,15 @@ function Messages() {
               </div>
               <div className="rightside-messages-main-message-text">
                 <div className="rightside-messages-main-message-text-container">
-                  <h2>
-                    {message.text}
-                  </h2>
+                  <div className="message-content">
+                    <h2>{message.text}</h2>
+                  </div>
                 </div>
+                  <div className="messageTime">
+                    <h2 className="sf">
+                    {formattedTime}
+                    </h2>
+                  </div>
               </div>
             </div>
           );

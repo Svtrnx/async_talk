@@ -356,6 +356,11 @@
     border-bottom-left-radius: 5px;
     border-top-left-radius: 5px;
 	position: relative;
+    min-width: 100px;
+    max-width: auto;
+    width: fit-content;
+	height: auto;
+    padding-right: 10px;
 }
 
 .rightside-messages-main-message-text::before {
@@ -384,6 +389,11 @@
 } */
 .rightside-messages-main-message-text-container {
 	margin: 5px 0px 5px 0px;
+	display: flex;
+	flex-direction: row;
+	justify-content: flex-start;
+	align-items: flex-start;
+	position: relative;
 }
 
 .rightside-messages-main-message-text-container h2 {
@@ -580,3 +590,34 @@
 .MuiSnackbar-root .MuiAlert-root .MuiAlert-icon {
 color: #fff;
 }
+
+.message-content {
+	display: flex;
+	flex-direction: column;
+}
+
+.messageTime {
+	margin-top: 13px;
+	margin-right: 3px;
+	align-self: flex-end;
+	position: absolute;
+	bottom: 0;
+	display: contents;
+}
+
+.messageTime h2 {
+	font-family: 'Montserrat', sans-serif;
+	font-weight: 300;
+	font-size: 12px !important;
+	color: gray !important;
+	margin-left: auto !important;
+	min-inline-size: fit-content !important;
+	align-self: flex-end !important;
+	margin: 0;
+	margin-top: -5px;
+}
+	
+
+
+
+
