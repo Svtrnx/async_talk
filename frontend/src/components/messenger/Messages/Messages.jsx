@@ -568,6 +568,14 @@ function Messages() {
     }
   }
 
+  function getDisplayedUsernameRightside() {
+    if (dataUsername.username === username) {
+      return partnerUsername;
+    } else {
+      return username;
+    }
+  }
+
   function getDisplayedAvatar(chat, dataAvatarChats) {
     if (dataAvatarChats === chat.user_avatar) {
       return chat.partner_user_avatar;
@@ -577,6 +585,7 @@ function Messages() {
       return '...';
     }
   }
+
 
   function getInfoOnChats(username, avatar) {
     console.log("CHSSSSSSSS:", username);
@@ -703,7 +712,7 @@ function Messages() {
           <div className="rightside-messages-header">
             <div className="rightside-messages-header-user-info">
               <Avatar sx={{width: 40, height: 40}} alt={chatUsername} src={currentUserAvatar} />
-              <h2>{partnerUsername}</h2>
+              <h2>{getDisplayedUsernameRightside()}</h2>
             </div>
             <div className="rightside-messages-header-info-buttons">
               <img src={infoImg} alt=""/>
@@ -713,7 +722,7 @@ function Messages() {
           </div>
            
           { chatCleared ? (
-            <div className="rightside-messages-main"> {/* Это div где появляются сообщения */} 
+            <div className="rightside-messages-main">
             
             {messagesData
         .concat(chatMessages)
@@ -790,7 +799,7 @@ function Messages() {
                   onChange={(event) => setMessageValue(event.target.value)}
                   onKeyDown={(event) => {
                     if (event.key === 'Enter' && !event.shiftKey) {
-                    event.preventDefault(); // Предотвращаем перенос строки
+                    event.preventDefault();
                     handleSendMessage();
                   }}
                 }
