@@ -748,9 +748,7 @@ function Messages() {
                   </div>
                 </div>
                   <div className="messageTime">
-                    <h2 className="sf">
-                    {formattedTime}
-                    </h2>
+                    <h2>{formattedTime}</h2>
                   </div>
               </div>
             </div>

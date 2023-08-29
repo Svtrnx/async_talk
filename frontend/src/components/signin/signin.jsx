@@ -1,7 +1,8 @@
 import React, { Component, useState, useEffect } from "react";
 import "./signin.css"
-import { Container, Typography, TextField, Button, Box  } from "@mui/material"
+import { Container, Typography, TextField, Button, Box, Alert } from "@mui/material"
 import { createTheme, ThemeProvider, styled } from '@mui/material/styles';
+import Snackbar from '@mui/material/Snackbar';
 import InputAdornment from '@mui/material/InputAdornment';
 import IconButton from '@mui/material/IconButton';
 import Visibility from '@mui/icons-material/Visibility';
@@ -72,9 +73,17 @@ function Signin() {
 	const [showPassword, setShowPassword] = React.useState(false);
 	const [username, setUsername] = React.useState('');
 	const [password, setPassword] = React.useState('');
+	const [errorSnackBar, setErrorSnackBar] = useState(false);
+	const [errorSnackBarText, setErrorSnackBarText] = useState('');
 	const navigate = useNavigate()
 	
-
+	const handleCloseSnack = (event, reason) => {
+		if (reason === 'clickaway') {
+		  return;
+		}
+		setErrorSnackBar(false);
+		setErrorSnackBarText("")
+	}
 
 	const HandleSigninLocalStorage = async (event) => {
 		event.preventDefault();
@@ -94,39 +103,7 @@ function Signin() {
 		  	});
 		  	console.log(response.data);
 
-			//   // Установка cookies
-		  	// const expirationTime = 7 * 24 * 60 * 60 * 1000; // 1 неделя в миллисекундах
-			// const currentTime = new Date().getTime();
-			// const expirationDate = new Date(currentTime + expirationTime);
 
-			// const data = { username, timestamp: currentTime }; // Создание объекта data
-
-			// document.cookie = `data=${JSON.stringify(data)}; expires=${expirationDate.toUTCString()}`;
-
-			// // Получение cookies
-			// const cookies = document.cookie.split(';');
-			// let storedData = null;
-
-			// for (let i = 0; i < cookies.length; i++) {
-			// const cookie = cookies[i].trim();
-			
-			// if (cookie.startsWith('data=')) {
-			// 	storedData = cookie.substring('data='.length, cookie.length);
-			// 	break;
-			// }
-			// }
-
-			// if (storedData) {
-			// 	const parsedData = JSON.parse(storedData);
-			// 	const { username, timestamp } = parsedData;
-
-			// 	if (currentTime - timestamp > expirationTime) {
-			// 		// Удаление cookies
-			// 		document.cookie = 'data=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
-			// 		// Дополнительные действия при удалении данных
-			// 	} 
-			// }
-			
 			navigate('/messenger');
 		} catch (error) {
 		  console.log("ERROR1:", error);
@@ -141,7 +118,15 @@ function Signin() {
 		  });
 		  console.log(response.data);
 		} catch (error) {
-		  console.error(error);
+		  console.log("ERROR:", error);
+		  if (error.response.status === 301) {
+			setErrorSnackBar(true);
+			setErrorSnackBarText('INVALID USERNAME OR PASSWORD!')
+		  }
+		  else if (error.response.status !== 303 && error.response.status !==301) {
+			setErrorSnackBar(true);
+			setErrorSnackBarText(`STATUS: ${error.response.status} ERROR!`)
+		  }
 		}
 	  };
 	  
@@ -183,6 +168,7 @@ function Signin() {
 							InputLabelProps={{style: { color: '#e0dfe7' },}} 
 							InputProps={{style: { color: '#e0dfe7' },}} 
 							sx={{...TextFieldStyles, mt: 3, width: 400, boxShadow: 2}}
+							error={errorSnackBar === true}
 							/>
 							<TextField
 							type={showPassword ? "text" : "password"}
@@ -207,6 +193,8 @@ function Signin() {
 								),
 							}}
 							sx={{...TextFieldStyles, mt: 3, width: 400, boxShadow: 2}}
+							error={errorSnackBar === true}
+							
 							/>
 						</ThemeProvider>
 					</div>
@@ -243,7 +231,12 @@ function Signin() {
 						</div>
 					</div>
 				</div>
-			
+				<Snackbar open={errorSnackBar} autoHideDuration={6000} onClose={handleCloseSnack}>
+					<Alert onClose={handleCloseSnack} severity="error" 
+						sx={{ width: 'auto', backgroundColor: "#d32f2f", color: '#fff' }}>
+						{errorSnackBarText}
+					</Alert>
+				</Snackbar>
 			</div>
 		 </Container>
 		</>
