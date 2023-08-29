@@ -106,7 +106,15 @@ function Signin() {
 
 			navigate('/messenger');
 		} catch (error) {
-		  console.log("ERROR1:", error);
+		  console.log("SIGN IN ERROR:", error);
+		  if (error.response.status === 301) {
+			setErrorSnackBar(true);
+			setErrorSnackBarText('INVALID USERNAME OR PASSWORD!')
+		  }
+		  else if (error.response.status !== 303 && error.response.status !==301) {
+			setErrorSnackBar(true);
+			setErrorSnackBarText(`STATUS: ${error.response.status} ERROR!`)
+		  }
 		}
 	  };
 	  
@@ -119,14 +127,6 @@ function Signin() {
 		  console.log(response.data);
 		} catch (error) {
 		  console.log("ERROR:", error);
-		  if (error.response.status === 301) {
-			setErrorSnackBar(true);
-			setErrorSnackBarText('INVALID USERNAME OR PASSWORD!')
-		  }
-		  else if (error.response.status !== 303 && error.response.status !==301) {
-			setErrorSnackBar(true);
-			setErrorSnackBarText(`STATUS: ${error.response.status} ERROR!`)
-		  }
 		}
 	  };
 	  
