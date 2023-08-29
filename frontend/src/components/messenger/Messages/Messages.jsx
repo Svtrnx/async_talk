@@ -167,9 +167,9 @@ function Messages() {
     setErrorSnackBar(false);
   }
 
-  const chatExists = chats.some(chat => chat.username === dataUsername.username &&
-                                chat.partner_username === username &&
-                                chat.partner_user_id  === user_Id);
+  const chatExists = chats.some(chat => chat.username === dataUsername.username ||
+    chat.partner_username === username || chat.username === username ||
+    chat.partner_user_id  === user_Id);
 
   useEffect(() => {
     console.log('userAvatarChat:---', chats);
