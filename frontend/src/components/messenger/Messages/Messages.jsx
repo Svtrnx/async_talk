@@ -549,7 +549,7 @@ function Messages() {
             partner_user_avatar: userAvatarChat
           };
           const response = await axios.post(
-            'http://localhost:8000/api/messages/create_chat/',
+            'https://kenzo-a0ml.onrender.com/api/messages/create_chat/',
             requestData,
             {
               withCredentials: true,
