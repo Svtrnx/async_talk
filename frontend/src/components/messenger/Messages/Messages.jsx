@@ -167,7 +167,9 @@ function Messages() {
     setErrorSnackBar(false);
   }
 
-
+  const chatExists = chats.some(chat => chat.username === dataUsername.username &&
+                                chat.partner_username === username &&
+                                chat.partner_user_id  === user_Id);
 
   useEffect(() => {
     console.log('userAvatarChat:---', chats);
@@ -535,21 +537,29 @@ function Messages() {
 
   async function handleCreateChat() {
     try {
-      const requestData = {
-        partner_user_id: user_Id,
-        partner_username: username,
-        partner_user_avatar: userAvatarChat
-      };
-      const response = await axios.post(
-        'https://kenzoback.onrender.com/api/messages/create_chat/',
-        requestData,
-        {
-          withCredentials: true,
-          headers: {'Content-Type': 'application/json'}
-        }
-      );
-    
-      console.log(response.data);
+      if (chatExists) {
+          setErrorSnackBar(true);
+          setErrorSnackBarText('YOU ALREADY HAVE THIS CHAT!')
+        } else {
+          setErrorSnackBar(false);
+      
+      
+          const requestData = {
+            partner_user_id: user_Id,
+            partner_username: username,
+            partner_user_avatar: userAvatarChat
+          };
+          const response = await axios.post(
+            'http://localhost:8000/api/messages/create_chat/',
+            requestData,
+            {
+              withCredentials: true,
+              headers: {'Content-Type': 'application/json'}
+            }
+          );
+        
+          console.log(response.data);
+      }
     } catch (error) {
       console.log("ERROR:", error);
     }
