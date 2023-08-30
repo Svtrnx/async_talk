@@ -14,8 +14,8 @@ class User(Base):
     
     id = Column(Integer, primary_key=True, index=True)
     email = Column(String, unique=True, index=True)
-    username = Column(String, unique=True, index=False)
-    password = Column(String)
+    username = Column(String, unique=True, index=True)
+    password = Column(String, unique=False, index=True)
     first_name = Column(String, unique=False, index=True)
     last_name = Column(String, unique=False, index=True)
     gender = Column(String, unique=False, index=True)
@@ -103,7 +103,7 @@ class OAuth2PasswordRequestFormSignup:
     def __init__(
         self,
         grant_type: str = Form(default=None, regex="password"),
-        email: str = Form(),
+        email: str = Form(default=""),
         username: str = Form(),
         password: str = Form(),
         first_name: str = Form(),

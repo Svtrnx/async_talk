@@ -80,8 +80,13 @@ const TextFieldStyles = {
 	  });
 
 	  const buttonStyle = {
-		backgroundColor: '#7f56da',
+		backgroundColor: '#673EC2',
 		color: '#e0dfe7',
+	  };
+	  
+	  const buttonStyleUploadImg = {
+		borderColor: '#5d38b1',
+		color: '#e0dfe7'
 	  };
 
 
@@ -102,9 +107,7 @@ function Signup() {
 	const [confirmPassword, setConfirmPassword] = useState("");
 	const [email, setEmail] = useState('');
 	const [otpEmail, setOtpEmail] = useState(0);
-	// SnackBar
 	const [open, setOpen] = React.useState(false);
-	// OTP
 	const [otp, setOtp] = useState('');
 	const [checked, setChecked] = React.useState(true);
 	const [showPassword, setShowPassword] = React.useState(false);
@@ -115,6 +118,9 @@ function Signup() {
 	const [errorSnackBarText, setErrorSnackBarText] = useState('Please, complete all inputs!');
 	const [headerButton, setHeaderButton] = useState('SIGN IN');
 	const [selectedAvatar, setSelectedAvatar] = useState('');
+
+	const [overflowState, setOverflowState] = useState('auto');
+	const [showUploadMenu, setShowUploadMenu] = useState('none');
 
 	const isValidUsername = /^[A-Za-z]{5,}[A-Za-z0-9]*$/.test(username);
 
@@ -155,9 +161,9 @@ function Signup() {
 
 	const handleAvatarClick = (avatarUrl) => {
 		if (selectedAvatar === avatarUrl) {
-		  setSelectedAvatar(null); // Если аватар уже был выбран, снимаем выбор
+		  setSelectedAvatar(null); 
 		} else {
-		  setSelectedAvatar(avatarUrl); // Иначе выбираем аватар
+		  setSelectedAvatar(avatarUrl);
 		}
 	  };
 
@@ -248,71 +254,58 @@ function Signup() {
 	  });
 	console.log(level)
   	const handleContinueClick = () => {
-
-		// if (fName.length < 5 || fName.length > 15 
-		// 	|| lName.length < 5 || lName.length > 15 || country === null) {
-		// 	if (fName.length > 15 || lName.length > 15) {
-		// 		console.log('2')
-		// 		setErrorSnackBarText('Your text input is too long! Max length is 15 chars');
-		// 		setErrorSnackBar(true);
-		// 		setHasError(true);
-		// 	}
-		//   } else {
-			
-			setHasError(false);
-			if (level === 0) {
-				if (fName.length < 5 || fName.length > 15 
-					|| lName.length < 5 || lName.length > 15 || country === null || country.label === '') {
-						console.log('w')
-						if (fName.length > 15 || lName.length > 15) {
-						setErrorSnackBarText('Your text input is too long! Max length is 15 chars');
-						setErrorSnackBar(true);
-						setHasError(true);
-						}
-						else {
-							setErrorSnackBarText('Please complete all inputs!');
-							setErrorSnackBar(true);
-							setHasError(true);
-						}
-						// if (fName.length < 5 || lName.length < 5) {
-						// }
-
+		setHasError(false);
+		if (level === 7) {
+			if (fName.length < 5 || fName.length > 15 
+				|| lName.length < 5 || lName.length > 15 || country === null || country.label === '') {
 					console.log('w')
-				}
-				else {
-					setProgress((prevState) => ({ ...prevState, level1: 100 }));
-					setLevel(1);
-					setHeaderButton('SIGN IN');
-				}
-			} else if (level === 1) {
-				if (username.length < 5 || username.length > 15 
-					|| password.length < 5 || password.length > 15 || confirmPassword !== password) {
-					if (username.length > 15 || password.length > 15) {
-						console.log('2')
+					if (fName.length > 15 || lName.length > 15) {
+					setErrorSnackBarText('Your text input is too long! Max length is 15 chars');
+					setErrorSnackBar(true);
+					setHasError(true);
+					}
+					else {
+						setErrorSnackBarText('Please complete all inputs!');
 						setErrorSnackBar(true);
-						setErrorSnackBarText('Your text input is too long! Max length is 15 chars');
 						setHasError(true);
 					}
-					else if (confirmPassword !== password) {
-						setErrorSnackBar(true);
-						setErrorSnackBarText('Passwords do not match');
-						setHasError(true);
-					}
-				}
-				else {
-					setProgress((prevState) => ({ ...prevState, level2: 100 }));
-					setLevel(2);
-					setHeaderButton('SKIP');
-				}
-			} else if (level === 2) {
-			  setProgress((prevState) => ({ ...prevState, level3: 100 }));
-			  setLevel(3);
-			  setHeaderButton('SIGN IN');
-			} else if (level === 3) {
-			  setHeaderButton('SIGN IN');
-			  console.log('333')
+					// if (fName.length < 5 || lName.length < 5) {
+					// }
+
+				console.log('w')
 			}
-		//   }
+			else {
+				setProgress((prevState) => ({ ...prevState, level1: 100 }));
+				setLevel(1);
+				setHeaderButton('SIGN IN');
+			}
+		} else if (level === 1) {
+			if (username.length < 5 || username.length > 15 
+				|| password.length < 5 || password.length > 15 || confirmPassword !== password) {
+				if (username.length > 15 || password.length > 15) {
+					console.log('2')
+					setErrorSnackBar(true);
+					setErrorSnackBarText('Your text input is too long! Max length is 15 chars');
+					setHasError(true);
+				}
+				else if (confirmPassword !== password) {
+					setErrorSnackBar(true);
+					setErrorSnackBarText('Passwords do not match');
+					setHasError(true);
+				}
+			}
+			else {
+				setProgress((prevState) => ({ ...prevState, level2: 100 }));
+				setLevel(2);
+				setHeaderButton('SKIP');
+			}
+		} else if (level === 2) {
+			setProgress((prevState) => ({ ...prevState, level3: 100 }));
+			setLevel(3);
+			setHeaderButton('SIGN IN');
+		} else if (level === 3) {
+			setHeaderButton('SIGN IN');
+		}
 		  
 
 	};
@@ -432,7 +425,7 @@ function Signup() {
 				</div>
 				}
 				{/* USER INFORMATION */}
-				{ level === 0 &&
+				{ level === 77 &&
 					<div className="rightside_reg_information" style={{ display: level === 0 ? 'block' : 'none' }}>
 						<div className="rightside_logo">
 							<img className="reg_logo" src={logoImage} alt="logo" />	
@@ -573,7 +566,7 @@ function Signup() {
 					</div>
 				}
 				{/* PASSWORD */}
-				{ level === 1 &&
+				{ level === 9 &&
 				<div className="rightside_reg_password" style={{ display: level === 1 ? 'block' : 'none' }}>
 					<div className="rightside_logo">
 						<img className="reg_logo" src={logoImage} alt="logo" />	
@@ -700,7 +693,7 @@ function Signup() {
 				</div>
 				}
 				{/* DETAILS */}
-				{ level === 2 &&
+				{ level === 5 &&
 					<div className="rightside_reg_details" style={{ display: level === 2 ? 'block' : 'none' }}>
 					<div className="rightside_logo">
 						<img className="reg_logo" src={logoImage} alt="logo" />	
@@ -808,7 +801,7 @@ function Signup() {
 				</div>
 				}
 				{/* FINISH REGISTRATION */}
-				{ level === 3 &&
+				{ level === 0 &&
 					<div className='rightside_reg_finish'>
 						<div className='rightside-reg-finish-wrapper'>
 							<div className="rightside_logo">
@@ -821,7 +814,7 @@ function Signup() {
 						</div>
 
 						<div className='avatars-wrapper'>
-							<div className='avatars-box'>
+							<div className='avatars-box' style={{overflow: overflowState}}>
 							{urlAvatars.map((avatar, index) => (
 								<label key={index} 
 								htmlFor={`signupAvatarId-${index}`} 
@@ -841,7 +834,19 @@ function Signup() {
 									/>
 								</label>
 								))}
-
+							</div>
+							<div className='avatars-wrapper-button'>
+								<Button 
+									variant="outlined" 
+									type="submit" 
+									sx={{mt: 2, width: '70%', height: 50, boxShadow: 5, borderRadius: '8px' }} 
+									style={buttonStyleUploadImg}
+									theme={theme}
+									onClick={() => {setOverflowState('hidden'); 
+													setShowUploadMenu('flex');}}
+									>
+									Upload your own image
+								</Button>
 							</div>
 						</div>
 
@@ -888,6 +893,20 @@ function Signup() {
 					{errorSnackBarText}
 				</Alert>
 			</Snackbar>
+			<div className='signupUploadImg'  style={{display: showUploadMenu}}>
+				<div className='signupUploadImg-logo'>
+				<Avatar
+					className="signupAvatar"
+					sx={{ width: 100, height: 100, ml: 2, mb: 2, mt: 2, mr: 2 }}
+					alt={username}
+					// src={}
+					/>
+
+				</div>
+
+			</div>
+			<div className='overlay' style={{display: showUploadMenu}} 
+			onClick={() => {setOverflowState('auto'); setShowUploadMenu('none');}}></div>
 		</div>
     </Container>
   );
@@ -1159,7 +1178,6 @@ const countries = [
 	{ code: 'MZ', label: 'Mozambique', phone: '258' },
 	{ code: 'NA', label: 'Namibia', phone: '264' },
 	{ code: 'NC', label: 'New Caledonia', phone: '687' },
-	{ code: 'NE', label: 'НИГЕРЫ ЕБАНЫЕ', phone: '227' },
 	{ code: 'NF', label: 'Norfolk Island', phone: '672' },
 	{ code: 'NG', label: 'Nigeria', phone: '234' },
 	{ code: 'NI', label: 'Nicaragua', phone: '505' },
