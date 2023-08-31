@@ -19,7 +19,10 @@ load_dotenv()
 def verify_reset_token(token: str, email: str):
     try:
         payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
-        if payload["email"] == email and payload["exp"] >= datetime.utcnow():
+        expiration_timestamp = payload["exp"]
+        expiration_datetime = datetime.fromtimestamp(expiration_timestamp)
+        
+        if payload["email"] == email and expiration_datetime >= datetime.utcnow():
             return True
         return False
     except jwt.ExpiredSignatureError:
