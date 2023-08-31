@@ -66,6 +66,13 @@ class Message(Base):
     
     chat = relationship("Chat", back_populates="messages")
     
+class RequestFormFromVerifEmail(BaseModel):
+    email: str
+    
+class RequestFormFromChangePassword(BaseModel):
+    password: str
+    
+    
 class MessageRequestForm:
 	
     def __init__(
@@ -82,15 +89,6 @@ class MessageRequestForm:
         self.current_user_id = current_user_id
         self.partner_user_id = partner_user_id
         
-# class ChatRequestForm:
-	
-#     def __init__(
-#         self,
-#         name: str = Form(),
-#         # user_id: int = Form(),
-#     ):
-#         self.name = name
-#         # self.user_id = user_id
 
 class MyResponse(BaseModel):
 	request: str
@@ -129,6 +127,16 @@ class OAuth2PasswordRequestFormSignup:
         self.scopes = scope.split()
         self.client_id = client_id
         self.client_secret = client_secret
+    
+class requestFormFromChangePassword:
+
+    def __init__(
+        self,
+        email: str = Form(),
+        password: str = Form(),
+    ):
+        self.email = email
+        self.password = password
 
 class OAuth2PasswordRequestFormSignin:
 

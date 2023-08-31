@@ -344,8 +344,8 @@ function Signup() {
   	const handleContinueClick = () => {
 		setHasError(false);
 		if (level === 0) {
-			if (fName.length < 5 || fName.length > 15 
-				|| lName.length < 5 || lName.length > 15 || country === null || country.label === '') {
+			if (fName.length < 4 || fName.length > 15 
+				|| lName.length < 4 || lName.length > 15 || country === null || country.label === '') {
 					console.log('w')
 					if (fName.length > 15 || lName.length > 15) {
 					setErrorSnackBarText('Your text input is too long! Max length is 15 chars');
@@ -532,8 +532,8 @@ function Signup() {
 								InputLabelProps={{style: { color: '#e0dfe7' },}} 
 								InputProps={{style: { color: '#e0dfe7' },}} 
 								sx={{...TextFieldStyles, mt: 2, width: 400, boxShadow: 2}}
-								error={fName.length > 0 && fName.length < 5}
-  								helperText={fName.length > 0 && fName.length < 5 && "First Name should be at least 5 characters"}
+								error={fName.length > 0 && fName.length < 4}
+  								helperText={fName.length > 0 && fName.length < 4 && "First Name should be at least 4 characters"}
 								autoFocus
 								/>
 								<TextField 

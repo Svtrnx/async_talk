@@ -7,15 +7,22 @@ from fastapi.security import OAuth2PasswordRequestForm
 from controller import userController
 from model.userModel import User, MyResponse, Message, Chat
 from schema.userSchema import Token
-from security.authSecurity import create_access_token, get_current_user, get_user_by_username, get_password_hash, oauth2_scheme
+from security.authSecurity import create_access_token, get_current_user, get_user_by_username, get_password_hash, oauth2_scheme, get_user_by_email
 from starlette.responses import RedirectResponse
 from model import userModel
 from database.crud import create_user, create_message, create_chat, get_all_users, get_all_chats, get_all_messages
 import jwt
 from dotenv import load_dotenv
+from config import SMTP_USERNAME, SMTP_PASSWORD
 from config import SECRET_KEY, ALGORITHM, ACCESS_TOKEN_EXPIRE_MINUTES
 from fastapi.staticfiles import StaticFiles
 from typing import Dict
+import smtplib
+from email.mime.multipart import MIMEMultipart
+from email.mime.text import MIMEText
+from email.message import EmailMessage
+import random
+import string
 # import cloudinary
 # import cloudinary.uploader
 
@@ -30,7 +37,8 @@ load_dotenv()
 # instance
 userRouter = APIRouter()
 #templates = Jinja2Templates(directory="templates/") 
-
+def generate_reset_code(length=4):
+    return ''.join(random.choices(string.ascii_uppercase + string.digits, k=length))
 # Словарь для хранения соединений WebSocket
 connections: Dict[str, WebSocket] = {}
 
@@ -256,7 +264,41 @@ async def show_event(current_user: User = Depends(get_current_user)):
         return {"Verification": "Authorized", "user": current_user}
 
 
-
+@userRouter.post("/request-reset")
+def request_reset_password(data: userModel.RequestFormFromVerifEmail, db: Session = Depends(get_db)):
+    user_email = data.email
+    db_user = get_user_by_email(db=db, email=user_email)
+    if db_user:
+        reset_code = generate_reset_code()
+        # Далее ваша логика для отправки письма и обновления кода сброса в базе данных
+        # Отправка электронной почты
+        smtp_host = "smtp.gmail.com"
+        smtp_port = 465
+        smtp_username = SMTP_USERNAME
+        smtp_password = SMTP_PASSWORD
+        
+        body = f"Your password reset code is: {reset_code}"
+        
+        # msg = MIMEMultipart()
+        email = EmailMessage()
+        email.set_content(body)
+        email['Subject'] = "Password Reset Code"
+        email['From'] = smtp_username
+        email['To'] = user_email
+        
+        
+        try:
+            server = smtplib.SMTP_SSL(smtp_host, smtp_port)
+            server.login(smtp_username, smtp_password)
+            server.send_message(email)
+            server.quit()
+            
+            # Добавьте вашу логику обновления кода сброса в базе данных
+            
+            return {"message": "Reset code sent successfully"}
+        except Exception as e:
+            print("Error sending email:", str(e))
+            raise HTTPException(status_code=500, detail="Failed to send email")
     
     
 

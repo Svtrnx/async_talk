@@ -58,7 +58,7 @@ body {
 	font-family: 'Montserrat', sans-serif;
 	font-size: 13px;
 	font-weight: 100;
-	margin: 0px 0px 20px 0px;
+	/* margin: 0px 0px 20px 0px; */
 
 }
 
@@ -260,9 +260,9 @@ body {
 	display: inline-flex;
     justify-content: center;
     align-items: center;
-    position: absolute;
+    /* position: absolute; */
     bottom: 0;
-    padding: 45px;
+    /* padding: 45px; */
   }
   
   .progress_level_footer {
@@ -419,20 +419,21 @@ body {
 }
 
 .rightside-reg-finish-wrapper {
-	position: absolute;
+	margin-top: -10%;
+	/* position: absolute;
     top: 0;
     margin-top: 150px;
     left: 50%;
-    transform: translate(-50%, -50%);
+    transform: translate(-50%, -50%); */
 }
-
+/* 
 .rightside_reg_finish_data {
 	position: absolute;
     bottom: 0;
     margin-bottom: 70px;
     left: 50%;
     transform: translate(-50%, -50%);
-}
+} */
 
 .avatars-wrapper {
 	display: grid;
@@ -587,6 +588,12 @@ body {
     margin-bottom: 20px;
     z-index: 200;
     transition: border-color 0.3s ease-in-out;
+}
+
+@media (max-height: 900px) {
+    .signupUploadImg-upload-area {
+        height: 35vh; /* Измените высоту по вашему усмотрению */
+    }
 }
 
 .signupUploadImg-upload-area.active {
