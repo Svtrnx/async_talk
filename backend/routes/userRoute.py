@@ -1,5 +1,5 @@
 from datetime import timedelta, datetime
-from fastapi import Depends, APIRouter, Request, Response, status, HTTPException, Cookie, Depends, HTTPException, status, WebSocket, Request, Body
+from fastapi import Depends, APIRouter, Request, Response, status, HTTPException, Cookie, Depends, HTTPException, status, WebSocket, Request, Body, Form
 from sqlalchemy.orm import Session
 from sqlalchemy import or_
 from database.connection import get_db
@@ -290,15 +290,26 @@ def request_reset_password(data: userModel.RequestFormFromVerifEmail, db: Sessio
 @userRouter.get("/reset-password-verify")
 async def reset_password(token: str, email: str):
     if verify_reset_token(token, email):
-        # Разрешить сброс пароля
+        
         return {"message": "Reset password allowed"}
     else:
         raise HTTPException(status_code=400, detail="Invalid or expired token")
 
 
 
-
-
+@userRouter.post("/change-password")
+def change_password(data: userModel.ChangePasswordRequest, db: Session = Depends(get_db)):
+    if verify_reset_token(data.token, data.email):
+        user = get_user_by_email(db=db, email=data.email)
+        if user:
+            hashed_password = get_password_hash(data.new_password)
+            user.password = hashed_password
+            db.commit()
+            return {"message": "Password changed successfully"}
+        else:
+            raise HTTPException(status_code=404, detail="User not found")
+    else:
+        raise HTTPException(status_code=400, detail="Invalid or expired token")
 
 
 

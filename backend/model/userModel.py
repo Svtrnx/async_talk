@@ -72,6 +72,10 @@ class RequestFormFromVerifEmail(BaseModel):
 class RequestFormFromChangePassword(BaseModel):
     password: str
     
+class ChangePasswordRequest(BaseModel):
+    token: str
+    email: str
+    new_password: str
     
 class MessageRequestForm:
 	
