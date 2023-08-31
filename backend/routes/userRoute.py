@@ -7,7 +7,7 @@ from fastapi.security import OAuth2PasswordRequestForm
 from controller import userController
 from model.userModel import User, MyResponse, Message, Chat
 from schema.userSchema import Token
-from security.authSecurity import create_access_token, get_current_user, get_user_by_username, get_password_hash, oauth2_scheme, get_user_by_email
+from security.authSecurity import create_access_token, get_current_user, get_user_by_username, get_password_hash, oauth2_scheme, get_user_by_email, generate_reset_token, generate_reset_code, verify_reset_token
 from starlette.responses import RedirectResponse
 from model import userModel
 from database.crud import create_user, create_message, create_chat, get_all_users, get_all_chats, get_all_messages
@@ -15,16 +15,9 @@ import jwt
 from dotenv import load_dotenv
 from config import SMTP_USERNAME, SMTP_PASSWORD
 from config import SECRET_KEY, ALGORITHM, ACCESS_TOKEN_EXPIRE_MINUTES
-from fastapi.staticfiles import StaticFiles
 from typing import Dict
 import smtplib
-from email.mime.multipart import MIMEMultipart
-from email.mime.text import MIMEText
 from email.message import EmailMessage
-import random
-import string
-# import cloudinary
-# import cloudinary.uploader
 
 load_dotenv()
 
@@ -37,27 +30,23 @@ load_dotenv()
 # instance
 userRouter = APIRouter()
 #templates = Jinja2Templates(directory="templates/") 
-def generate_reset_code(length=4):
-    return ''.join(random.choices(string.ascii_uppercase + string.digits, k=length))
-# Словарь для хранения соединений WebSocket
+
+
 connections: Dict[str, WebSocket] = {}
 
-# WebSocket-маршрут для подключения клиента
 @userRouter.websocket("/ws/{chat_id}/{user_id}")
 async def websocket_endpoint(websocket: WebSocket, chat_id: str, user_id: str):
     await websocket.accept()
     connections[user_id] = websocket
     try:
         while True:
-            # Получение сообщения от клиента
             data = await websocket.receive_text()
             recipient_id, message = data.split(":")
-            # Отправка сообщения получателю
+            
             recipient_socket = connections.get(recipient_id)
             if recipient_socket:
                 await recipient_socket.send_text(f"{message}")
     finally:
-        # Удаление соединения при отключении клиента
         del connections[user_id]
 
 
@@ -140,7 +129,7 @@ async def create_new_message(
         message_sender=form_data.message_sender,
         current_user_id=form_data.current_user_id,
         partner_user_id=form_data.partner_user_id,
-        date_message=datetime.now(),  # Текущее время создания сообщения
+        date_message=datetime.now(), 
         )
     message = create_message(db=db, message=new_message)
     return {"user": message}, 200
@@ -239,7 +228,7 @@ async def login_for_access_token(response:Response, request:Request, db: Session
     )
     response = RedirectResponse(url="/index",status_code=status.HTTP_302_FOUND)
     
-    # to save token in cookie
+
     response.set_cookie(key="access_token",value=f"Bearer {access_token}", httponly=True, samesite="None",
                         secure=True, max_age=ACCESS_TOKEN_EXPIRE_MINUTES * 60) 
     return response    
@@ -247,7 +236,7 @@ async def login_for_access_token(response:Response, request:Request, db: Session
 
 @userRouter.post("/logout")
 async def logout(response: Response):
-    # Удаляем или очищаем значение cookie
+    
     response.delete_cookie("access_token", samesite="none", secure=True, httponly=True)
 
     return {"message": "Logged out successfully"}
@@ -269,23 +258,21 @@ def request_reset_password(data: userModel.RequestFormFromVerifEmail, db: Sessio
     user_email = data.email
     db_user = get_user_by_email(db=db, email=user_email)
     if db_user:
-        reset_code = generate_reset_code()
-        # Далее ваша логика для отправки письма и обновления кода сброса в базе данных
-        # Отправка электронной почты
+        reset_token = generate_reset_token(user_email) 
+        reset_link = f"https://kenzo-a0ml.onrender.com/reset-password?token={reset_token}&email={user_email}"
+        
         smtp_host = "smtp.gmail.com"
         smtp_port = 465
         smtp_username = SMTP_USERNAME
         smtp_password = SMTP_PASSWORD
         
-        body = f"Your password reset code is: {reset_code}"
+        body = f"Follow this link to reset your password: {reset_link}"
         
-        # msg = MIMEMultipart()
         email = EmailMessage()
         email.set_content(body)
-        email['Subject'] = "Password Reset Code"
+        email['Subject'] = "Password Reset Link"
         email['From'] = smtp_username
         email['To'] = user_email
-        
         
         try:
             server = smtplib.SMTP_SSL(smtp_host, smtp_port)
@@ -293,15 +280,20 @@ def request_reset_password(data: userModel.RequestFormFromVerifEmail, db: Sessio
             server.send_message(email)
             server.quit()
             
-            # Добавьте вашу логику обновления кода сброса в базе данных
+            # logic for updating the reset code in the database
             
-            return {"message": "Reset code sent successfully"}
+            return {"message": "Password reset link sent successfully"}
         except Exception as e:
             print("Error sending email:", str(e))
             raise HTTPException(status_code=500, detail="Failed to send email")
     
-    
-
+@userRouter.get("/reset-password-verify")
+async def reset_password(token: str, email: str):
+    if verify_reset_token(token, email):
+        # Разрешить сброс пароля
+        return {"message": "Reset password allowed"}
+    else:
+        raise HTTPException(status_code=400, detail="Invalid or expired token")
 
 
 

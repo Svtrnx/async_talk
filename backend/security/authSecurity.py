@@ -12,8 +12,29 @@ from security.cookie import OAuth2PasswordBearerWithCookie
 from dotenv import load_dotenv
 from config import SECRET_KEY, ALGORITHM, ACCESS_TOKEN_EXPIRE_MINUTES, COOKIE_NAME
 from model.userModel import User    
-
+import random
+import string
 load_dotenv()
+
+def verify_reset_token(token: str, email: str):
+    try:
+        payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
+        if payload["email"] == email and payload["exp"] >= datetime.utcnow():
+            return True
+        return False
+    except jwt.ExpiredSignatureError:
+        return False
+    except jwt.DecodeError:
+        return False
+
+def generate_reset_token(email: str):
+    expiration = datetime.utcnow() + timedelta(hours=3)  # Токен действителен 3 часа
+    payload = {"email": email, "exp": expiration}
+    token = jwt.encode(payload, SECRET_KEY, algorithm=ALGORITHM)
+    return token
+
+def generate_reset_code(length=4):
+    return ''.join(random.choices(string.ascii_uppercase + string.digits, k=length))
 
 def get_user_by_username(db: Session, username: str):
     return db.query(User).filter(User.username == username).first()
@@ -22,7 +43,7 @@ def get_user_by_email(db: Session, email: str):
     return db.query(User).filter(User.email == email).first()
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
-oauth2_scheme = OAuth2PasswordBearerWithCookie(tokenUrl="signin") # Должна быть одинаковая ссылка с signin
+oauth2_scheme = OAuth2PasswordBearerWithCookie(tokenUrl="signin")
 
 authRouter = APIRouter()
 

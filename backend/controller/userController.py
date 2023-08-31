@@ -12,7 +12,6 @@ def create_user(db: Session, signup: User) -> bool:
 
 
 
-
 def authenticate_user(db: Session, username: str, password: str):
     user = get_user_by_username(db=db, username=username)
     if not user:

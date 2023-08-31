@@ -2,6 +2,7 @@ import {Routes, Route, useNavigate  } from 'react-router-dom';
 import Signup from './components/signup/signup';
 import Signin from './components/signin/signin';
 import Messenger from './components/messenger/messenger';
+import ResetPassword from './components/reset/resetPassword';
 import React, { useEffect } from 'react';
 import axios from 'axios';
 import './App.css'
@@ -44,6 +45,7 @@ function App() {
       <Route path="/" element={<Signin />} />
       <Route path="/signup" element={<Signup />} />
       <Route path="/messenger" element={<Messenger />} />
+      <Route path="/reset-password/" element={<ResetPassword />} />
     </Routes>
   );
   
