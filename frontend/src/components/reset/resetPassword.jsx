@@ -80,12 +80,12 @@ function ResetPassword() {
 					'Content-Type': 'application/json'
 					}
 				});
-				console.log("MESSAGE RESPONSE: ", response);
+				console.log("MESSAGE RESPONSE: ", response.data.status);
 				setIsAuthorized(true);
 			}
 			catch (err) {
 				setIsAuthorized(false);
-				// navigate('/', { replace: true });
+				navigate('/', { replace: true });
 				console.log("SEND MESSAGE ERROR: ", err);
 			}
 	}

@@ -13,26 +13,26 @@ function App() {
   const [isAuthorized, setIsAuthorized] = React.useState(false);
   const navigate = useNavigate();
 
-  // useEffect(() => {
-  //   axios.defaults.withCredentials = true;
-  //   const fetchData = async () => {
-  //     try {
-  //       const response = await axios.get('https://kenzoback.onrender.com/api/check_verification', {
-  //         headers: {
-  //           'Content-Type': 'application/json',
-  //         }
-  //       });
+  useEffect(() => {
+    axios.defaults.withCredentials = true;
+    const fetchData = async () => {
+      try {
+        const response = await axios.get('https://kenzoback.onrender.com/api/check_verification', {
+          headers: {
+            'Content-Type': 'application/json',
+          }
+        });
         
-  //       navigate('/messenger', { replace: true });
+        navigate('/messenger', { replace: true });
 
-  //     } catch (error) {
-  //       setIsAuthorized(false);
-  //       console.error(error);
-  //     }
-  //   };
+      } catch (error) {
+        setIsAuthorized(false);
+        console.error(error);
+      }
+    };
 
-  //   fetchData();
-  // }, [navigate]);
+    fetchData();
+  }, [navigate]);
 
   // if (isLoading === null) {
   //   return <div style={{display: 'flex', justifyContent: 'center', marginTop: '50vh'}}><span className="loaderApp" style={{display: 'flex'}}></span></div>
