@@ -20,18 +20,17 @@ import Messages from './Messages/Messages.jsx';
 import './messenger.css';
 
 
-// Создаем пользовательские стили для Menu
 const StyledMenu = styled(Menu)(({ theme }) => ({
   '& .MuiMenuItem-root': {
-    color: '#e0dfe7', // Цвет шрифта
-    fontFamily: 'Exo', // Шрифт
+    color: '#e0dfe7', 
+    fontFamily: 'Exo', 
     '&:hover': {
-      color: '#ffffff', // Цвет шрифта при наведении
-      backgroundColor: '#222328', // Цвет фона при наведении
+      color: '#ffffff',
+      backgroundColor: '#222328',
      },
   },
   '& .MuiPaper-root': {
-    backgroundColor: '#1c1d21', // Цвет фона
+    backgroundColor: '#1c1d21',
   },
 }));
 
@@ -120,15 +119,12 @@ function Messenger() {
       setAnchorElUser(null);
     } 
     else if (setting === 'Profile'){
-      // Обработка других пунктов меню
       console.log(`Clicked on ${setting}`);
     }
     else if (setting === 'Account'){
-      // Обработка других пунктов меню
       console.log(`Clicked on ${setting}`);
     }
     else if (setting === 'Dashboard'){
-      // Обработка других пунктов меню
       console.log(`Clicked on ${setting}`);
     }
   };
@@ -150,7 +146,6 @@ function Messenger() {
     '& .MuiPaper-root': {
       backgroundColor: '#1c1d21',
     },
-    // Дополнительные стили для CustomMenuContainer, если необходимо
   });
 
 

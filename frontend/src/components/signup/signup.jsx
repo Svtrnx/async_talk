@@ -8,6 +8,8 @@ import imgActive from '../../img/leftside_reg_active.png';
 import imgWaiting from '../../img/leftside_reg_waiting.png';
 import imgBack from '../../img/back.png';
 import imgOTP from '../../img/otp_verif.png';
+import smallClose from '../../img/close3.png';
+import uploadImg from '../../img/uploadImg2.svg';
 import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/Visibility';
 import MailOutlineIcon from '@mui/icons-material/MailOutline';
@@ -118,11 +120,19 @@ function Signup() {
 	const [errorSnackBarText, setErrorSnackBarText] = useState('Please, complete all inputs!');
 	const [headerButton, setHeaderButton] = useState('SIGN IN');
 	const [selectedAvatar, setSelectedAvatar] = useState('');
-
 	const [overflowState, setOverflowState] = useState('auto');
 	const [showUploadMenu, setShowUploadMenu] = useState('none');
+	const fileInputRef = useRef(null);
+	
+	const [drag, setDrag] = useState(false);
+	const [draggedFileName, setDraggedFileName] = useState('');
+
+
 
 	const isValidUsername = /^[A-Za-z]{5,}[A-Za-z0-9]*$/.test(username);
+
+
+	console.log(draggedFileName)
 
 	const urlAvatars = [
 		"https://res.cloudinary.com/dlwuhl9ez/image/upload/v1693168301/original-623f94255643870746b3c5cc9814ad97_ehra7z.png",
@@ -158,6 +168,84 @@ function Signup() {
 
 	console.log(selectedAvatar)
 
+	const handleFileUpload = (event) => {
+        const file = event.target.files;
+		
+		if (file.length > 0) {
+			const fileToUpload = file[0];
+	
+			const cloud_name = 'dlwuhl9ez';
+
+			const formData = new FormData();
+			formData.append('file', fileToUpload);
+			formData.append("cloud_name", cloud_name);
+			formData.append("upload_preset", "aecdrcq4");
+
+	
+			fetch(`https://api.cloudinary.com/v1_1/${cloud_name}/image/upload`, {
+				method: 'POST',
+				body: formData,
+			})
+			.then(response => response.json())
+			.then(data => {
+				console.log('Cloudinary response:', data);
+				setSelectedAvatar(data.secure_url)
+			})
+			.catch(error => {
+				console.error('Error uploading file:', error);
+			});
+		}
+		
+    };
+
+	const openFileInput = () => {
+        fileInputRef.current.click();
+    };
+
+	function dragStartHandler(e) {
+		e.preventDefault();
+		setDrag(true);
+		
+	}
+	
+	function dragLeaveHandler(e) {
+		e.preventDefault();
+		setDrag(false);
+	}
+	
+	function dropHandler(e) {
+		e.preventDefault();
+		setDrag(false);
+	
+		const droppedFiles = e.dataTransfer.files;
+	
+		if (droppedFiles.length > 0) {
+			const fileToUpload = droppedFiles[0];
+	
+			const cloud_name = 'dlwuhl9ez';
+
+			const formData = new FormData();
+			formData.append('file', fileToUpload);
+			formData.append("cloud_name", cloud_name);
+			formData.append("upload_preset", "aecdrcq4");
+
+	
+			fetch(`https://api.cloudinary.com/v1_1/${cloud_name}/image/upload`, {
+				method: 'POST',
+				body: formData,
+			})
+			.then(response => response.json())
+			.then(data => {
+				console.log('Cloudinary response:', data);
+				setSelectedAvatar(data.secure_url)
+			})
+			.catch(error => {
+				console.error('Error uploading file:', error);
+			});
+		}
+	}
+	
+	
 
 	const handleAvatarClick = (avatarUrl) => {
 		if (selectedAvatar === avatarUrl) {
@@ -255,7 +343,7 @@ function Signup() {
 	console.log(level)
   	const handleContinueClick = () => {
 		setHasError(false);
-		if (level === 7) {
+		if (level === 0) {
 			if (fName.length < 5 || fName.length > 15 
 				|| lName.length < 5 || lName.length > 15 || country === null || country.label === '') {
 					console.log('w')
@@ -269,8 +357,6 @@ function Signup() {
 						setErrorSnackBar(true);
 						setHasError(true);
 					}
-					// if (fName.length < 5 || lName.length < 5) {
-					// }
 
 				console.log('w')
 			}
@@ -425,7 +511,7 @@ function Signup() {
 				</div>
 				}
 				{/* USER INFORMATION */}
-				{ level === 77 &&
+				{ level === 0 &&
 					<div className="rightside_reg_information" style={{ display: level === 0 ? 'block' : 'none' }}>
 						<div className="rightside_logo">
 							<img className="reg_logo" src={logoImage} alt="logo" />	
@@ -566,7 +652,7 @@ function Signup() {
 					</div>
 				}
 				{/* PASSWORD */}
-				{ level === 9 &&
+				{ level === 1 &&
 				<div className="rightside_reg_password" style={{ display: level === 1 ? 'block' : 'none' }}>
 					<div className="rightside_logo">
 						<img className="reg_logo" src={logoImage} alt="logo" />	
@@ -693,7 +779,7 @@ function Signup() {
 				</div>
 				}
 				{/* DETAILS */}
-				{ level === 5 &&
+				{ level === 2 &&
 					<div className="rightside_reg_details" style={{ display: level === 2 ? 'block' : 'none' }}>
 					<div className="rightside_logo">
 						<img className="reg_logo" src={logoImage} alt="logo" />	
@@ -801,7 +887,9 @@ function Signup() {
 				</div>
 				}
 				{/* FINISH REGISTRATION */}
-				{ level === 0 &&
+				{ level === 3 &&
+
+
 					<div className='rightside_reg_finish'>
 						<div className='rightside-reg-finish-wrapper'>
 							<div className="rightside_logo">
@@ -843,7 +931,7 @@ function Signup() {
 									style={buttonStyleUploadImg}
 									theme={theme}
 									onClick={() => {setOverflowState('hidden'); 
-													setShowUploadMenu('flex');}}
+													setShowUploadMenu('grid');}}
 									>
 									Upload your own image
 								</Button>
@@ -893,20 +981,73 @@ function Signup() {
 					{errorSnackBarText}
 				</Alert>
 			</Snackbar>
+
 			<div className='signupUploadImg'  style={{display: showUploadMenu}}>
 				<div className='signupUploadImg-logo'>
-				<Avatar
-					className="signupAvatar"
-					sx={{ width: 100, height: 100, ml: 2, mb: 2, mt: 2, mr: 2 }}
-					alt={username}
-					// src={}
-					/>
+					<h2>CURRENT AVATAR</h2>
+					<div className='logo-container'>
+						<Avatar
+							className="signupAvatarUpload"
+							sx={{ width: 100, height: 100 }}
+							alt={selectedAvatar === '' || selectedAvatar === null ? username : selectedAvatar}
+							src={selectedAvatar === '' || selectedAvatar === null ? username : selectedAvatar}
+						/>
+						{ selectedAvatar === '' || selectedAvatar === null ? null :
+						<div className="remove-avatar-icon" onClick={() => setSelectedAvatar('')}>
+							<img src={smallClose} alt=""  style={{width: '20px', marginTop: '1px'}}/>
+						</div>
+						}
+					</div>
 
 				</div>
 
+				<div
+				className={drag ? 'signupUploadImg-upload-area active' : 'signupUploadImg-upload-area'}
+				onDragStart={e => dragStartHandler(e)}
+				onDragLeave={e => dragLeaveHandler(e)}
+				onDragOver={e => dragStartHandler(e)}
+				onDrop={e => dropHandler(e)}
+				>
+				{drag 
+				?
+				<span className="loader2"></span>
+					
+				// <h2>{draggedFileName}</h2>
+				: 
+				<div className='signupUploadImg-upload-area' style={drag ? { border: 'none' } : { border: 'none' }}>
+					<div style={{ display: 'inline', textAlignLast: 'center' }}>
+						<img src={uploadImg} alt="" style={{ width: '80px' }} />
+						<h2>Drop and drag an image</h2>
+						<div className="or-container">
+							<div className="line"></div>
+							<span className="or-text">OR</span>
+							<div className="line"></div>
+						</div>
+						<input
+						type="file"
+						accept="image/*"
+						onChange={handleFileUpload}
+						style={{ display: 'none' }}
+						ref={fileInputRef}
+					/>
+						<Button
+							variant="outlined"
+							onClick={openFileInput}
+							sx={{ width: '100%', height: 50, boxShadow: 5, borderRadius: '8px' }}
+							style={buttonStyleUploadImg}
+							theme={theme}
+						>
+							BROWSE
+						</Button>
+					</div>
+				</div>
+    			}
+			</div>
+
 			</div>
 			<div className='overlay' style={{display: showUploadMenu}} 
-			onClick={() => {setOverflowState('auto'); setShowUploadMenu('none');}}></div>
+				onClick={() => {setOverflowState('auto'); setShowUploadMenu('none');}}>
+			</div>
 		</div>
     </Container>
   );

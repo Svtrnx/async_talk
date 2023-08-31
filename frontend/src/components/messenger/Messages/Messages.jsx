@@ -47,7 +47,6 @@ const styles = {
   },
 };
 
-// const CSSTextField = withStyles(styles)(TextField);
 
 
 const TextFieldStyles = {
@@ -149,7 +148,7 @@ function Messages() {
   const [userAvatar, setUserAvatar] = useState('');
   const [sortedMessages, setSortedMessages] = useState([]);
   const [isClearingChat, setIsClearingChat] = useState(false);
-  const [chatCleared, setChatCleared] = useState(false); // Изначально считаем, что чат очищен
+  const [chatCleared, setChatCleared] = useState(false);
   const [errorSnackBar, setErrorSnackBar] = useState(false);
   const [errorSnackBarText, setErrorSnackBarText] = useState('');
 
@@ -176,7 +175,6 @@ function Messages() {
   }, [])
 
   useEffect(() => {
-    // Замените на свой public_id и cloud_name
     const publicId = '825156941529614';
     const cloudName = 'dlwuhl9ez';
 
@@ -195,7 +193,6 @@ function Messages() {
     setUserId(newUserId);
   
     if (chatId && dataUsername.username) {
-      // Проверяем, есть ли уже открытое соединение для данного chatId
       if (!ws) {
         const newWs = new WebSocket(`wss://kenzoback.onrender.com/ws/${chatId}/${dataUsername.username}`);
         setWs(newWs);
@@ -213,12 +210,12 @@ function Messages() {
 
         newWs.onmessage = (event) => {
           const receivedMessage = event.data;
-          const timestamp = new Date(); // Текущая временная метка
+          const timestamp = new Date(); 
           const websocketMessage = {
             text: receivedMessage,
-            date_message: timestamp.toISOString(), // Преобразование времени в формат ISO строки
-            message_sender: chatUsername, // Предполагается, что отправитель - текущий пользователь
-            current_user_id: userId, // Предполагается, что userId - это идентификатор пользователя
+            date_message: timestamp.toISOString(), 
+            message_sender: chatUsername, 
+            current_user_id: userId, 
           };
           setChatMessages(prevMessages => [...prevMessages, websocketMessage]);
         };
@@ -229,7 +226,7 @@ function Messages() {
         };
       }
   
-      // Закрытие соединения при размонтировании компонента
+      
       return () => {
         if (ws) {
           ws.close();
@@ -251,15 +248,13 @@ function Messages() {
   // };
 
   const createRoom = () => {
-    // Ваша логика для создания комнаты
-    // Например, отправка запроса на сервер
     console.log('Create room');
   };
   
   
   const handleSendMessage = () => {
     if (messageValue) {
-      if (messageValue.trim() !== '') { // Проверяем, что сообщение не пустое после удаления лишних пробелов
+      if (messageValue.trim() !== '') {
         if (messageValue.length > 60) {
           setErrorSnackBar(true);
           setErrorSnackBarText('Too much symbols! Max: 60')
@@ -268,7 +263,6 @@ function Messages() {
         else {
           setErrorSnackBar(false);
       
-      // Отправка сообщения или выполнение другой логики
       console.log('Отправлено сообщение:', messageValue);
 
       async function sendMessage() {
@@ -317,7 +311,6 @@ function Messages() {
       
 
 
-      // Очистка поля ввода
       setMessageValue('');
     }
     }
@@ -330,7 +323,6 @@ function Messages() {
   // USE EFFECT FOR CHATS QUERY
   useEffect(() => {
 
-      // Устанавливаем глобально credentials для axios
   axios.defaults.withCredentials = true;
 
   const fetchData = async () => {
@@ -404,50 +396,6 @@ function Messages() {
   }
 
 
-//   useEffect(() => {
-//   async function sortAndProcessMessages() {
-//     const sortedMessages = await Promise.all(
-//       messagesData
-//         .concat(chatMessages)
-//         .sort((a, b) => moment(b.date_message).valueOf() - moment(a.date_message).valueOf())
-//         .map((message, index, array) => {
-//           const nextMessageSender = index < array.length - 1 ? array[index + 1].message_sender : null;
-//           const isCurrentUser = dataUsername.id === message.message_sender;
-//           const showAvatar = message.message_sender !== nextMessageSender;
-//           const isWebSocketMessage = chatMessages.includes(message);
-  
-//           const displayedAvatar = isCurrentUser ? dataUsername.avatar : currentUserAvatar;
-  
-//           return (
-//             <div className={`rightside-messages-main-message${isWebSocketMessage ? " webSocketMessage" : ""}`} key={message.id}>
-//               <div className="rightside-messages-main-avatar">
-//                 {showAvatar && (
-//                   <Avatar
-//                     sx={{ width: 25, height: 25 }}
-//                     alt=""
-//                     src={displayedAvatar}
-//                   />
-//                 )}
-//               </div>
-//               <div className="rightside-messages-main-message-text">
-//                 <div className="rightside-messages-main-message-text-container">
-//                   <h2>
-//                     {message.text}
-//                   </h2>
-//                 </div>
-//               </div>
-//             </div>
-//           );
-//         })
-//     );
-
-//     setSortedMessages(sortedMessages);
-//   }
-
-//   sortAndProcessMessages();
-// }, [messagesData, chatMessages]);
-
-
 
   const handleUserClickCreateChat = (userId, username, avatar, event) => {
     if (avatar === null) {
@@ -468,9 +416,9 @@ function Messages() {
     });
   
     if (isSelected) {
-      setSelectedUsers([userId]); // Показываем только выбранного пользователя
+      setSelectedUsers([userId]);
     } else {
-      setSelectedUsers([userId]); // Показываем только выбранного пользователя
+      setSelectedUsers([userId]); 
     }
   };
 
@@ -490,12 +438,11 @@ function Messages() {
 
     try {
       await clearChatFunction();
-      // Очистка успешно завершена, теперь можно открыть чат
+      
       
     } catch (error) {
-      // Обработка ошибок очистки чата, если необходимо
       console.error("Error clearing chat:", error);
-      setIsClearingChat(false); // Возвращаем обратно, чтобы можно было попробовать снова
+      setIsClearingChat(false); 
     }
   
     try {
