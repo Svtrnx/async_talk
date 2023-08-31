@@ -53,7 +53,7 @@ const buttonStyleUploadImg = {
   };
 
 function ResetPassword() {
-	const [isAuthorized, setIsAuthorized] = React.useState(true);
+	const [isAuthorized, setIsAuthorized] = React.useState(false);
 	const [password, setPassword] = React.useState('');
 
 	const [confirmPassword, setConfirmPassword] = React.useState('');
@@ -80,7 +80,7 @@ function ResetPassword() {
 					'Content-Type': 'application/json'
 					}
 				});
-				console.log("MESSAGE RESPONSE: ", response.data.status);
+				console.log("MESSAGE RESPONSE: ", response);
 				setIsAuthorized(true);
 			}
 			catch (err) {
