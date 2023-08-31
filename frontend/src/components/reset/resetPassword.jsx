@@ -85,7 +85,7 @@ function ResetPassword() {
 			}
 			catch (err) {
 				setIsAuthorized(false);
-				navigate('/', { replace: true });
+				// navigate('/', { replace: true });
 				console.log("SEND MESSAGE ERROR: ", err);
 			}
 	}
