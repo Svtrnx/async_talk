@@ -367,7 +367,8 @@ function Signup() {
 			}
 		} else if (level === 1) {
 			if (username.length < 5 || username.length > 15 
-				|| password.length < 5 || password.length > 15 || confirmPassword !== password) {
+				|| password.length < 5 || password.length > 15 || 
+				confirmPassword !== password || isValidUsername === false) {
 				if (username.length > 15 || password.length > 15) {
 					console.log('2')
 					setErrorSnackBar(true);
@@ -452,7 +453,7 @@ function Signup() {
 							<div className={`bar2 level-${level}`} style={{ height: `${progress.level2}%` }}></div>
 						</div>
 						<h2>Verification</h2>
-						<h3>Please provide your emai</h3>
+						<h3>Please provide your email</h3>
 						<img src={getProgressImage(2)} alt="img" />
 						<div className="progress">
 							<div className={`bar3 level-${level}`} style={{ height: `${progress.level3}%` }}></div>
@@ -466,7 +467,7 @@ function Signup() {
 					<h2>© ASYNC TALK</h2>
 					<div>
 						<MailOutlineIcon sx={{ fontSize: 18 ,color: "#43444D" }}/>
-						<h3>asynctalk@gmail.com</h3>
+						<h3>asynctalk0@gmail.com</h3>
 					</div>
 				</div>
 			</div>
