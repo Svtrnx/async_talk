@@ -254,7 +254,7 @@ async def show_event(current_user: User = Depends(get_current_user)):
 
 
 @userRouter.post("/request-reset")
-def request_reset_password(data: userModel.RequestFormFromVerifEmail, db: Session = Depends(get_db)):
+async def request_reset_password(data: userModel.RequestFormFromVerifEmail, db: Session = Depends(get_db)):
     user_email = data.email
     db_user = get_user_by_email(db=db, email=user_email)
     if db_user:
@@ -266,7 +266,7 @@ def request_reset_password(data: userModel.RequestFormFromVerifEmail, db: Sessio
         smtp_username = SMTP_USERNAME
         smtp_password = SMTP_PASSWORD
         
-        body = f"Follow this link to reset your password: {reset_link}"
+        body = f"Follow this link to reset your password: {reset_link} \n It will expire after 20 minutes!"
         
         email = EmailMessage()
         email.set_content(body)

@@ -8,9 +8,10 @@ import IconButton from '@mui/material/IconButton';
 import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
 import logoImage from '../../img/logo2.png';
-// import Signup from '../signup/signup.jsx';
+import ResetSendLink from "../reset/resetSendLink";
 import {Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
+
 // import messenger from '../messenger/messenger.jsx'
 
 
@@ -44,7 +45,7 @@ const theme = createTheme({
 		fontFamily: 'Montserrat',
 		fontSize: 13,
 	},
-	});
+});
 	
 const themeGetStarted = createTheme({
 	typography: {
@@ -74,6 +75,7 @@ function Signin() {
 	const [username, setUsername] = React.useState('');
 	const [password, setPassword] = React.useState('');
 	const [errorSnackBar, setErrorSnackBar] = useState(false);
+	const [showResetLink, setShowResetLink] = useState(false);
 	const [errorSnackBarText, setErrorSnackBarText] = useState('');
 	const navigate = useNavigate()
 	
@@ -130,9 +132,9 @@ function Signin() {
 		}
 	  };
 	  
-	  const handleButtonClick = () => {
-		fetchData();
-	  };
+	// const handleButtonClick = () => {
+	// return <ResetSendLink/>
+	// };
 
 
 	const handleClickShowPassword = () => setShowPassword((show) => !show);
@@ -147,7 +149,7 @@ function Signin() {
 		 <Container disableGutters maxWidth={false} sx={{height: "100vh"}}>
 			<div className="sginin_wrapper">
 				<div className="signin_logo">
-
+				
 				</div>
 				<div className="signin_wrapper">
 					<div className="signin_logo">
@@ -211,7 +213,7 @@ function Signin() {
 					</div>
 					<div className="sigin_forgot_password-container">
 						<div className="sigin_forgot_password">
-							<h2 onClick={handleButtonClick}>Forgot your password?</h2>
+							<h2 onClick={() => setShowResetLink(true)}>Forgot your password?</h2>
 							</div>
 						</div>
 						<Box sx={{mt: 3, borderBottom: 1, color: '#32333A' }}></Box>
@@ -238,6 +240,7 @@ function Signin() {
 					</Alert>
 				</Snackbar>
 			</div>
+			<ResetSendLink/>
 		 </Container>
 		</>
 	);

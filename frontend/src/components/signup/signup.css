@@ -592,7 +592,7 @@ body {
 
 @media (max-height: 900px) {
     .signupUploadImg-upload-area {
-        height: 35vh; /* Измените высоту по вашему усмотрению */
+        height: 35vh;
     }
 }
 

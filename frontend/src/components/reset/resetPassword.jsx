@@ -60,6 +60,7 @@ function ResetPassword() {
 	const [isError, setIsError] = React.useState(false);
 	const [showPassword, setShowPassword] = React.useState(false);
 	const [errorSnackBar, setErrorSnackBar] = useState(false);
+	const [successSnackBar, setSuccessSnackBar] = useState(false);
 	const [errorSnackBarText, setErrorSnackBarText] = useState('Please, complete all inputs!');
 
 	const navigate = useNavigate();
@@ -88,7 +89,7 @@ function ResetPassword() {
 				navigate('/', { replace: true });
 				console.log("SEND MESSAGE ERROR: ", err);
 			}
-	}
+		}
 		VerifyToken()
 	}, [])
 
@@ -140,6 +141,10 @@ function ResetPassword() {
 					email: email_verif, 
 					new_password: password,
 				});
+				setSuccessSnackBar(true)
+				setTimeout(() => {
+					navigate('/', { replace: true });
+				  }, 3000);
 				console.log(response.data);
 			}
         } catch (error) {
@@ -268,6 +273,11 @@ function ResetPassword() {
 				<Snackbar open={errorSnackBar} autoHideDuration={8000} onClose={handleClose}>
 					<Alert onClose={handleClose} severity="error" sx={{ width: 'auto' }}>
 						{errorSnackBarText}
+					</Alert>
+				</Snackbar>
+				<Snackbar open={successSnackBar} autoHideDuration={8000} onClose={handleClose}>
+					<Alert onClose={handleClose} severity="success" sx={{ width: 'auto' }}>
+						Successfully changed password!
 					</Alert>
 				</Snackbar>
 			</div>
