@@ -45,7 +45,7 @@ function ResetSendLink() {
 
 	async function VerifyToken() {
 		try {
-			const response = await axios.get("https://kenzoback.onrender.com/request-reset", {
+			const response = await axios.post("https://kenzoback.onrender.com/request-reset", {
 				params: {
 					email: sendEmail,
 				},
