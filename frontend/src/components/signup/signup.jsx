@@ -105,6 +105,7 @@ function Signup() {
 	const [date, setDate] = useState(null)
 	const [gender, setGender] = useState('')
 	const [username, setUsername] = useState("");
+	const [checkCode, setCheckCode] = useState("");
 	const [password, setPassword] = useState("");
 	const [confirmPassword, setConfirmPassword] = useState("");
 	const [email, setEmail] = useState('');
@@ -345,9 +346,10 @@ function Signup() {
 						'Content-Type': 'application/x-www-form-urlencoded'
 					}
 				});
-				console.log("MESSAGE OTP SEND TO MAIL: ", response);
 				setSendLoader('none')
 				handleChangeOTPEmail(1)
+
+				setCheckCode(response.data.check)
 				
 			}
 			catch (err) {
@@ -458,8 +460,15 @@ function Signup() {
 	  };
 
 	const handleClickOTPVerification = () => {
-		handleContinueClick();
-		handleOpenSnackbar(true);
+		if (otp === checkCode) {
+			handleContinueClick();
+			handleOpenSnackbar(true);
+		}
+		else {
+			setErrorSnackBar(true);
+			setErrorSnackBarText("ERROR OTP CODE INVALID!");
+			return
+		}
 	  };
 
 	  console.log(toSignin)
@@ -912,6 +921,7 @@ function Signup() {
 									onClick={handleClickOTPVerification}
 									theme={theme}>
 									Verify OTP
+
 									</Button>
 									}
 								</div>

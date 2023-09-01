@@ -316,9 +316,10 @@ def change_password(data: userModel.ChangePasswordRequest, db: Session = Depends
 async def request_reset_password(data: userModel.RequestFormFromVerifEmail, db: Session = Depends(get_db)):
     user_email = data.email
     db_user = get_user_by_email(db=db, email=user_email)
-    print("db user", db_user.email)
+    print("db user", db_user)
+    # user = db_user.email
     print("user_email", user_email)
-    if db_user.email == user_email:
+    if db_user != None:
         raise HTTPException(status_code=502, detail="Failed, this email already exists!")
     else:
         
@@ -345,7 +346,7 @@ async def request_reset_password(data: userModel.RequestFormFromVerifEmail, db: 
             
             # logic for updating the reset code in the database
             
-            return {"message": "OTP code sent successfully"}
+            return {"message": "OTP code sent successfully", "check": otp_code}
         except Exception as e:
             print("Error sending email:", str(e))
             raise HTTPException(status_code=500, detail="Failed to send email")
