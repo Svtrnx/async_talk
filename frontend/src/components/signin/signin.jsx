@@ -240,7 +240,13 @@ function Signin() {
 					</Alert>
 				</Snackbar>
 			</div>
-			<ResetSendLink/>
+			{showResetLink ?
+			<>
+				<ResetSendLink/>
+				<div className='overlay2' onClick={() => setShowResetLink(false)}></div>
+			</>
+			: null
+		}
 		 </Container>
 		</>
 	);

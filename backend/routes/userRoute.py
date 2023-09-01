@@ -286,6 +286,7 @@ async def request_reset_password(data: userModel.RequestFormFromVerifEmail, db: 
         except Exception as e:
             print("Error sending email:", str(e))
             raise HTTPException(status_code=500, detail="Failed to send email")
+        
     
 @userRouter.get("/reset-password-verify")
 async def reset_password(token: str, email: str):
@@ -311,7 +312,43 @@ def change_password(data: userModel.ChangePasswordRequest, db: Session = Depends
     else:
         raise HTTPException(status_code=400, detail="Invalid or expired token")
 
-
+@userRouter.post("/send-otp-code")
+async def request_reset_password(data: userModel.RequestFormFromVerifEmail, db: Session = Depends(get_db)):
+    user_email = data.email
+    db_user = get_user_by_email(db=db, email=user_email)
+    print("db user", db_user.email)
+    print("user_email", user_email)
+    if db_user.email == user_email:
+        raise HTTPException(status_code=502, detail="Failed, this email already exists!")
+    else:
+        
+        otp_code = generate_reset_code() 
+        
+        smtp_host = "smtp.gmail.com"
+        smtp_port = 465
+        smtp_username = SMTP_USERNAME
+        smtp_password = SMTP_PASSWORD
+        
+        body = f"OTP CODE: {otp_code}"
+        
+        email = EmailMessage()
+        email.set_content(body)
+        email['Subject'] = "OTP CODE"
+        email['From'] = smtp_username
+        email['To'] = user_email
+        
+        try:
+            server = smtplib.SMTP_SSL(smtp_host, smtp_port)
+            server.login(smtp_username, smtp_password)
+            server.send_message(email)
+            server.quit()
+            
+            # logic for updating the reset code in the database
+            
+            return {"message": "OTP code sent successfully"}
+        except Exception as e:
+            print("Error sending email:", str(e))
+            raise HTTPException(status_code=500, detail="Failed to send email")
 
 
 

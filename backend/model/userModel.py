@@ -105,7 +105,7 @@ class OAuth2PasswordRequestFormSignup:
     def __init__(
         self,
         grant_type: str = Form(default=None, regex="password"),
-        email: str = Form(default=""),
+        email: str = Form(),
         username: str = Form(),
         password: str = Form(),
         first_name: str = Form(),

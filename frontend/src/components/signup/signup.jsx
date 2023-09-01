@@ -122,6 +122,7 @@ function Signup() {
 	const [selectedAvatar, setSelectedAvatar] = useState('');
 	const [overflowState, setOverflowState] = useState('auto');
 	const [showUploadMenu, setShowUploadMenu] = useState('none');
+	const [sendLoader, setSendLoader] = React.useState('none');
 	const fileInputRef = useRef(null);
 	
 	const [drag, setDrag] = useState(false);
@@ -324,8 +325,39 @@ function Signup() {
 		setOtp(newValue)
 	}
 
-	const handleChange = () => {
-	  setChecked((prev) => !prev);
+	async function handleNextStepEmail() {
+		if (email.length > 0 && email.length < 5) {
+			if (email.length > 50) {
+				setErrorSnackBarText('Your email input is too long!');
+				setErrorSnackBar(true);
+				setHasError(true);
+			}
+			setErrorSnackBarText('Your email input is too short!');
+			setErrorSnackBar(true);
+			setHasError(true);
+		}
+		else {
+			try {
+				setSendLoader('')
+				const response = await axios.post("https://kenzoback.onrender.com/send-otp-code", {
+						email: email,
+					headers: {
+						'Content-Type': 'application/x-www-form-urlencoded'
+					}
+				});
+				console.log("MESSAGE OTP SEND TO MAIL: ", response);
+				setSendLoader('none')
+				handleChangeOTPEmail(1)
+				
+			}
+			catch (err) {
+				setSendLoader('none')
+				setErrorSnackBar(true);
+				setErrorSnackBarText("ERROR: " + err.message);
+				console.log("SEND MESSAGE ERROR: ", err);
+			}
+			setChecked((prev) => !prev);
+		}
 	};
 
 	const handleClickShowPassword = () => setShowPassword((show) => !show);
@@ -384,7 +416,7 @@ function Signup() {
 			else {
 				setProgress((prevState) => ({ ...prevState, level2: 100 }));
 				setLevel(2);
-				setHeaderButton('SKIP');
+				// setHeaderButton('SKIP');
 			}
 		} else if (level === 2) {
 			setProgress((prevState) => ({ ...prevState, level3: 100 }));
@@ -406,10 +438,11 @@ function Signup() {
 		  setProgress((prevState) => ({ ...prevState, level2: 0 }));
 		  setLevel(1);
 		  setHeaderButton('SIGN IN');
-		} else if (level === 3) {
+		} 
+		else if (level === 3) {
 		  setProgress((prevState) => ({ ...prevState, level3: 0 }));
 		  setLevel(2);
-		  setHeaderButton('SKIP');
+		//   setHeaderButton('SKIP');
 		}
 	  };
 	  
@@ -472,8 +505,9 @@ function Signup() {
 				</div>
 			</div>
 			<div className="rightside_reg_wrapper">
-			{ headerButton === 'SIGN IN' ?
-			(<Button 
+			{/* { headerButton === 'SIGN IN' ? */}
+			{/* ( */}
+				<Button 
 				variant="contained" 
 				sx={{width: 130, height: 50, boxShadow: 2, borderRadius: '4px', 
 					position: 'absolute',
@@ -488,8 +522,9 @@ function Signup() {
 				to="/signin"
 				>
 				SIGN IN
-			</Button>) : 
-			(<Button 
+			</Button>
+			{/* ) :  */}
+			{/* (<Button 
 				variant="contained" 
 				sx={{width: 130, height: 50, boxShadow: 2, borderRadius: '4px', 
 					position: 'absolute',
@@ -504,7 +539,7 @@ function Signup() {
 				>
 				SKIP
 			</Button>)
-			}
+			} */}
 				{level > 0 &&
 				<div className="backButton" onClick={handleBackClick}>
 					<img src={imgBack} alt="backBtn" />
@@ -545,8 +580,8 @@ function Signup() {
 								InputLabelProps={{style: { color: '#e0dfe7' },}} 
 								InputProps={{style: { color: '#e0dfe7' },}} 
 								sx={{...TextFieldStyles, mt: 3, width: 400, boxShadow: 2}}
-								error={lName.length > 0 && lName.length < 5}
-  								helperText={lName.length > 0 && lName.length < 5 && "Last Name should be at least 5 characters"}
+								error={lName.length > 0 && lName.length < 4}
+  								helperText={lName.length > 0 && lName.length < 4 && "Last Name should be at least 4 characters"}
 								autoFocus
 								/>
 							</ThemeProvider>
@@ -802,22 +837,26 @@ function Signup() {
 									InputLabelProps={{style: { color: '#e0dfe7' },}} 
 									InputProps={{style: { color: '#e0dfe7' },}} 
 									sx={{...TextFieldStyles, mt: 2, width: 400, boxShadow: 2}}
+									error={email.length > 0 && email.length < 5}
+  									helperText={email.length > 0 && email.length < 5 && "Email should be at least 5 characters"}
 									/>
 								</ThemeProvider>
+								<span className={`loader5${sendLoader}`}></span>
 								<div className="rightside_button">
 									{
 									<Button 
 									checked={checked} 
-									onChange={handleChange}
+									// onChange={handleNextStepEmail}
 									variant="contained" 
 									sx={{mt: 5, width: 310, height: 50, boxShadow: 2, borderRadius: '8px', fontSize: 18 }} 
 									style={buttonStyle} 
-									onClick={() => handleChangeOTPEmail(1)}
+									onClick={() => handleNextStepEmail()}
 									theme={theme}>
 									Send OTP
 									</Button>
 									}
 								</div>
+								
 						</div>
 						</>
 						}
@@ -866,7 +905,7 @@ function Signup() {
 									{
 									<Button 
 									checked={checked} 
-									onChange={handleChange}
+									onChange={handleNextStepEmail}
 									variant="contained" 
 									sx={{mt: 5, width: 310, height: 50, boxShadow: 2, borderRadius: '8px', fontSize: 18 }} 
 									style={buttonStyle} 
