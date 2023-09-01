@@ -286,6 +286,8 @@ async def request_reset_password(data: userModel.RequestFormFromVerifEmail, db: 
         except Exception as e:
             print("Error sending email:", str(e))
             raise HTTPException(status_code=500, detail="Failed to send email")
+    elif db_user == None:
+        raise HTTPException(status_code=504, detail="Failed, can't find this email address!")
         
     
 @userRouter.get("/reset-password-verify")
