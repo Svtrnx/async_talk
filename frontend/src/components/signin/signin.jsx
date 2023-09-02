@@ -77,6 +77,7 @@ function Signin() {
 	const [errorSnackBar, setErrorSnackBar] = useState(false);
 	const [showResetLink, setShowResetLink] = useState(false);
 	const [errorSnackBarText, setErrorSnackBarText] = useState('');
+	const [sendLoader, setSendLoader] = React.useState('none');
 	const navigate = useNavigate()
 	
 	const handleCloseSnack = (event, reason) => {
@@ -89,8 +90,9 @@ function Signin() {
 
 	const HandleSigninLocalStorage = async (event) => {
 		event.preventDefault();
+		setSendLoader('')
 		try {
-		  const response = await axios.post("https://kenzoback.onrender.com/signin", {
+		  const response = await axios.post("http://localhost:8000/signin", {
 			grant_type: 'password',
 			username: username,
 			password: password,
@@ -104,19 +106,21 @@ function Signin() {
 			}
 		  	});
 		  	console.log(response.data);
+			  setSendLoader('none')
 
 
 			navigate('/messenger');
 		} catch (error) {
-		  console.log("SIGN IN ERROR:", error);
-		  if (error.response.status === 301) {
-			setErrorSnackBar(true);
-			setErrorSnackBarText('INVALID USERNAME OR PASSWORD!')
-		  }
-		  else if (error.response.status !== 303 && error.response.status !==301) {
-			setErrorSnackBar(true);
-			setErrorSnackBarText(`STATUS: ${error.response.status} ERROR!`)
-		  }
+			setSendLoader('none')
+		  	console.log("SIGN IN ERROR:", error);
+			if (error.response.status === 301) {
+				setErrorSnackBar(true);
+				setErrorSnackBarText('INVALID USERNAME OR PASSWORD!')
+			}
+			else if (error.response.status !== 303 && error.response.status !==301) {
+				setErrorSnackBar(true);
+				setErrorSnackBarText(`STATUS: ${error.response.status} ERROR!`)
+			}
 		}
 	  };
 	  
@@ -201,6 +205,7 @@ function Signin() {
 						</ThemeProvider>
 					</div>
 					<div className="signin_login">
+					
 					<Button 
 						variant="contained" 
 						sx={{mt: 4, width: 400, height: 50, boxShadow: 2, borderRadius: '6px' }} 
@@ -211,6 +216,7 @@ function Signin() {
 						Sign In
 					</Button>
 					</div>
+					<span className={`loader5${sendLoader}`}></span>
 					<div className="sigin_forgot_password-container">
 						<div className="sigin_forgot_password">
 							<h2 onClick={() => setShowResetLink(true)}>Forgot your password?</h2>

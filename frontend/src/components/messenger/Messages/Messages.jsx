@@ -327,7 +327,7 @@ function Messages() {
 
   const fetchData = async () => {
     try {
-      const response = await axios.get('https://kenzoback.onrender.com/api/check_verification', {
+      const response = await axios.get('http://localhost:8000/api/check_verification', {
         headers: {
           'Content-Type': 'application/json',
         }
@@ -346,7 +346,7 @@ function Messages() {
 
 
     const fetchUsers = async () => {
-    await axios.get('https://kenzoback.onrender.com/api/messages/users_list', {
+    await axios.get('http://localhost:8000/api/messages/users_list', {
       withCredentials: true,
     })
     .then(response => {
@@ -362,7 +362,7 @@ function Messages() {
 
     const fetchChats = async () => {
       try {
-        const response = await axios.get('https://kenzoback.onrender.com/api/messages/chats_list', {
+        const response = await axios.get('http://localhost:8000/api/messages/chats_list', {
           withCredentials: true,
         })
         .then(response => {

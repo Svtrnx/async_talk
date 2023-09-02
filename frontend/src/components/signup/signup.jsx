@@ -123,7 +123,7 @@ function Signup() {
 	const [selectedAvatar, setSelectedAvatar] = useState('');
 	const [overflowState, setOverflowState] = useState('auto');
 	const [showUploadMenu, setShowUploadMenu] = useState('none');
-	const [sendLoader, setSendLoader] = React.useState('none');
+	const [sendLoader, setSendLoader] = React.useState('');
 	const fileInputRef = useRef(null);
 	
 	const [drag, setDrag] = useState(false);
@@ -273,7 +273,7 @@ function Signup() {
 		formData += ' ' + formattedYear
 		
 		setToSignin(true);
-		
+		setSendLoader('')
 		try {
 			const response = await axios.post("https://kenzoback.onrender.com/signup", {
 				grant_type: 'password',
@@ -295,9 +295,13 @@ function Signup() {
 				}
 			});
 			console.log("SIGNUP RESPONSE: ", response.data);
+			setSendLoader('none')
 			navigate("/signin");
 		} catch (err) {
-		  console.log("ERROR: ", err);
+			setSendLoader('none')
+		  	console.log("ERROR: ", err);
+			navigate("/signin");
+			return
 		}
 	}
 	  
@@ -993,20 +997,21 @@ function Signup() {
 						<div className='rightside_reg_finish_data'>
 						{
 							<Button 
-								variant="contained" 
-								type="submit" 
-								sx={{mt: 4, width: 400, height: 50, boxShadow: 2, borderRadius: '8px' }} 
-								style={buttonStyle}
-								theme={theme}
-								onClick={handleSubmit}
-								component={Link}
-								to="/signin"
-								>
+							variant="contained" 
+							type="submit" 
+							sx={{mt: 4, width: 400, height: 50, boxShadow: 2, borderRadius: '8px' }} 
+							style={buttonStyle}
+							theme={theme}
+							onClick={handleSubmit}
+							component={Link}
+							to="/signin"
+							>
 								Complete Registration
 							</Button>
 						}
 
 						</div>
+						<span className={`loader5${sendLoader}`} style={{width: 400}}></span>
 					</div>
 				}
 

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { Routes, Route, useNavigate } from "react-router-dom";
 import { Container, TextField, Button, Box, Typography, Menu, MenuItem, Tooltip, Avatar, Badge, IconButton, styled} from "@mui/material"
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import axios from "axios";
@@ -14,8 +14,8 @@ import userPageImg from '../../img/userpage.png';
 import communityImg from '../../img/community.png';
 import notificationImg from '../../img/notification.png';
 
-
 import Messages from './Messages/Messages.jsx';
+import Settings from "./settings/settings";
 
 import './messenger.css';
 
@@ -94,7 +94,7 @@ function Messenger() {
     setAnchorElUser(event.currentTarget);
   };
 
-  const settings = ['Profile', 'Account', 'Dashboard', 'Logout'];
+  const settings = ['Profile', 'Account', 'Settings', 'Logout'];
 
   async function handleMenuItemSettingsClick(setting) {
     if (setting === 'Logout') {
@@ -124,8 +124,9 @@ function Messenger() {
     else if (setting === 'Account'){
       console.log(`Clicked on ${setting}`);
     }
-    else if (setting === 'Dashboard'){
+    else if (setting === 'Settings'){
       console.log(`Clicked on ${setting}`);
+      navigate('settings')
     }
   };
 
@@ -151,24 +152,24 @@ function Messenger() {
 
     
 
-    useEffect(() => {
-      const fetchData = async () => {
-        try {
-          const response = await axios.get('https://kenzoback.onrender.com/api/check_verification', {
-            withCredentials: true,
-          });
-          console.log("RESPONSE HEADER:-", response.data);
-          setUserInfo(response.data.user);
-          console.log("VERIF PASSED");
+    // useEffect(() => {
+    //   const fetchData = async () => {
+    //     try {
+    //       const response = await axios.get('https://kenzoback.onrender.com/api/check_verification', {
+    //         withCredentials: true,
+    //       });
+    //       console.log("RESPONSE HEADER:-", response.data);
+    //       setUserInfo(response.data.user);
+    //       console.log("VERIF PASSED");
 
-        } catch (error) {
-          navigate('/signin');
-          console.error(error);
-        }
-      };
+    //     } catch (error) {
+    //       navigate('/signin');
+    //       console.error(error);
+    //     }
+    //   };
     
-      fetchData();
-    }, []);
+    //   fetchData();
+    // }, []);
    
     
 
@@ -224,7 +225,7 @@ function Messenger() {
                       </Tooltip>
                       <ThemeProvider theme={theme}>
                       <CustomMenuContainer 
-                        sx={{ mt: 5, ml: 5 }}
+                        sx={{ mt: 5, ml: 3.4 }}
                         anchorEl={anchorElUser}
                         anchorOrigin={{
                           vertical: 'top',
@@ -292,7 +293,10 @@ function Messenger() {
             </div>
                               
             <div className="main-wrapper">
-             <Messages/>
+              <Routes>
+                <Route path="/messages" element={<Messages />} />
+                <Route path="/settings" element={<Settings />} />
+              </Routes>
               
 
             </div>
