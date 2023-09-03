@@ -152,24 +152,24 @@ function Messenger() {
 
     
 
-    // useEffect(() => {
-    //   const fetchData = async () => {
-    //     try {
-    //       const response = await axios.get('https://kenzoback.onrender.com/api/check_verification', {
-    //         withCredentials: true,
-    //       });
-    //       console.log("RESPONSE HEADER:-", response.data);
-    //       setUserInfo(response.data.user);
-    //       console.log("VERIF PASSED");
+    useEffect(() => {
+      const fetchData = async () => {
+        try {
+          const response = await axios.get('http://localhost:8000/api/check_verification', {
+            withCredentials: true,
+          });
+          console.log("RESPONSE HEADER:-", response.data);
+          setUserInfo(response.data.user);
+          console.log("VERIF PASSED");
 
-    //     } catch (error) {
-    //       navigate('/signin');
-    //       console.error(error);
-    //     }
-    //   };
+        } catch (error) {
+          navigate('/signin');
+          console.error(error);
+        }
+      };
     
-    //   fetchData();
-    // }, []);
+      fetchData();
+    }, []);
    
     
 
@@ -261,7 +261,7 @@ function Messenger() {
                   <img src={userPageImg} alt="" />
                   <h2>Profile</h2>
                 </li>
-                <li className="list" onClick={() => setTextOption('Messages')}>
+                <li className="list" onClick={() => {setTextOption('Messages'); navigate('messages')}}>
                   <img src={messagesImg} alt="" />
                   <h2>Messages</h2>
                 </li>
@@ -295,7 +295,7 @@ function Messenger() {
             <div className="main-wrapper">
               <Routes>
                 <Route path="/messages" element={<Messages />} />
-                <Route path="/settings" element={<Settings />} />
+                <Route path="/settings" element={<Settings userIn={userInfo} />} />
               </Routes>
               
 

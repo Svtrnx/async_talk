@@ -199,6 +199,7 @@ async def create_new_user(request: Request, db: Session = Depends(get_db), form_
             first_name=form_data.first_name,
             last_name=form_data.last_name,
             avatar=form_data.avatar,
+            headerImg=form_data.headerImg,
             gender=form_data.gender,
             country=form_data.country,
             date=form_data.date,

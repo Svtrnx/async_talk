@@ -1,7 +1,7 @@
 from datetime import datetime
 from typing import Optional
 from fastapi import Form
-from sqlalchemy import Boolean, Column, Integer, String, MetaData, TIMESTAMP, ForeignKey, Table, CheckConstraint, DateTime
+from sqlalchemy import Boolean, Column, Integer, String, MetaData, TIMESTAMP, ForeignKey, Table, CheckConstraint, DateTime, Text
 from database.connection import Base
 from pydantic import BaseModel
 from sqlalchemy.orm import relationship, declarative_base
@@ -20,9 +20,10 @@ class User(Base):
     last_name = Column(String, unique=False, index=True)
     gender = Column(String, unique=False, index=True)
     country = Column(String, unique=False, index=True)
-    avatar = Column(String, unique=False, index=True)
     date = Column(String, unique=False, index=True)
     date_reg = Column(TIMESTAMP, default=datetime.utcnow, index=True)
+    avatar = Column(String, unique=False, index=True)
+    headerImg = Column(String, unique=False, index=False)
     is_Admin = Column("is_Admin", Boolean, default=False)
     is_Active = Column(Boolean, default=True)
     
@@ -111,6 +112,7 @@ class OAuth2PasswordRequestFormSignup:
         first_name: str = Form(),
         last_name: str = Form(),
         avatar: str = Form(default=""),
+        headerImg = Column(default=""),
         gender: str = Form(default=""),
         country: str = Form(default=""),
         date: str = Form(default=""),
@@ -125,6 +127,7 @@ class OAuth2PasswordRequestFormSignup:
         self.first_name = first_name
         self.last_name = last_name
         self.avatar = avatar
+        self.headerImg = headerImg
         self.gender = gender
         self.country = country
         self.date = date

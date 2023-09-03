@@ -44,6 +44,7 @@ def create_user(db: Session, user: userSchema.UserSchema):
         first_name = user.first_name,
         last_name  = user.last_name,
         avatar     = user.avatar,
+        headerImg  = user.headerImg,
         gender     = user.gender,
         country    = user.country,
         date       = user.date,

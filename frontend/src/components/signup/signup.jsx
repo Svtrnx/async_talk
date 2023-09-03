@@ -72,6 +72,7 @@ const TextFieldStyles = {
 			  primary: '#7f56da',
 			},
 		  },
+		  
 	  });
 
 	  const otpTheme = createTheme({
@@ -680,7 +681,7 @@ function Signup() {
 										<TextField
 										  {...props}
 										  label="Choose a date"
-										  color="#e0dfe7" // Измените цвет текста в поле для ввода
+										  color="#e0dfe7"
 										  variant="outlined"
 										/>
 									  )}
@@ -1110,7 +1111,7 @@ function Signup() {
 
 export default Signup;
 
-const countries = [
+export const countries = [
 	{ code: 'AD', label: 'Andorra', phone: '376' },
 	{
 	  code: 'AE',

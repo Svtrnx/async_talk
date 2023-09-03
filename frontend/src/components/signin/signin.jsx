@@ -109,7 +109,7 @@ function Signin() {
 			  setSendLoader('none')
 
 
-			navigate('/messenger');
+			navigate('/async/messages');
 		} catch (error) {
 			setSendLoader('none')
 		  	console.log("SIGN IN ERROR:", error);
