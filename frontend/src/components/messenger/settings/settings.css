@@ -63,31 +63,17 @@
 	/* color: gray !important; */
 }
 
-
-.setting-main-container {
-	display: grid;
-	grid-template-rows: 70px 40%;
-	background-color: #1f2024;
-	border-radius: 10px;
-	/* margin-top: 40px; */
-	box-shadow: 0px 0px 16px 0px rgb(28 29 33);
-	border: 1px solid #3334384f;
-	z-index: 10;
-	
-}
-
 .setting-main-container-bar {
 	display: grid;
 	grid-template-columns: 90px 90px 100px auto;
 	z-index: 3;
 	margin-top: 30px;
 	margin-left: 20px;
-	height: 25px;
+	height: 35px;
 }
 
 .setting-main-container-bar h2 {
 	font-family: 'Montserrat', sans-serif;
-	font-weight: 400;
 	font-size: 12px;
 	margin: 0;
 }
@@ -103,74 +89,13 @@
 	cursor: pointer;
 	/* margin-right: 5px; */
 	transition: margin-top 0.2s ease-in-out;
+	border: 1px solid #3334384f;
+	border-bottom: 'none';
+	box-shadow: 0px 0px 15px 10px rgb(28 29 33);
 }
 
 .setting-main-container-bar-menu:hover {
 	margin-top: 0px !important; 
-}
-
-.setting-main-container-header {
-	margin-top: 20px;
-	margin-left: 20px;
-	display: flex;
-}
-
-.setting-main-container-header h2 {
-	font-family: 'Montserrat', sans-serif;
-	font-weight: 400;
-	font-size: 22px;
-	margin: 0;
-}
-
-.setting-main-container-body {
-	margin: 20px 20px 0px 20px;
-}
-.setting-main-container-body h2 {
-	font-family: 'Montserrat', sans-serif;
-	font-weight: 400;
-	font-size: 14px;
-	margin: 0;
-}
-
-.setting-main-container-body-first-block {
-
-}
-
-.css-nxo287-MuiInputBase-input-MuiOutlinedInput-input {
-	/* padding: 1px 1px !important; */
-	height: 5px !important;
-	margin: 0;
-}
-
-
-@media (max-height: 850px) {
-    .settings-header-info h2 {
-        font-size: 20px;
-    }
-	.settings-header-info {
-		margin-top: 10px;
-		
-	}
-}
-
-@media (max-height: 800px) {
-    .settings-header-info h2 {
-        font-size: 18px;
-    }
-	.settings-header-info {
-		margin-top: 20px;
-		
-	}
-}
-
-@media (max-height: 770px) {
-    .settings-header-info h2 {
-        font-size: 16px;
-    }
-	.settings-header-info {
-		margin-top: 30px;
-		
-	}
 }
 
 

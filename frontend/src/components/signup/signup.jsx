@@ -124,7 +124,7 @@ function Signup() {
 	const [selectedAvatar, setSelectedAvatar] = useState('');
 	const [overflowState, setOverflowState] = useState('auto');
 	const [showUploadMenu, setShowUploadMenu] = useState('none');
-	const [sendLoader, setSendLoader] = React.useState('');
+	const [sendLoader, setSendLoader] = React.useState('none');
 	const fileInputRef = useRef(null);
 	
 	const [drag, setDrag] = useState(false);
@@ -791,6 +791,7 @@ function Signup() {
 								type={showPassword ? "text" : "password"}
 								label="Confirm password"
 								value={confirmPassword}
+								size='medium'
 								onChange={(event) => setConfirmPassword(event.target.value)}
 								variant="outlined"
 								InputLabelProps={{ style: { color: "#e0dfe7" } }}
