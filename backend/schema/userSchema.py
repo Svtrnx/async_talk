@@ -17,7 +17,6 @@ class UserSchema(BaseModel):
     gender: Optional[str]=None
     country: Optional[str]=None
     avatar: Optional[str]=None
-    headerImg: Optional[str]=None
     date: Optional[str]=None
     date_reg: Optional[datetime] = None 
     is_Admin: Optional[bool]=None

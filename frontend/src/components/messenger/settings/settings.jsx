@@ -1,4 +1,5 @@
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useState, useRef} from 'react';
+import { useNavigate } from "react-router-dom";
 import { Container, TextField, Button, Alert, Avatar, Autocomplete, Box} from "@mui/material"
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import test from '../../../img/shapes/stacked-waves-haikei (35).png';
@@ -8,7 +9,7 @@ import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import SettingsProfile from './tabs/settingsProfile';
 import SettingsSecurity from './tabs/settingsSecurity';
-
+import { motion, useAnimation } from 'framer-motion';
 
 import axios from 'axios';
 import './settings.css'
@@ -52,7 +53,7 @@ const buttonStyleUploadImg = {
 	color: '#e0dfe7'
   };
 
-function Settings(userIn) {
+function Settings({userIn}) {
 	const [headerImg, setHeaderImg] = React.useState(null);
 	const [fName, setFName] = useState('')
 	const [lName, setLName] = useState('')
@@ -66,6 +67,28 @@ function Settings(userIn) {
 	const [boldText, setBoldText] = useState('bold');
 	const [selectedMenuText, setSelectedMenuText] = useState('bold');
 	const [selectedMenu, setSelectedMenu] = useState('My Profile');
+	const [selectedAvatar, setSelectedAvatar] = useState('');
+	const fileInputRef = useRef(null);
+
+	const navigate = useNavigate();
+
+
+	useEffect(() => {
+		const fetchData = async () => {
+		  try {
+			const response = await axios.get('http://localhost:8000/api/check_verification', {
+			  withCredentials: true,
+			});
+			setSelectedAvatar(response.data.user.avatar);
+  
+		  } catch (error) {
+			navigate('/signin');
+			console.error(error);
+		  }
+		};
+	  
+		fetchData();
+	}, []);
 
 	const [dataFromChild, setDataFromChild] = useState('');
 
@@ -73,7 +96,9 @@ function Settings(userIn) {
 	  setDataFromChild(data);
 	};
 
-	console.log(dataFromChild)
+	console.log(userIn)
+	console.log(userIn.avatar)
+	console.log(selectedAvatar)
 
 	const menuItems = [
 	  { id: 1, name: 'My Profile' },
@@ -86,6 +111,40 @@ function Settings(userIn) {
 	};
 
 	console.log(selectedMenu)
+
+	const openFileInput = () => {
+        fileInputRef.current.click();
+    };
+
+	const handleFileUpload = (event) => {
+        const file = event.target.files;
+		
+		if (file.length > 0) {
+			const fileToUpload = file[0];
+	
+			const cloud_name = 'dlwuhl9ez';
+
+			const formData = new FormData();
+			formData.append('file', fileToUpload);
+			formData.append("cloud_name", cloud_name);
+			formData.append("upload_preset", "aecdrcq4");
+
+	
+			fetch(`https://api.cloudinary.com/v1_1/${cloud_name}/image/upload`, {
+				method: 'POST',
+				body: formData,
+			})
+			.then(response => response.json())
+			.then(data => {
+				console.log('Cloudinary response:', data);
+				setSelectedAvatar(data.secure_url)
+			})
+			.catch(error => {
+				console.error('Error uploading file:', error);
+			});
+		}
+		
+    };
 
 	
 	function call() {
@@ -103,6 +162,12 @@ function Settings(userIn) {
 		
 	return (
 		<>
+		<motion.div
+			initial={{ y: 10, opacity: 0 }}
+			animate={{ y: 0, opacity: 1 }}
+			exit={{ y: -10, opacity: 0 }}
+			transition={{ duration: 0.3 }}
+		>
 		<div className='settings-wrapper'>
 			<div className='settings-header-container'>
 				<div className='settings-header'>
@@ -119,13 +184,20 @@ function Settings(userIn) {
 							</Button>
 						</div>
 						<img src={test} alt="" />
-						<Avatar className="headerAvatarSettings" alt={userIn.userIn.username} src={userIn.userIn.avatar} />
+						<Avatar onClick={openFileInput} className="headerAvatarSettings" alt={userIn.username} src={selectedAvatar} />
+						<input
+						type="file"
+						accept="image/*"
+						onChange={handleFileUpload}
+						style={{ display: 'none' }}
+						ref={fileInputRef}
+					/>
 					</div>
 					<div className='settings-header-info'>
-						<h2 style={{marginTop: '10px', marginBottom: '10px'}}>{userIn.userIn.first_name} {userIn.userIn.last_name}</h2>
+						<h2 style={{marginTop: '10px', marginBottom: '10px'}}>{userIn.first_name} {userIn.last_name}</h2>
 						<div style={{display: 'flex', alignItems: 'center'}}>
 							<h2 style={{color: 'gray', fontSize: '18px ', marginTop: '3px'}}>Username:&nbsp;&nbsp;</h2>
-							<h2>{userIn.userIn.last_name}</h2>
+							<h2>{userIn.last_name}</h2>
 						</div>
 					</div>
 				</div>
@@ -149,16 +221,37 @@ function Settings(userIn) {
 			</div>
 
 			{ selectedMenu === 'My Profile' ?
-				<SettingsProfile userInInfo={userIn.userIn} onDataFromChild={handleDataFromChild}/>
+				<motion.div
+					initial={{ y: 10, opacity: 0 }}
+					animate={{ y: 0, opacity: 1 }}
+					exit={{ y: -10, opacity: 0 }}
+					transition={{ duration: 0.3 }}
+				>
+				<SettingsProfile userInInfo={userIn} onDataFromChild={handleDataFromChild}/>
+				</motion.div>
 			: null }
 			{ selectedMenu === 'Security' ?
-				<SettingsSecurity userInInfo={userIn.userIn} onDataFromChild={handleDataFromChild}/>
+				<motion.div
+					initial={{ y: 10, opacity: 0 }}
+					animate={{ y: 0, opacity: 1 }}
+					exit={{ y: -10, opacity: 0 }}
+					transition={{ duration: 0.3 }}
+				>
+				<SettingsSecurity userInInfo={userIn} onDataFromChild={handleDataFromChild}/>
+				</motion.div>
 			: null }
 			{ selectedMenu === 'Notifications' ?
-				<SettingsProfile userInInfo={userIn.userIn} onDataFromChild={handleDataFromChild}/>
+				<motion.div
+					initial={{ y: 10, opacity: 0 }}
+					animate={{ y: 0, opacity: 1 }}
+					exit={{ y: -10, opacity: 0 }}
+					transition={{ duration: 0.3 }}
+				>
+				<SettingsProfile userInInfo={userIn} onDataFromChild={handleDataFromChild}/>
+				</motion.div>
 			: null }
 		</div>
-		
+		</motion.div>
 		</>
 	)
 }

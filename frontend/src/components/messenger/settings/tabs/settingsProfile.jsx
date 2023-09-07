@@ -5,6 +5,7 @@ import {countries} from '../../../signup/signup';
 import { LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
+import { motion, useAnimation } from 'framer-motion';
 import './settingsProfile.css';
 
 const TextFieldStyles = {
@@ -53,6 +54,7 @@ function SettingsProfile({userInInfo, onDataFromChild}) {
 	const [email, setEmail] = useState('');
 	const [country, setCountry] = useState({ code: '', label: '', phone: '' });
 	const [date, setDate] = useState(null);
+	const [haveChanges, setHaveChanges] = useState(false);
 	const [dataToSend, setDataToSend] = useState('zzzzzzzz');
 
   const sendDataToParent = () => {
@@ -66,9 +68,17 @@ function SettingsProfile({userInInfo, onDataFromChild}) {
 			<div className='setting-main-container-header'>
 				<div>
 					<h2>Account Settings</h2>
-					<h2 style={{fontSize: '15px', color: 'rgb(159 159 159 / 61%)', marginTop: '3px'}}>Here ou can change your account information</h2>
+					<h2 style={{fontSize: '15px', color: 'rgb(159 159 159 / 61%)', marginTop: '3px'}}>Here you can change your account information</h2>
 				</div>
+					{ fName.length > 3 || lName.length > 3 || username.length > 3 || 
+					aboutMe.length > 3 || email.length > 3 ?
 				<div style={{marginInlineStart: 'auto'}}>
+					<motion.div
+					initial={{ y: 10, opacity: 0 }}
+					animate={{ y: 0, opacity: 1 }}
+					exit={{ y: -10, opacity: 0 }}
+					transition={{ duration: 0.3 }}
+				>
 					<Button 
 						variant="outlined" 
 						type="submit" 
@@ -90,7 +100,9 @@ function SettingsProfile({userInInfo, onDataFromChild}) {
 						>
 						CANCEL
 					</Button>
+				</motion.div>
 				</div>
+				: null}
 			</div>
 			<div className='setting-main-container-body'>
 				<div className='setting-main-container-body-first-block'>
@@ -108,7 +120,6 @@ function SettingsProfile({userInInfo, onDataFromChild}) {
 								InputLabelProps={{style: { color: '#8d8d8d' },}} 
 								InputProps={{style: { color: '#e0dfe7' },}} 
 								sx={{...TextFieldStyles, mt: 1, width: 400, boxShadow: 2}}
-								autoFocus
 								/>
 							</ThemeProvider>
 						</div>
@@ -126,7 +137,6 @@ function SettingsProfile({userInInfo, onDataFromChild}) {
 								InputLabelProps={{style: { color: '#8d8d8d' },}} 
 								InputProps={{style: { color: '#e0dfe7' },}} 
 								sx={{...TextFieldStyles, mt: 1, width: 400, boxShadow: 2}}
-								autoFocus
 								/>
 							</ThemeProvider>
 						</div>
@@ -145,7 +155,6 @@ function SettingsProfile({userInInfo, onDataFromChild}) {
 								InputLabelProps={{style: { color: '#8d8d8d' },}} 
 								InputProps={{style: { color: '#e0dfe7' },}} 
 								sx={{...TextFieldStyles, mt: 1, width: 400, boxShadow: 2}}
-								autoFocus
 								/>
 							</ThemeProvider>
 						</div>
@@ -163,7 +172,6 @@ function SettingsProfile({userInInfo, onDataFromChild}) {
 								InputLabelProps={{style: { color: '#8d8d8d' },}} 
 								InputProps={{style: { color: '#e0dfe7' },}} 
 								sx={{...TextFieldStyles, mt: 1, width: 400, boxShadow: 2}}
-								autoFocus
 								/>
 							</ThemeProvider>
 						</div>
@@ -180,7 +188,6 @@ function SettingsProfile({userInInfo, onDataFromChild}) {
 								id="country-select-demo"
 								sx={{ width: 400, mt: 1 }}
 								
-								autoFocus
 								options={countries}
 								autoHighlight
 								getOptionLabel={(option) => option.label}

@@ -347,6 +347,9 @@ function Signup() {
 				setSendLoader('')
 				const response = await axios.post("https://kenzoback.onrender.com/send-otp-code", {
 						email: email,
+						code_length: 4,
+						email_message: 'OTP Registration code',
+						email_subject: "ASYNC TALK REGISTRATION",
 					headers: {
 						'Content-Type': 'application/x-www-form-urlencoded'
 					}
@@ -713,53 +716,85 @@ function Signup() {
 					</div>
 					<div className="rightside_fieldtext">
 						<ThemeProvider theme={theme}>
-						<TextField 
-							value={username}
-							onChange={(event) => setUsername(event.target.value)}
-							id="outlined-basic" 
-							label="Username"
-							variant="outlined" 
-							InputLabelProps={{style: { color: '#e0dfe7' },}} 
-							InputProps={{style: { color: '#e0dfe7' },}} 
-							sx={{...TextFieldStyles, mt: 3, width: 400, boxShadow: 2}}
-							error={!isValidUsername}
-							helperText={!isValidUsername && "Username should contain at least 5 letters, numbers should be only in the end"}
+							<TextField 
+								value={username}
+								onChange={(event) => setUsername(event.target.value)}
+								id="outlined-basic" 
+								label="Username"
+								variant="outlined" 
+								InputLabelProps={{style: { color: '#e0dfe7' },}} 
+								InputProps={{style: { color: '#e0dfe7' },}} 
+								sx={{...TextFieldStyles, mt: 3, width: 400, boxShadow: 2}}
+								error={!isValidUsername}
+								helperText={!isValidUsername && "Username should contain at least 5 letters, numbers should be only in the end"}
 
 
-							autoFocus
-						/>
-						<TextField
-							type={showPassword ? "text" : "password"}
-							label="Password"
-							variant="outlined"
-							value={password}
-							onChange={(event) => setPassword(event.target.value)}
-							InputLabelProps={{ style: { color: "#e0dfe7" } }}
-							error={password.length > 0 && password.length < 6}
-							helperText={password.length > 0 && password.length < 6 && "Username should be at least 6 characters"}
-
-							InputProps={{
-								style: { color: "#e0dfe7" },
-								endAdornment: (
-									<InputAdornment position="end">
-										<IconButton sx={{ color: "#32333A" }}
-										aria-label="toggle password visibility"
-										onClick={handleClickShowPassword}
-										onMouseDown={handleMouseDownPassword}
-										edge="end"
-										>
-										{showPassword ? <VisibilityOff /> : <Visibility />}
-										</IconButton>
-									</InputAdornment>
-								),
-							}}
-							sx={{...TextFieldStyles, mt: 3, width: 400, boxShadow: 2}}
+								autoFocus
 							/>
-							{confirmPassword.length > 0 && (
+							<TextField
+								type={showPassword ? "text" : "password"}
+								label="Password"
+								variant="outlined"
+								value={password}
+								onChange={(event) => setPassword(event.target.value)}
+								InputLabelProps={{ style: { color: "#e0dfe7" } }}
+								error={password.length > 0 && password.length < 6}
+								helperText={password.length > 0 && password.length < 6 && "Password should be at least 6 characters"}
+
+								InputProps={{
+									style: { color: "#e0dfe7" },
+									endAdornment: (
+										<InputAdornment position="end">
+											<IconButton sx={{ color: "#32333A" }}
+											aria-label="toggle password visibility"
+											onClick={handleClickShowPassword}
+											onMouseDown={handleMouseDownPassword}
+											edge="end"
+											>
+											{showPassword ? <VisibilityOff /> : <Visibility />}
+											</IconButton>
+										</InputAdornment>
+									),
+								}}
+								sx={{...TextFieldStyles, mt: 3, width: 400, boxShadow: 2}}
+								/>
+								{confirmPassword.length > 0 && (
+									<TextField
+										type={showPassword ? "text" : "password"}
+										label="Confirm password"
+										value={confirmPassword}
+										onChange={(event) => setConfirmPassword(event.target.value)}
+										variant="outlined"
+										InputLabelProps={{ style: { color: "#e0dfe7" } }}
+										InputProps={{
+										style: { color: "#e0dfe7" },
+										endAdornment: (
+											<InputAdornment position="end">
+											<IconButton
+												sx={{ color: "#32333A" }}
+												aria-label="toggle password visibility"
+												onClick={handleClickShowPassword}
+												onMouseDown={handleMouseDownPassword}
+												edge="end"
+											>
+												{showPassword ? <VisibilityOff /> : <Visibility />}
+											</IconButton>
+											</InputAdornment>
+										),
+										}}
+										sx={{...TextFieldStyles, mt: 2, width: 400, boxShadow: 2}}
+										error={confirmPassword !== password}
+										helperText={confirmPassword !== password && "Passwords do not match"}
+										autoFocus
+									/>
+									)}
+
+								{confirmPassword.length === 0 && (
 								<TextField
 									type={showPassword ? "text" : "password"}
 									label="Confirm password"
 									value={confirmPassword}
+									size='medium'
 									onChange={(event) => setConfirmPassword(event.target.value)}
 									variant="outlined"
 									InputLabelProps={{ style: { color: "#e0dfe7" } }}
@@ -779,42 +814,10 @@ function Signup() {
 										</InputAdornment>
 									),
 									}}
-									sx={{...TextFieldStyles, mt: 2, width: 400, boxShadow: 2}}
-									error={confirmPassword !== password}
-									helperText={confirmPassword !== password && "Passwords do not match"}
+									sx={{...TextFieldStyles, mt: 3, width: 400, boxShadow: 2}}
 									autoFocus
 								/>
-								)}
-
-							{confirmPassword.length === 0 && (
-							<TextField
-								type={showPassword ? "text" : "password"}
-								label="Confirm password"
-								value={confirmPassword}
-								size='medium'
-								onChange={(event) => setConfirmPassword(event.target.value)}
-								variant="outlined"
-								InputLabelProps={{ style: { color: "#e0dfe7" } }}
-								InputProps={{
-								style: { color: "#e0dfe7" },
-								endAdornment: (
-									<InputAdornment position="end">
-									<IconButton
-										sx={{ color: "#32333A" }}
-										aria-label="toggle password visibility"
-										onClick={handleClickShowPassword}
-										onMouseDown={handleMouseDownPassword}
-										edge="end"
-									>
-										{showPassword ? <VisibilityOff /> : <Visibility />}
-									</IconButton>
-									</InputAdornment>
-								),
-								}}
-								sx={{...TextFieldStyles, mt: 3, width: 400, boxShadow: 2}}
-								autoFocus
-							/>
-								)}
+									)}
 						</ThemeProvider>
 					</div>
 					<div className="rightside_button">

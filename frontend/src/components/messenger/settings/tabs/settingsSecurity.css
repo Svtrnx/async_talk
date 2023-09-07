@@ -110,3 +110,78 @@
 		
 	}
 }
+
+
+.css-10w673j-MuiButtonBase-root-MuiButton-root:hover {
+	background-color: rgb(93, 56, 177, 0.07) !important;	
+}
+
+.css-ud041d-MuiButtonBase-root-MuiButton-root:hover {
+	background-color: rgb(93, 56, 177, 0.07) !important;	
+
+}
+
+
+.settings-secure-password-menu-wrapper {
+	background-color: #23242A;
+
+	display: grid !important;
+    width: 370px;
+    height: 585px;
+    /* background: #1f2024d9; */
+    /* backdrop-filter: blur(30px); */
+    /* -webkit-backdrop-filter: blur(30px); */
+    border-radius: 20px;
+	grid-template-rows: 50px 100px 110px 105px 100px;
+    /* box-shadow: 0px 0px 16px 0px rgba(0,0,0,0.5); */
+	box-shadow: 0px 0px 16px 0px #1f2024;
+    position: absolute;
+    z-index: 100;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+	z-index: 100;
+	padding: 20px 60px 20px 30px;
+
+}
+
+.settings-secure-password-menu-wrapper h2 {
+	font-family: 'Montserrat', sans-serif;
+	font-weight: 400;
+	font-size: 14px;
+	margin: 0;
+}
+
+#menuForgot {
+	transition: transform 0.2s ease-in-out;
+}
+#menuForgot:hover {
+	transform: scale(1.05);
+}
+
+
+.loaderOTP2Verif {
+    position: relative;
+    width:  100px;
+    height: 100px;
+    background: #5d38b1;
+    transform: rotateX(65deg) rotate(45deg);
+    color: #c7c7c7;
+    animation: layersOTP2Verif 0.65s linear infinite alternate;
+}
+.loaderOTP2Verif:after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: #292a2ea2;
+    animation: layerTrOTP2Verif 0.65s linear infinite alternate;
+}
+
+@keyframes layersOTP2Verif {
+    0% { box-shadow: 0px 0px 0 0px  }
+   90% , 100% { box-shadow: 35px 35px 0 -4px  }
+}
+@keyframes layerTrOTP2Verif {
+    0% { transform:  translate(0, 0) scale(1) }
+    100% {  transform: translate(-35px, -35px) scale(1) }
+}

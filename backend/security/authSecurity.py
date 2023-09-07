@@ -36,7 +36,7 @@ def generate_reset_token(email: str):
     token = jwt.encode(payload, SECRET_KEY, algorithm=ALGORITHM)
     return token
 
-def generate_reset_code(length=4):
+def generate_reset_code(length):
     return ''.join(random.choices(string.ascii_uppercase + string.digits, k=length))
 
 def get_user_by_username(db: Session, username: str):

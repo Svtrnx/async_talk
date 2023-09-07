@@ -69,6 +69,13 @@ class Message(Base):
     
 class RequestFormFromVerifEmail(BaseModel):
     email: str
+    code_length: int
+    email_message: str
+    email_subject: str
+    
+class RequestFormFromVerifEmailResetPasswordLink(BaseModel):
+    email: str
+    
     
 class RequestFormFromChangePassword(BaseModel):
     password: str
@@ -112,7 +119,6 @@ class OAuth2PasswordRequestFormSignup:
         first_name: str = Form(),
         last_name: str = Form(),
         avatar: str = Form(default=""),
-        headerImg = Column(default=""),
         gender: str = Form(default=""),
         country: str = Form(default=""),
         date: str = Form(default=""),
@@ -127,7 +133,6 @@ class OAuth2PasswordRequestFormSignup:
         self.first_name = first_name
         self.last_name = last_name
         self.avatar = avatar
-        self.headerImg = headerImg
         self.gender = gender
         self.country = country
         self.date = date
