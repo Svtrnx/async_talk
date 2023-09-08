@@ -21,6 +21,8 @@ class UserSchema(BaseModel):
     date_reg: Optional[datetime] = None 
     is_Admin: Optional[bool]=None
     is_Active: Optional[bool]=None
+    twoAuth: Optional[bool]=None
+    lastUpdatedPassword: Optional[datetime] = None 
     
     class Config:
         orm_mode = True

@@ -1,5 +1,5 @@
 from datetime import timedelta, datetime
-from fastapi import Depends, APIRouter, Request, Response, status, HTTPException, Cookie, Depends, HTTPException, status, WebSocket, Request, Body, Form
+from fastapi import Depends, APIRouter, Request, Response, status, HTTPException, Cookie, Depends, HTTPException, status, WebSocket, Request, Body, Form, Path
 from sqlalchemy.orm import Session
 from sqlalchemy import or_
 from database.connection import get_db
@@ -10,7 +10,7 @@ from schema.userSchema import Token
 from security.authSecurity import create_access_token, get_current_user, get_user_by_username, get_password_hash, oauth2_scheme, get_user_by_email, generate_reset_token, generate_reset_code, verify_reset_token
 from starlette.responses import RedirectResponse
 from model import userModel
-from database.crud import create_user, create_message, create_chat, get_all_users, get_all_chats, get_all_messages
+from database.crud import create_user, create_message, create_chat, get_all_users, get_all_chats, get_all_messages, get_user_by_id
 import jwt
 from dotenv import load_dotenv
 from config import SMTP_USERNAME, SMTP_PASSWORD
@@ -48,8 +48,6 @@ async def websocket_endpoint(websocket: WebSocket, chat_id: str, user_id: str):
                 await recipient_socket.send_text(f"{message}")
     finally:
         del connections[user_id]
-
-
 
 # @userRouter.post("/upload")
 # async def upload_image(url: str):
@@ -321,37 +319,78 @@ async def request_reset_password(data: userModel.RequestFormFromVerifEmail, db: 
     print("db user", db_user)
     # user = db_user.email
     print("user_email", user_email)
-    if db_user is not None:
-        raise HTTPException(status_code=502, detail="Failed, this email already exists!")
+    # if db_user != None:
+    #     raise HTTPException(status_code=502, detail="Failed, this email already exists!")
+    if data.condition == 'exists':
+        if db_user != None:
+            raise HTTPException(status_code=502, detail="Failed, this email already exists!")
+    elif data.condition == 'not_exists':
+        if db_user == None:
+            raise HTTPException(status_code=502, detail="Failed, this email does not exist!")
     else:
+        raise HTTPException(status_code=504, detail="Failed, try again!")
+    
+    otp_code = generate_reset_code(data.code_length) 
+    
+    smtp_host = "smtp.gmail.com"
+    smtp_port = 465
+    smtp_username = SMTP_USERNAME
+    smtp_password = SMTP_PASSWORD
+    
+    body = f"{data.email_message}: {otp_code}"
+    
+    email = EmailMessage()
+    email.set_content(body)
+    email['Subject'] = data.email_subject
+    email['From'] = smtp_username
+    email['To'] = user_email
+    
+    try:
+        server = smtplib.SMTP_SSL(smtp_host, smtp_port)
+        server.login(smtp_username, smtp_password)
+        server.send_message(email)
+        server.quit()
         
-        otp_code = generate_reset_code(data.code_length) 
+        # logic for updating the reset code in the database
         
-        smtp_host = "smtp.gmail.com"
-        smtp_port = 465
-        smtp_username = SMTP_USERNAME
-        smtp_password = SMTP_PASSWORD
-        
-        body = f"{data.email_message}: {otp_code}"
-        
-        email = EmailMessage()
-        email.set_content(body)
-        email['Subject'] = data.email_subject
-        email['From'] = smtp_username
-        email['To'] = user_email
-        
-        try:
-            server = smtplib.SMTP_SSL(smtp_host, smtp_port)
-            server.login(smtp_username, smtp_password)
-            server.send_message(email)
-            server.quit()
-            
-            # logic for updating the reset code in the database
-            
-            return {"message": "OTP code sent successfully", "check": otp_code}
-        except Exception as e:
-            print("Error sending email:", str(e))
-            raise HTTPException(status_code=500, detail="Failed to send email")
+        return {"message": "OTP code sent successfully", "check": otp_code}
+    except Exception as e:
+        print("Error sending email:", str(e))
+        raise HTTPException(status_code=500, detail="Failed to send email")
 
+
+@userRouter.patch("/settings/update_user_data")
+async def update_user_settings(
+    form_data: userModel.OAuth2ChangeUserDataForm = Depends(),
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user)
+):
+    user_id = current_user.id
+    db_user = get_user_by_id(db=db, user_id=user_id)
+    print("USERNAME:", user_id)
+    print("db_user:", db_user)
+    if not db_user:
+        raise HTTPException(status_code=404, detail="User not found")
+
+    if form_data.email:
+        db_user.email = form_data.email
+    if form_data.username:
+        db_user.username = form_data.username
+    if form_data.first_name:
+        db_user.first_name = form_data.first_name
+    if form_data.last_name:
+        db_user.last_name = form_data.last_name
+    if form_data.gender:
+        db_user.gender = form_data.gender
+    if form_data.country:
+        db_user.country = form_data.country
+    if form_data.avatar:
+        db_user.avatar = form_data.avatar
+    if isinstance(bool,(form_data.twoAuth)):
+        db_user.twoAuth = form_data.twoAuth
+
+    db.commit()
+    db.refresh(db_user)
+    return {"user": db_user}
 
 

@@ -161,27 +161,64 @@
 
 
 .loaderOTP2Verif {
-    position: relative;
-    width:  100px;
-    height: 100px;
-    background: #5d38b1;
-    transform: rotateX(65deg) rotate(45deg);
-    color: #c7c7c7;
-    animation: layersOTP2Verif 0.65s linear infinite alternate;
-}
-.loaderOTP2Verif:after {
-    content: '';
-    position: absolute;
-    inset: 0;
-    background: #292a2ea2;
-    animation: layerTrOTP2Verif 0.65s linear infinite alternate;
-}
+	width: 100%;
+	height: 4.8px;
+	display: inline-block;
+	position: relative;
+	overflow: hidden;
+  }
+  .loaderOTP2Verif::after {
+	content: '';  
+	width: 96px;
+	height: 4.8px;
+	background: #7E57C2;
+	position: absolute;
+	top: 0;
+	left: 0;
+	box-sizing: border-box;
+	animation: hitZakloaderOTP2Verif 0.6s ease-in-out infinite alternate;
+	border-radius: 18px;
+  }
+  
+  @keyframes hitZakloaderOTP2Verif {
+	0% {
+	  left: 0;
+	  transform: translateX(-1%);
+	}
+	100% {
+	  left: 100%;
+	  transform: translateX(-99%);
+	}
+  }
 
-@keyframes layersOTP2Verif {
-    0% { box-shadow: 0px 0px 0 0px  }
-   90% , 100% { box-shadow: 35px 35px 0 -4px  }
-}
-@keyframes layerTrOTP2Verif {
-    0% { transform:  translate(0, 0) scale(1) }
-    100% {  transform: translate(-35px, -35px) scale(1) }
-}
+.loaderSaveChangesSecurity {
+	width: 100%;
+	height: 4.8px;
+	display: inline-block;
+	position: relative;
+	overflow: hidden;
+  }
+  .loaderSaveChangesSecurity::after {
+	content: '';  
+	width: 96px;
+	height: 4.8px;
+	background: #7E57C2;
+	position: absolute;
+	top: 0;
+	left: 0;
+	box-sizing: border-box;
+	animation: hitZakloaderSaveChangesSecurity 0.6s ease-in-out infinite alternate;
+	border-radius: 18px;
+  }
+  
+  @keyframes hitZakloaderSaveChangesSecurity {
+	0% {
+	  left: 0;
+	  transform: translateX(-1%);
+	}
+	100% {
+	  left: 100%;
+	  transform: translateX(-99%);
+	}
+  }
+	  

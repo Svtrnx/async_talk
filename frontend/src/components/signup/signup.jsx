@@ -300,6 +300,8 @@ function Signup() {
 			navigate("/signin");
 		} catch (err) {
 			setSendLoader('none')
+			setErrorSnackBar(true);
+			setErrorSnackBarText("ERROR: " + err.response.data.detail);
 		  	console.log("ERROR: ", err);
 			navigate("/signin");
 			return
@@ -345,11 +347,12 @@ function Signup() {
 		else {
 			try {
 				setSendLoader('')
-				const response = await axios.post("https://kenzoback.onrender.com/send-otp-code", {
+				const response = await axios.post("http://localhost:8000/send-otp-code", {
 						email: email,
 						code_length: 4,
 						email_message: 'OTP Registration code',
 						email_subject: "ASYNC TALK REGISTRATION",
+						condition: 'exists',
 					headers: {
 						'Content-Type': 'application/x-www-form-urlencoded'
 					}
@@ -363,8 +366,8 @@ function Signup() {
 			catch (err) {
 				setSendLoader('none')
 				setErrorSnackBar(true);
-				setErrorSnackBarText("ERROR: " + err.message);
-				console.log("SEND MESSAGE ERROR: ", err);
+				setErrorSnackBarText("ERROR: " + err.response.data.detail);
+				console.log("SEND MESSAGE ERROR: ", err.response.data.detail);
 			}
 			setChecked((prev) => !prev);
 		}

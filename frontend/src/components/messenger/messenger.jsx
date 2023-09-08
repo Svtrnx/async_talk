@@ -100,7 +100,7 @@ function Messenger() {
     if (setting === 'Logout') {
       try {
         const response = await axios.post(
-          "https://kenzoback.onrender.com/logout",
+          "http://localhost:8000/logout",
           {},
           {
             withCredentials: true,

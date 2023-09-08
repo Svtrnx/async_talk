@@ -1,10 +1,10 @@
 from datetime import datetime
 from typing import Optional
 from fastapi import Form
-from sqlalchemy import Boolean, Column, Integer, String, MetaData, TIMESTAMP, ForeignKey, Table, CheckConstraint, DateTime, Text
+from sqlalchemy import Boolean, Column, Integer, String, MetaData, TIMESTAMP, ForeignKey, Table, CheckConstraint, DateTime, Text, update
 from database.connection import Base
 from pydantic import BaseModel
-from sqlalchemy.orm import relationship, declarative_base
+from sqlalchemy.orm import relationship, declarative_base, validates
 
 metadata = MetaData()
 Base = declarative_base()
@@ -23,9 +23,15 @@ class User(Base):
     date = Column(String, unique=False, index=True)
     date_reg = Column(TIMESTAMP, default=datetime.utcnow, index=True)
     avatar = Column(String, unique=False, index=True)
-    headerImg = Column(String, unique=False, index=False)
     is_Admin = Column("is_Admin", Boolean, default=False)
     is_Active = Column(Boolean, default=True)
+    twoAuth = Column(Boolean, default=False)
+    lastUpdatedPassword = Column(TIMESTAMP, default=datetime.utcnow, index=True)
+    
+    @validates('password')
+    def update_last_updated_password(self, key, value):
+        self.lastUpdatedPassword = datetime.utcnow()
+        return value
     
     chats = relationship("Chat", back_populates="user")
     
@@ -72,6 +78,7 @@ class RequestFormFromVerifEmail(BaseModel):
     code_length: int
     email_message: str
     email_subject: str
+    condition: str
     
 class RequestFormFromVerifEmailResetPasswordLink(BaseModel):
     email: str
@@ -109,7 +116,6 @@ class MyResponse(BaseModel):
     
     
 class OAuth2PasswordRequestFormSignup:
-
     def __init__(
         self,
         grant_type: str = Form(default=None, regex="password"),
@@ -139,6 +145,29 @@ class OAuth2PasswordRequestFormSignup:
         self.scopes = scope.split()
         self.client_id = client_id
         self.client_secret = client_secret
+        
+class OAuth2ChangeUserDataForm:
+    def __init__(
+        self,
+        email: str = Form(default=None),
+        username: str = Form(default=None),
+        first_name: str = Form(default=None),
+        last_name: str = Form(default=None),
+        avatar: str = Form(default=None),
+        gender: str = Form(default=None),
+        country: str = Form(default=None),
+        date: str = Form(default=None),
+        twoAuth: Optional[bool] = Form(default=False),
+    ):
+        self.email = email
+        self.username = username
+        self.first_name = first_name
+        self.last_name = last_name
+        self.avatar = avatar
+        self.gender = gender
+        self.country = country
+        self.date = date
+        self.twoAuth = twoAuth
     
 class requestFormFromChangePassword:
 

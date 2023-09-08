@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import { TextField, Button, Avatar, Autocomplete, Box} from "@mui/material"
+import { TextField, Button, Avatar, Autocomplete, Box, Snackbar, Alert} from "@mui/material"
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import {countries} from '../../../signup/signup';
 import { LocalizationProvider } from '@mui/x-date-pickers';
@@ -7,6 +7,7 @@ import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import { motion, useAnimation } from 'framer-motion';
 import './settingsProfile.css';
+import axios from 'axios';
 
 const TextFieldStyles = {
 	"& label.Mui-focused": {
@@ -54,14 +55,80 @@ function SettingsProfile({userInInfo, onDataFromChild}) {
 	const [email, setEmail] = useState('');
 	const [country, setCountry] = useState({ code: '', label: '', phone: '' });
 	const [date, setDate] = useState(null);
-	const [haveChanges, setHaveChanges] = useState(false);
 	const [dataToSend, setDataToSend] = useState('zzzzzzzz');
+	const [sendLoader, setSendLoader] = React.useState('none');
+	const [checkCode, setCheckCode] = useState("");
+	const [errorSnackBar, setErrorSnackBar] = useState(false);
+	const [errorSnackBarText, setErrorSnackBarText] = useState('');
+	const [snackBarColor, setSnackBarColor] = React.useState('');
 
   const sendDataToParent = () => {
     onDataFromChild(dataToSend);
   };
 
-  
+	async function saveChangedUserData() {
+	try {
+		if (fName.length > 15 || lName.length > 15 || country === null || country.label === '') {
+			if (fName.length > 15 || lName.length > 15) {
+				setErrorSnackBarText('Your text input is too long! Max length is 15 chars');
+				setErrorSnackBar(true);
+				setSnackBarColor('#d32f2f');
+				return
+			}
+		}
+		setSendLoader('')
+		const response = await axios.patch('http://localhost:8000/settings/update_user_data', {
+				email: email,
+				username: username,
+				first_name: fName,
+				last_name: lName,
+				avatar: '',
+				gender: '',
+				country: country,
+				date: date,
+			  }, {
+				headers: {
+				  'Content-Type': 'application/x-www-form-urlencoded'
+				}
+			  });
+		setSendLoader('none');
+		setErrorSnackBar(true);
+		setSnackBarColor('#388e3c');
+		setErrorSnackBarText("You've successfully modified your data!");
+
+		setCheckCode(response)
+		console.log(response);
+		
+	}
+	catch (err) {
+		setSendLoader('none')
+		setErrorSnackBar(true);
+		setSnackBarColor('#d32f2f');
+		setErrorSnackBarText("ERROR: " + err.response.data.detail);
+		console.log("SEND MESSAGE ERROR: ", err);
+		}
+	}
+
+	function cancelAll() {
+		setFName('');
+		setLName('');
+		setUsername('');
+		setAboutMe('');
+		setEmail('');
+		setCountry({ code: '', label: '', phone: '' });
+		setDate(null);
+
+	}
+
+	const handleClose = (event, reason) => {
+		if (reason === 'clickaway') {
+		  return;
+		}
+	
+		setErrorSnackBar(false);
+	};
+
+
 
 	return (
 		<div className='setting-main-container'>
@@ -72,6 +139,7 @@ function SettingsProfile({userInInfo, onDataFromChild}) {
 				</div>
 					{ fName.length > 3 || lName.length > 3 || username.length > 3 || 
 					aboutMe.length > 3 || email.length > 3 ?
+					
 				<div style={{marginInlineStart: 'auto'}}>
 					<motion.div
 					initial={{ y: 10, opacity: 0 }}
@@ -86,6 +154,7 @@ function SettingsProfile({userInInfo, onDataFromChild}) {
 						sx={{mt: 1, width: '150px', height: 30, boxShadow: 5, borderRadius: '8px' }} 
 						// style={buttonStyleUploadImg}
 						theme={theme}
+						onClick={() => saveChangedUserData()}
 						>
 						SAVE CHANGES
 					</Button>
@@ -96,10 +165,11 @@ function SettingsProfile({userInInfo, onDataFromChild}) {
 						// style={buttonStyleUploadImg}
 						theme={theme}
 						color='error'
-						onClick={sendDataToParent}
+						onClick={() => cancelAll()}
 						>
 						CANCEL
 					</Button>
+					<span className={`loaderOTP2Verif${sendLoader}`}></span>
 				</motion.div>
 				</div>
 				: null}
@@ -272,6 +342,12 @@ function SettingsProfile({userInInfo, onDataFromChild}) {
 						</div>
 					</div>
 			</div>
+			<Snackbar open={errorSnackBar} autoHideDuration={8000} onClose={handleClose}>
+				<Alert onClose={handleClose} severity="error"
+				sx={{ width: 'auto', backgroundColor: snackBarColor, color: '#fff' }}>
+					{errorSnackBarText}
+				</Alert>
+			</Snackbar>
 		</div>
 	)
 }

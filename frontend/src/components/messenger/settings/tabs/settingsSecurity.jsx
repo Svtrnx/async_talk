@@ -1,6 +1,6 @@
-import React, {useEffect, useState} from 'react';
-import { Container, TextField, Button, Alert, Avatar, Autocomplete, Box, InputAdornment, IconButton
-} from "@mui/material"
+import React, {useEffect, useState,useRef } from 'react';
+import { Container, TextField, Button, Alert, Avatar, Autocomplete, Box, InputAdornment, IconButton,
+		Snackbar} from "@mui/material"
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { MuiOtpInput } from 'mui-one-time-password-input';
 import Visibility from '@mui/icons-material/Visibility';
@@ -75,44 +75,131 @@ function SettingsSecurity({userInInfo, onDataFromChild}) {
 	const [isChecked, setIsChecked] = useState(false);
 	const [isSendedCode, setIsSendedCode] = useState(false);
 	const [isChangeMenuOpen, setIsChangeMenuOpen] = useState(false);
-	const [is2AuthEnable, setIs2AuthEnable] = useState(false);
 	const [haveChanges, setHaveChanges] = useState(false);
 	const [dataToSend, setDataToSend] = useState('zzzzzzzz');
 	const [sendLoader, setSendLoader] = React.useState('none');
+	const [sendLoader2, setSendLoader2] = React.useState('none');
+	const [snackBarColor, setSnackBarColor] = React.useState('');
+	const [isEnableText, setIsEnableText] = React.useState(false);
+	const [errorSnackBar, setErrorSnackBar] = useState(false);
+	const [errorSnackBarText, setErrorSnackBarText] = useState('');
 	const [checkCode, setCheckCode] = useState("");
+	const [twoAuth, setTwoAuth] = useState(userInInfo.twoAuth);
+	const [is2AuthEnable, setIs2AuthEnable] = useState(false);
 	const controls = useAnimation();
+	const scrollRef = useRef(null);
 
 	const messageTime = new Date(userInInfo.date_reg);
 	const options = {day: '2-digit', month: '2-digit', year: '2-digit' };
 	const formattedDate = messageTime.toLocaleDateString(undefined, options).replace(/\./g, '/');
 
-	console.log(isChecked)
+	console.log(twoAuth)
 
 
-	async function sendOTPCode() {
+	async function sendOTPCode2Auth() {
 		try {
 			setSendLoader('')
 			const response = await axios.post("http://localhost:8000/send-otp-code", {
-					email: email,
-					code_length: 4,
-					email_message: 'OTP Registration code',
-					email_subject: "ASYNC TALK REGISTRATION",
+					email: userInInfo.email,
+					code_length: 5,
+					email_message: 'OTP 2-Step Verification Code',
+					email_subject: "ASYNC TALK 2-AUTH CODE",
+					condition: 'not_exists',
 				headers: {
 					'Content-Type': 'application/x-www-form-urlencoded'
 				}
 			});
-			setSendLoader('none')
+			setIsSendedCode(true); 
+			setHaveChanges(true); 
+			setSendLoader('none');
 
 			setCheckCode(response.data.check)
+			console.log('sendOTPCode2Auth has been sended successfully');
 			
 		}
 		catch (err) {
 			setSendLoader('none')
-			// setErrorSnackBar(true);
-			// setErrorSnackBarText("ERROR: " + err.message);
+			setErrorSnackBar(true);
+			setSnackBarColor('#d32f2f');
+			setErrorSnackBarText("ERROR: " + err.response.data.detail);
 			console.log("SEND MESSAGE ERROR: ", err);
 		}
 	}
+
+	async function saveChangedUserDataTwoAuth() {
+		try {
+			setSendLoader2('')
+			const response = await axios.patch('http://localhost:8000/settings/update_user_data', {
+					twoAuth: twoAuth,
+				  }, {
+					headers: {
+					  'Content-Type': 'application/x-www-form-urlencoded'
+					}
+				  });
+			setSendLoader2('none');
+			setErrorSnackBar(true);
+			setSnackBarColor('#388e3c');
+			setErrorSnackBarText("You've successfully modified your data!");
+	
+			setCheckCode(response)
+			console.log(response);
+			
+		}
+		catch (err) {
+			setSendLoader2('none')
+			setErrorSnackBar(true);
+			setSnackBarColor('#d32f2f');
+			setErrorSnackBarText("ERROR: " + err);
+			console.log("SEND MESSAGE ERROR: ", err);
+			}
+		}
+
+
+	const scrollToBottom = () => {
+		setTimeout(() => {
+		window.scrollTo({
+			top: scrollRef.current.offsetTop,
+			behavior: 'smooth',
+		});
+		}, 0.300);
+	};
+	
+
+	const handleClickOTP2AuthVerification = () => {
+		if (otp2Step === checkCode) {
+			if (twoAuth === true) {
+				setErrorSnackBar(true);
+				setSnackBarColor('#f57c00');
+				setErrorSnackBarText("You've successfully disconnected 2-auth verification! If You want to save data, please push on button 'Save Changes'!");
+				setOtp2Step('')
+				setTwoAuth(false)
+			}
+			else {
+				setErrorSnackBar(true);
+				setSnackBarColor('#f57c00');
+				setErrorSnackBarText("You've successfully connected 2-auth verification! If You want to save data, please push on button 'Save Changes'!");
+				setOtp2Step('')
+				setTwoAuth(true)
+			}
+			
+		}
+		else {
+			setErrorSnackBar(true);
+			setSnackBarColor('#d32f2f');
+			setErrorSnackBarText("ERROR: OTP CODE INVALID!");
+			return
+		}
+	  };
+
+
+	const handleClose = (event, reason) => {
+		if (reason === 'clickaway') {
+		  return;
+		}
+	
+		setErrorSnackBar(false);
+	};
+
 
 	const handleClickShowPassword = () => setShowPassword((show) => !show);
 
@@ -128,7 +215,7 @@ function SettingsSecurity({userInInfo, onDataFromChild}) {
 	}
 
 	return (
-		<div className='setting-security-main-container'>
+		<div className='setting-security-main-container' ref={scrollRef}>
 			<div className='setting-main-container-header'>
 				<div>
 					<h2>Security Settings</h2>
@@ -143,6 +230,7 @@ function SettingsSecurity({userInInfo, onDataFromChild}) {
 						sx={{mt: 1, width: '150px', height: 30, boxShadow: 5, borderRadius: '8px' }} 
 						// style={buttonStyleUploadImg}
 						theme={theme}
+						onClick={() => saveChangedUserDataTwoAuth()}
 						>
 						SAVE CHANGES
 					</Button>
@@ -157,6 +245,7 @@ function SettingsSecurity({userInInfo, onDataFromChild}) {
 						>
 						CANCEL
 					</Button>
+					<span className={`loaderSaveChangesSecurity${sendLoader2}`}></span>
 				</div>
 					: null }
 			</div>
@@ -183,17 +272,7 @@ function SettingsSecurity({userInInfo, onDataFromChild}) {
 								<h2 style={{fontSize: '19px'}}>2-Step Verification</h2>
 								<div style={{marginInlineStart: 'auto', marginRight: '15px'}}>
 
-									{ is2AuthEnable === false ?
-									<Button 
-										variant="outlined" 
-										type="submit" 
-										sx={{mt: 0, ml: 3, mr: 3, width: '90px', height: 27, boxShadow: 5, borderRadius: '20px' }} 
-										color='error'
-										theme={theme}
-										>
-										DISABLED
-									</Button>
-									:
+									{ twoAuth === true ?
 									<Button 
 										variant="outlined" 
 										type="submit" 
@@ -202,6 +281,16 @@ function SettingsSecurity({userInInfo, onDataFromChild}) {
 										theme={theme}
 										>
 										ENABLED
+									</Button>
+									:
+									<Button 
+										variant="outlined" 
+										type="submit" 
+										sx={{mt: 0, ml: 3, mr: 3, width: '90px', height: 27, boxShadow: 5, borderRadius: '20px' }} 
+										color='error'
+										theme={theme}
+										>
+										DISABLED
 									</Button>
 									}
 
@@ -231,10 +320,14 @@ function SettingsSecurity({userInInfo, onDataFromChild}) {
 							</ThemeProvider>
 						</div>
 						<div style={{display: 'flex', alignItems: 'center', marginTop: '25px', width: '392px',  marginBottom: '25px'}}>
+						{twoAuth === true ?
+							<h2 style={{fontSize: '16px'}}>Disable</h2>
+							:
 							<h2 style={{fontSize: '16px'}}>Enable</h2>
+						}
 							<div style={{marginLeft: 280}}>
-								<label className="switch">
-									<input type="checkbox" checked={isChecked && is2AuthEnable} onChange={() => {setIsChecked(!isChecked); setIs2AuthEnable(!is2AuthEnable);}}/>
+								<label className="switch" onClick={scrollToBottom}>
+									<input type="checkbox" checked={isChecked && is2AuthEnable && isEnableText} onChange={() => {setIsChecked(!isChecked); setIs2AuthEnable(!is2AuthEnable); setIsEnableText(!isEnableText);}}/>
 									<span className="slider"></span>
 								</label>
 							</div>
@@ -262,7 +355,7 @@ function SettingsSecurity({userInInfo, onDataFromChild}) {
 									style={buttonStyle3}
 									// color='success'
 									theme={theme}
-									onClick={() => {setIsSendedCode(true); setHaveChanges(true); sendOTPCode();}}
+									onClick={() => sendOTPCode2Auth()}
 									>
 									SEND OTP CODE
 								</Button>
@@ -299,8 +392,8 @@ function SettingsSecurity({userInInfo, onDataFromChild}) {
 										sx={{ gap: 1, width: '350px' }}
 										length={5}
 									/>
-									</Box>
 									<span className={`loaderOTP2Verif${sendLoader}`}></span>
+									</Box>
 								</ThemeProvider>
 								<div style={{marginBlockStart: 'auto'}}>
 									{ otp2Step.length === 5 ?
@@ -316,6 +409,7 @@ function SettingsSecurity({userInInfo, onDataFromChild}) {
 											sx={{mt: 0, ml: 3, mr: 3, width: '90px', height: 35, boxShadow: 5, borderRadius: '8px' }} 
 											style={buttonStyle2}
 											theme={theme}
+											onClick={() => handleClickOTP2AuthVerification()}
 											>
 											APPLY
 										</Button>
@@ -526,7 +620,12 @@ function SettingsSecurity({userInInfo, onDataFromChild}) {
 			</div>
 			</motion.div>
 			: null}
-
+			<Snackbar open={errorSnackBar} autoHideDuration={10000} onClose={handleClose}>
+				<Alert onClose={handleClose} severity="error"
+				sx={{ width: 'auto', backgroundColor: snackBarColor, color: '#fff' }}>
+					{errorSnackBarText}
+				</Alert>
+			</Snackbar>
 		</div>
 	)
 }
