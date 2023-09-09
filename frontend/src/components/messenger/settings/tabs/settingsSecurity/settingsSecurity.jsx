@@ -6,7 +6,7 @@ import { MuiOtpInput } from 'mui-one-time-password-input';
 import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/Visibility';
 import './settingsSecurity.css';
-import closeImg from '../../../../img/close1.svg';
+import closeImg from '../../../../../img/close1.svg';
 import { motion, useAnimation } from 'framer-motion';
 import axios from 'axios';
 
@@ -79,6 +79,7 @@ function SettingsSecurity({userInInfo, onDataFromChild}) {
 	const [dataToSend, setDataToSend] = useState('zzzzzzzz');
 	const [sendLoader, setSendLoader] = React.useState('none');
 	const [sendLoader2, setSendLoader2] = React.useState('none');
+	const [sendLoader3, setSendLoader3] = React.useState('none');
 	const [snackBarColor, setSnackBarColor] = React.useState('');
 	const [isEnableText, setIsEnableText] = React.useState(false);
 	const [errorSnackBar, setErrorSnackBar] = useState(false);
@@ -86,20 +87,31 @@ function SettingsSecurity({userInInfo, onDataFromChild}) {
 	const [checkCode, setCheckCode] = useState("");
 	const [twoAuth, setTwoAuth] = useState(userInInfo.twoAuth);
 	const [is2AuthEnable, setIs2AuthEnable] = useState(false);
+	const [showConfirmRecovery, setShowConfirmRecovery] = useState(false);
 	const controls = useAnimation();
 	const scrollRef = useRef(null);
 
-	const messageTime = new Date(userInInfo.date_reg);
+	const messageTime = new Date(userInInfo.lastUpdatedPassword);
 	const options = {day: '2-digit', month: '2-digit', year: '2-digit' };
 	const formattedDate = messageTime.toLocaleDateString(undefined, options).replace(/\./g, '/');
 
 	console.log(twoAuth)
 
 
+	function maskEmail(email) {
+		const atIndex = email.indexOf('@');
+		if (atIndex >= 0) {
+		  const visiblePart = email.charAt(0) + '*'.repeat(atIndex - 2) + email.charAt(atIndex - 1);
+		  return visiblePart + email.slice(atIndex);
+		}
+		return email;
+	}
+	const maskedEmail = maskEmail(userInInfo.email);
+
 	async function sendOTPCode2Auth() {
 		try {
 			setSendLoader('')
-			const response = await axios.post("http://localhost:8000/send-otp-code", {
+			const response = await axios.post("https://kenzoback.onrender.com/send-otp-code", {
 					email: userInInfo.email,
 					code_length: 5,
 					email_message: 'OTP 2-Step Verification Code',
@@ -129,7 +141,7 @@ function SettingsSecurity({userInInfo, onDataFromChild}) {
 	async function saveChangedUserDataTwoAuth() {
 		try {
 			setSendLoader2('')
-			const response = await axios.patch('http://localhost:8000/settings/update_user_data', {
+			const response = await axios.patch('https://kenzoback.onrender.com/settings/update_user_data', {
 					twoAuth: twoAuth,
 				  }, {
 					headers: {
@@ -142,7 +154,6 @@ function SettingsSecurity({userInInfo, onDataFromChild}) {
 			setErrorSnackBarText("You've successfully modified your data!");
 	
 			setCheckCode(response)
-			console.log(response);
 			
 		}
 		catch (err) {
@@ -164,6 +175,34 @@ function SettingsSecurity({userInInfo, onDataFromChild}) {
 		}, 0.300);
 	};
 	
+
+	async function sendRecovetLink() {
+		try {
+			setSendLoader3('')
+			const response = await axios.post("https://kenzoback.onrender.com/request-reset", {
+					email: userInInfo.email,
+				headers: {
+					'Content-Type': 'application/x-www-form-urlencoded'
+				}
+			});
+			console.log("MESSAGE RESPONSE SEND TO MAIL: ", response);
+			setSendLoader3('none')
+			setErrorSnackBar(true);
+			setSnackBarColor('#388e3c');
+			setErrorSnackBarText("Recovery link was sended successfully!");
+			setTimeout(() => {
+				setShowConfirmRecovery(false);
+			}, 2000);
+			
+		}
+		catch (err) {
+			setSendLoader3('none')
+			setErrorSnackBar(true);
+			setSnackBarColor('#d32f2f');
+			setErrorSnackBarText("ERROR: " + err.response.data.detail);
+			console.log("SEND MESSAGE ERROR: ", err);
+		}
+	}
 
 	const handleClickOTP2AuthVerification = () => {
 		if (otp2Step === checkCode) {
@@ -213,8 +252,7 @@ function SettingsSecurity({userInInfo, onDataFromChild}) {
 	const handleChangeOTPPassword = (newValuePassword) => {
 		setOtpPassword(newValuePassword)
 	}
-
-	return (
+		return (	
 		<div className='setting-security-main-container' ref={scrollRef}>
 			<div className='setting-main-container-header'>
 				<div>
@@ -307,17 +345,19 @@ function SettingsSecurity({userInInfo, onDataFromChild}) {
 									value={primaryEmail}
 									onChange={(event) => setPrimaryEmail(event.target.value)}
 									id="outlined-basic" 
-									label={userInInfo.email}
+									label={maskedEmail}
 									variant="outlined" 
 									size='small'
 									InputLabelProps={{style: { color: '#8d8d8d' },}} 
 									InputProps={{style: { color: '#e0dfe7' },}} 
 									sx={{...TextFieldStyles, mt: 1, width: 400, boxShadow: 2}}
+									disabled
 									// error={!isValidUsername}
 									// helperText={!isValidUsername && "Username should contain at least 5 letters, numbers should be only in the end"}
 									
 								/>
 							</ThemeProvider>
+							{/* <h2 style={{marginTop: '20px', marginLeft: '10px'}}>{userInInfo.email}</h2> */}
 						</div>
 						<div style={{display: 'flex', alignItems: 'center', marginTop: '25px', width: '392px',  marginBottom: '25px'}}>
 						{twoAuth === true ?
@@ -440,7 +480,8 @@ function SettingsSecurity({userInInfo, onDataFromChild}) {
 					<div>
 						<div style={{display: 'flex', marginTop: '15px'}}>
 							<h2>Old Password</h2>
-							<h2 id='menuForgot' style={{color: 'rgb(211, 47, 47)', marginInlineStart: 'auto', cursor: 'pointer'}}>Forgot Password?</h2>
+							<h2 id='menuForgot' style={{color: 'rgb(211, 47, 47)', marginInlineStart: 'auto', cursor: 'pointer'}}
+							onClick={() => setShowConfirmRecovery(true)}>Forgot Password?</h2>
 						</div>
 						<TextField
 							type={showPassword ? "text" : "password"}
@@ -592,7 +633,7 @@ function SettingsSecurity({userInInfo, onDataFromChild}) {
 						<MuiOtpInput
 							value={otpPassword}
 							onChange={handleChangeOTPPassword}
-							inputprops={{ style: { color: '#e0dfe7', textAlign: 'center' } }} // Замените inputProps на inputprops
+							inputprops={{ style: { color: '#e0dfe7', textAlign: 'center' } }}
 							TextFieldsProps={{ disabled: false, size: 'small', placeholder: '-' }}
 							separator={<span>-</span>}
 							sx={{ gap: 1, width: '100%' }}
@@ -616,6 +657,37 @@ function SettingsSecurity({userInInfo, onDataFromChild}) {
 						</Button>
 						: null }
 					</div>
+
+					{ showConfirmRecovery === true ?
+					<div className='settings-securit-confirm-recovery'>
+						<h2 style={{display: 'flex', margin: '30px 10px 30px 10px', justifyContent: 'center', fontSize: '16px', textAlign: 'center'}}>We'll send a recovery link to your email: {userInInfo.email}</h2>
+						<div style={{display: 'flex', justifyContent: 'center'}}>
+							<Button 
+								variant="outlined" 
+								type="submit" 
+								color='success'
+								sx={{mt: 1, width: '200px', height: 40, boxShadow: 5, borderRadius: '8px' }} 
+								// style={buttonStyleUploadImg}
+								theme={theme}
+								onClick={() => sendRecovetLink()}
+								>
+								CONFIRM
+							</Button>
+							<Button 
+								variant="outlined" 
+								type="submit" 
+								sx={{mt: 1, ml: 3, width: '200px', height: 40, boxShadow: 5, borderRadius: '8px' }} 
+								// style={buttonStyleUploadImg}
+								theme={theme}
+								color='error'
+								onClick={() => {setShowConfirmRecovery(false); setSendLoader3('none')}}
+								>
+								CANCEL
+							</Button>
+						</div>
+						<span className={`loaderSendRecoveryLink${sendLoader3}`}></span>
+					</div>
+					: null}
 				</div>
 			</div>
 			</motion.div>
@@ -627,7 +699,7 @@ function SettingsSecurity({userInInfo, onDataFromChild}) {
 				</Alert>
 			</Snackbar>
 		</div>
-	)
+		)
 }
 
 export default SettingsSecurity;

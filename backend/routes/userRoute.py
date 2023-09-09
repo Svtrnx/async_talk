@@ -386,7 +386,7 @@ async def update_user_settings(
         db_user.country = form_data.country
     if form_data.avatar:
         db_user.avatar = form_data.avatar
-    if isinstance(bool,(form_data.twoAuth)):
+    if isinstance(form_data.twoAuth, bool):
         db_user.twoAuth = form_data.twoAuth
 
     db.commit()

@@ -914,7 +914,7 @@ function Signup() {
 									<MuiOtpInput
 										value={otp}
 										onChange={handleChangeOTP}
-										inputprops={{ style: { color: '#e0dfe7', textAlign: 'center' } }} // Замените inputProps на inputprops
+										inputprops={{ style: { color: '#e0dfe7', textAlign: 'center' } }}
 										TextFieldsProps={{ disabled: false, size: 'small', placeholder: '-' }}
 										separator={<span>-</span>}
 										sx={{ gap: 1, width: '500px' }}

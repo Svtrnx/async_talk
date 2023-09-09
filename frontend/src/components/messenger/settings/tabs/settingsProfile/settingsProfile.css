@@ -67,3 +67,45 @@
 		
 	}
 }
+
+.settings-profile-confirm-email {
+	background-color: #23242A;
+	display: grid !important;
+	/* width: 370px;
+	height: 585px; */
+	width: fit-content;
+	height: fit-content;
+	border-radius: 20px;
+	grid-template-rows: fit-content;
+	box-shadow: 0px 0px 16px 0px #1f2024;
+	position: absolute;
+	z-index: 100;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+	z-index: 100;
+	padding: 20px 20px 40px 20px;
+	justify-content: center;
+	text-align: center;
+	justify-items: center;
+}
+
+
+.settings-profile-confirm-email h2 {
+	font-family: 'Montserrat', sans-serif;
+	font-weight: 400;
+	font-size: 14px;
+	margin: 0;
+}
+
+.css-1n4twyu-MuiInputBase-input-MuiOutlinedInput-input.Mui-disabled {
+	-webkit-text-fill-color: #fff !important;
+}
+
+#change:hover {
+	color: rgb(167, 167, 167);
+}
+
+.css-16x2zzn-MuiButtonBase-root-MuiButton-root:hover {
+	background-color: rgba(96, 25, 210, 0.04) !important;
+}
