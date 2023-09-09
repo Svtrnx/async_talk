@@ -82,6 +82,7 @@ function SettingsSecurity({userInInfo, onDataFromChild}) {
 	const [sendLoader3, setSendLoader3] = React.useState('none');
 	const [snackBarColor, setSnackBarColor] = React.useState('');
 	const [isEnableText, setIsEnableText] = React.useState(false);
+	const [showOTPChangePassword, setShowOTPChangePassword] = React.useState(false);
 	const [errorSnackBar, setErrorSnackBar] = useState(false);
 	const [errorSnackBarText, setErrorSnackBarText] = useState('');
 	const [checkCode, setCheckCode] = useState("");
@@ -103,7 +104,7 @@ function SettingsSecurity({userInInfo, onDataFromChild}) {
 	  
 		const fetchData = async () => {
 		  try {
-			const response = await axios.get('https://kenzoback.onrender.com/api/check_verification', {
+			const response = await axios.get('http://localhost:8000/api/check_verification', {
 			  headers: {
 				'Content-Type': 'application/json',
 			  }
@@ -130,7 +131,7 @@ function SettingsSecurity({userInInfo, onDataFromChild}) {
 	async function sendOTPCode2Auth() {
 		try {
 			setSendLoader('')
-			const response = await axios.post("https://kenzoback.onrender.com/send-otp-code", {
+			const response = await axios.post("http://localhost:8000/send-otp-code", {
 					email: userInInfo.email,
 					code_length: 5,
 					email_message: 'OTP 2-Step Verification Code',
@@ -160,7 +161,7 @@ function SettingsSecurity({userInInfo, onDataFromChild}) {
 	async function saveChangedUserDataTwoAuth() {
 		try {
 			setSendLoader2('')
-			const response = await axios.patch('https://kenzoback.onrender.com/settings/update_user_data', {
+			const response = await axios.patch('http://localhost:8000/settings/update_user_data', {
 					twoAuth: twoAuth,
 				  }, {
 					headers: {
@@ -198,7 +199,7 @@ function SettingsSecurity({userInInfo, onDataFromChild}) {
 	async function sendRecovetLink() {
 		try {
 			setSendLoader3('')
-			const response = await axios.post("https://kenzoback.onrender.com/request-reset", {
+			const response = await axios.post("http://localhost:8000/request-reset", {
 					email: userInInfo.email,
 				headers: {
 					'Content-Type': 'application/x-www-form-urlencoded'
@@ -485,7 +486,6 @@ function SettingsSecurity({userInInfo, onDataFromChild}) {
 			{/*  */}
 			{ isChangeMenuOpen === true ?
 			<motion.div
-				// initial={{ y: -1, opacity: 0 }}
 				initial={{ opacity: 0 }}
 				animate={{ opacity: 1 }}
 				exit={{ opacity: 0 }}
@@ -625,42 +625,61 @@ function SettingsSecurity({userInInfo, onDataFromChild}) {
 					</div>
 				</ThemeProvider>
 				<div style={{marginTop: 25}}>
-					<h2 style={{display: 'grid', textAlign: 'center', marginBottom: 15}}>To secure your account, Enter the 6 digit code we sent to {userInInfo.email}</h2>
-					<div>
-					<ThemeProvider theme={otpTheme}>
-						<Box
-						sx={{
-							"& label.Mui-focused": {
-							color: "#e0dfe7",
-							},
-							"& .MuiInput-underline:after": {
-							borderBottomColor: "#e0dfe7",
-							},
-							"& .MuiOutlinedInput-root": {
-							"& fieldset": {
-								borderColor: "#e0dfe7",
-							},
-							"&:hover fieldset": {
-								borderColor: "#946cdc",
-							},
-							"&.Mui-focused fieldset": {
-								borderColor: "#7f56da",
-							},
-							},
-						}}
+					<Button 
+						variant="contained" 
+						type="submit" 
+						// color='success'
+						sx={{mt: 1, width: '100%', height: 40, boxShadow: 5, borderRadius: '8px' }} 
+						style={buttonStyle}
+						theme={theme}
+						onClick={() => sendRecovetLink()}
 						>
-						<MuiOtpInput
-							value={otpPassword}
-							onChange={handleChangeOTPPassword}
-							inputprops={{ style: { color: '#e0dfe7', textAlign: 'center' } }}
-							TextFieldsProps={{ disabled: false, size: 'small', placeholder: '-' }}
-							separator={<span>-</span>}
-							sx={{ gap: 1, width: '100%' }}
-							length={6}
-						/>
-						</Box>
-					</ThemeProvider>
+						SEND OTP CODE
+					</Button>
+					{ showOTPChangePassword === true ?
+					<motion.div
+					initial={{ opacity: 0 }}
+					animate={{ opacity: 1 }}
+					exit={{ opacity: 0 }}
+					>
+					<div>
+						<h2 style={{display: 'grid', textAlign: 'center', marginBottom: 15}}>To secure your account, Enter the 6 digit code, we sent it to {maskedEmail}</h2>
+						<ThemeProvider theme={otpTheme}>
+							<Box
+							sx={{
+								"& label.Mui-focused": {
+								color: "#e0dfe7",
+								},
+								"& .MuiInput-underline:after": {
+								borderBottomColor: "#e0dfe7",
+								},
+								"& .MuiOutlinedInput-root": {
+								"& fieldset": {
+									borderColor: "#e0dfe7",
+								},
+								"&:hover fieldset": {
+									borderColor: "#946cdc",
+								},
+								"&.Mui-focused fieldset": {
+									borderColor: "#7f56da",
+								},
+								},
+							}}
+							>
+							<MuiOtpInput
+								value={otpPassword}
+								onChange={handleChangeOTPPassword}
+								inputprops={{ style: { color: '#e0dfe7', textAlign: 'center' } }}
+								TextFieldsProps={{ disabled: false, size: 'small', placeholder: '-' }}
+								separator={<span>-</span>}
+								sx={{ gap: 1, width: '100%' }}
+								length={6}
+							/>
+							</Box>
+						</ThemeProvider>
 					</div>
+					</motion.div>
+					: null }
 					<div>
 					{ otpPassword.length === 6 ?
 						<Button 
@@ -679,7 +698,7 @@ function SettingsSecurity({userInInfo, onDataFromChild}) {
 
 					{ showConfirmRecovery === true ?
 					<div className='settings-securit-confirm-recovery'>
-						<h2 style={{display: 'flex', margin: '30px 10px 30px 10px', justifyContent: 'center', fontSize: '16px', textAlign: 'center'}}>We'll send a recovery link to your email: {userInInfo.email}</h2>
+						<h2 style={{display: 'flex', margin: '30px 10px 30px 10px', justifyContent: 'center', fontSize: '16px', textAlign: 'center'}}>We'll send a recovery link to your email: {maskedEmail}</h2>
 						<div style={{display: 'flex', justifyContent: 'center'}}>
 							<Button 
 								variant="outlined" 

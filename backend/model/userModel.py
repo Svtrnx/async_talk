@@ -151,6 +151,7 @@ class OAuth2ChangeUserDataForm:
         self,
         email: str = Form(default=None),
         username: str = Form(default=None),
+        password: str = Form(default=None),
         first_name: str = Form(default=None),
         last_name: str = Form(default=None),
         avatar: str = Form(default=None),
@@ -161,6 +162,7 @@ class OAuth2ChangeUserDataForm:
     ):
         self.email = email
         self.username = username
+        self.password = password
         self.first_name = first_name
         self.last_name = last_name
         self.avatar = avatar
@@ -168,6 +170,15 @@ class OAuth2ChangeUserDataForm:
         self.country = country
         self.date = date
         self.twoAuth = twoAuth
+
+class VerifyPassword:
+	
+    def __init__(
+        self,
+        password_old: str = Form(default=None),
+    ):
+        self.password_old = password_old
+
     
 class requestFormFromChangePassword:
 
@@ -196,6 +207,7 @@ class OAuth2PasswordRequestFormSignin:
         self.scopes = scope.split()
         self.client_id = client_id
         self.client_secret = client_secret
+
 
 
 

@@ -7,8 +7,11 @@ import { MuiOtpInput } from 'mui-one-time-password-input';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import { motion, useAnimation } from 'framer-motion';
-import './settingsProfile.css';
 import axios from 'axios';
+import dayjs from 'dayjs';
+
+import './settingsProfile.css';
+
 
 const TextFieldStyles = {
 	"& label.Mui-focused": {
@@ -60,13 +63,14 @@ const buttonStyleUploadImg = {
 	color: '#e0dfe7'
   };
 
-function SettingsProfile({userInInfo, onDataFromChild}) {
+function SettingsProfile({userInInfo, formData, fileToUpload, onDataFromChild}) {
 	const [fName, setFName] = useState('')
 	const [lName, setLName] = useState('')
 	const [username, setUsername] = useState('');
 	const [aboutMe, setAboutMe] = useState('');
 	const [otpFirstEmail, setOtpFirstEmail] = useState('');
 	const [otpSecondEmail, setOtpSecondEmail] = useState('');
+	const [newAvatar, setNewAvatar] = useState('');
 	const [showFirstOTP, setShowFirstOTP] = useState(false);
 	const [showSecondOTP, setShowSecondOTP] = useState(false);
 	const [email, setEmail] = useState('');
@@ -96,7 +100,7 @@ function SettingsProfile({userInInfo, onDataFromChild}) {
 	  
 		const fetchData = async () => {
 		  try {
-			const response = await axios.get('https://kenzoback.onrender.com/api/check_verification', {
+			const response = await axios.get('http://localhost:8000/api/check_verification', {
 			  headers: {
 				'Content-Type': 'application/json',
 			  }
@@ -110,6 +114,7 @@ function SettingsProfile({userInInfo, onDataFromChild}) {
 		fetchData();
 	}, []);
 
+	
 	function maskEmail(email) {
 		const atIndex = email.indexOf('@');
 		if (atIndex >= 0) {
@@ -119,6 +124,9 @@ function SettingsProfile({userInInfo, onDataFromChild}) {
 		return email;
 	}
 	const maskedEmail = maskEmail(userInInfo.email);
+
+	console.log(formData)
+
 
 	async function saveChangedUserData() {
 	try {
@@ -142,16 +150,49 @@ function SettingsProfile({userInInfo, onDataFromChild}) {
 				return
 			}
 		}
+		const dayjsValue = dayjs(date);
+		
+		const formattedMonth = dayjsValue.format('MMMM');
+		const formattedDay = dayjsValue.format('D');
+		const formattedYear = dayjsValue.format('YYYY');
+		
+		let formDataDate = formattedMonth + ' ' + formattedDay;
+		formDataDate += ' ' + formattedYear
+
+		const format = newAvatar.format;
+		const originalFilename = newAvatar.original_filename;
+		const combinedString = originalFilename + "." + format;
+
+		if (combinedString !== fileToUpload.name) {
+			const cloud_name = 'dlwuhl9ez';
+			fetch(`https://api.cloudinary.com/v1_1/${cloud_name}/image/upload`, {
+				method: 'POST',
+				body: formData,
+			})
+			.then(response => response.json())
+			.then(data => {
+				console.log('Cloudinary response:', data);
+				// setSelectedAvatar(data.secure_url)
+				setNewAvatar(data)
+			})
+			.catch(error => {
+				console.error('Error uploading file:', error);
+			});
+		}
+		else {
+			setNewAvatar('2')
+			console.log('catched')
+		}
 		setSendLoader('')
-		const response = await axios.patch('https://kenzoback.onrender.com/settings/update_user_data', {
+		const response = await axios.patch('http://localhost:8000/settings/update_user_data', {
 				email: email,
 				username: username,
 				first_name: fName,
 				last_name: lName,
-				avatar: '',
+				avatar: newAvatar.secure_url,
 				gender: '',
-				country: country,
-				date: date,
+				country: country.label,
+				date: formDataDate,
 			  }, {
 				headers: {
 				  'Content-Type': 'application/x-www-form-urlencoded'
@@ -161,7 +202,6 @@ function SettingsProfile({userInInfo, onDataFromChild}) {
 		setErrorSnackBar(true);
 		setSnackBarColor('#388e3c');
 		setErrorSnackBarText("You've successfully modified your data!");
-		console.log(response)
 		
 	}
 	catch (err) {
@@ -184,7 +224,7 @@ function SettingsProfile({userInInfo, onDataFromChild}) {
 	async function sendOTPCodeFirstEmail() {
 		try {
 			setSendLoader3('')
-			const response = await axios.post("https://kenzoback.onrender.com/send-otp-code", {
+			const response = await axios.post("http://localhost:8000/send-otp-code", {
 					email: userInInfo.email,
 					code_length: 5,
 					email_message: 'OTP Code to unlink your email',
@@ -194,7 +234,6 @@ function SettingsProfile({userInInfo, onDataFromChild}) {
 					'Content-Type': 'application/x-www-form-urlencoded'
 				}
 			});
-			console.log("MESSAGE RESPONSE SEND TO MAIL: ", response);
 			setSendLoader3('none')
 			setErrorSnackBar(true);
 			setSnackBarColor('#388e3c');
@@ -215,7 +254,7 @@ function SettingsProfile({userInInfo, onDataFromChild}) {
 	async function sendOTPCodeSecondEmail() {
 		try {
 			setSendLoader3('')
-			const response = await axios.post("https://kenzoback.onrender.com/send-otp-code", {
+			const response = await axios.post("http://localhost:8000/send-otp-code", {
 					email: newEmail,
 					code_length: 5,
 					email_message: 'OTP Code to link your email',
@@ -225,7 +264,6 @@ function SettingsProfile({userInInfo, onDataFromChild}) {
 					'Content-Type': 'application/x-www-form-urlencoded'
 				}
 			});
-			console.log("MESSAGE RESPONSE SEND TO MAIL: ", response);
 			setSendLoader3('none')
 			setErrorSnackBar(true);
 			setSnackBarColor('#388e3c');
@@ -259,7 +297,7 @@ function SettingsProfile({userInInfo, onDataFromChild}) {
 		if (checkCodeSecond === otpSecondEmail) {
 			setErrorSnackBar(true);
 			setSnackBarColor('#388e3c');
-			setErrorSnackBarText("You have been updated your email, now save changes!");
+			setErrorSnackBarText("You have been updated your email, now save the changes!");
 			setIsEmailNew(false);
 			setEmail(newEmail);
 			setTimeout(() => {
@@ -294,6 +332,8 @@ function SettingsProfile({userInInfo, onDataFromChild}) {
 	};
 
 
+	console.log(formData)
+	console.log('1',typeof(formData))
 
 	return (
 		<div className='setting-main-container'>
@@ -303,7 +343,8 @@ function SettingsProfile({userInInfo, onDataFromChild}) {
 					<h2 style={{fontSize: '15px', color: 'rgb(159 159 159 / 61%)', marginTop: '3px'}}>Here you can change your account information</h2>
 				</div>
 					{ fName.length > 3 || lName.length > 3 || username.length > 3 || 
-					aboutMe.length > 3 || email.length > 3 ?
+					aboutMe.length > 3 || email.length > 3 || typeof formData === 'object' ||
+					((country && country.label) && country.label.length > 2)  || date !== null?
 					
 				<div style={{marginInlineStart: 'auto'}}>
 					<motion.div
@@ -419,13 +460,16 @@ function SettingsProfile({userInInfo, onDataFromChild}) {
 								value={country}
 								onChange={(event, newValue) => {
 									setCountry(newValue);
+									if (newValue === undefined || newValue === null) {
+										setCountry('');
+									  }
 								}}
 								id="country-select-demo"
 								sx={{ width: 400, mt: 1 }}
 								
 								options={countries}
 								autoHighlight
-								getOptionLabel={(option) => option.label}
+								getOptionLabel={(option) => (option ? option.label : '')}
 								renderOption={(props, option) => (
 									<Box component="li" sx={{ '& > img': { mr: 2, flexShrink: 0 }, color: "#8d8d8d"}} {...props}>
 									<img

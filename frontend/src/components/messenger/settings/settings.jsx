@@ -54,31 +54,23 @@ const buttonStyleUploadImg = {
   };
 
 function Settings() {
-	const [headerImg, setHeaderImg] = React.useState(null);
-	const [fName, setFName] = useState('')
-	const [lName, setLName] = useState('')
-	const [username, setUsername] = useState('');
-	const [password, setPassword] = useState('');
-	const [aboutMe, setAboutMe] = useState('');
-	const [confirmPassword, setConfirmPassword] = useState('');
-	const [email, setEmail] = useState('');
-	const [country, setCountry] = useState({ code: '', label: '', phone: '' });
-	const [date, setDate] = useState(null);
+	const [headerImg, setHeaderImg] = React.useState('');
+	const [formData2, setFormData2] = React.useState('');
 	const [userIn, setUserIn] = useState('');
-	const [boldText, setBoldText] = useState('bold');
-	const [selectedMenuText, setSelectedMenuText] = useState('bold');
 	const [selectedMenu, setSelectedMenu] = useState('My Profile');
 	const [selectedAvatar, setSelectedAvatar] = useState('');
+	const [fileToUpload, setFileToUpload] = useState('');
 	const fileInputRef = useRef(null);
 
 	const navigate = useNavigate();
+
 
 
 	useEffect(() => {
 		const fetchData = async () => {
 			axios.defaults.withCredentials = true;
 		  try {
-			const response = await axios.get('https://kenzoback.onrender.com/api/check_verification', {
+			const response = await axios.get('http://localhost:8000/api/check_verification', {
 			  withCredentials: true,
 			});
 			setSelectedAvatar(response.data.user.avatar);
@@ -99,9 +91,6 @@ function Settings() {
 	  setDataFromChild(data);
 	};
 
-	console.log(userIn)
-	console.log(userIn.avatar)
-	console.log(selectedAvatar)
 
 	const menuItems = [
 	  { id: 1, name: 'My Profile' },
@@ -113,38 +102,30 @@ function Settings() {
 	  setSelectedMenu(menuName);
 	};
 
-	console.log(selectedMenu)
 
 	const openFileInput = () => {
         fileInputRef.current.click();
     };
 
+	
 	const handleFileUpload = (event) => {
         const file = event.target.files;
 		
 		if (file.length > 0) {
 			const fileToUpload = file[0];
-	
+			
 			const cloud_name = 'dlwuhl9ez';
-
+			
 			const formData = new FormData();
 			formData.append('file', fileToUpload);
 			formData.append("cloud_name", cloud_name);
 			formData.append("upload_preset", "aecdrcq4");
 
-	
-			fetch(`https://api.cloudinary.com/v1_1/${cloud_name}/image/upload`, {
-				method: 'POST',
-				body: formData,
-			})
-			.then(response => response.json())
-			.then(data => {
-				console.log('Cloudinary response:', data);
-				setSelectedAvatar(data.secure_url)
-			})
-			.catch(error => {
-				console.error('Error uploading file:', error);
-			});
+			setFormData2(formData);
+			setFileToUpload(fileToUpload);
+
+			const imageUrl = URL.createObjectURL(fileToUpload);
+			setSelectedAvatar(imageUrl)
 		}
 		
     };
@@ -202,7 +183,7 @@ function Settings() {
 							<h2 style={{marginTop: '10px', marginBottom: '10px'}}>{userIn.first_name} {userIn.last_name}</h2>
 							<div style={{display: 'flex', alignItems: 'center'}}>
 								<h2 style={{color: 'gray', fontSize: '18px ', marginTop: '3px'}}>Username:&nbsp;&nbsp;</h2>
-								<h2>{userIn.last_name}</h2>
+								<h2>{userIn.username}</h2>
 							</div>
 						</div>
 					</div>
@@ -232,7 +213,7 @@ function Settings() {
 						exit={{ y: -10, opacity: 0 }}
 						transition={{ duration: 0.3 }}
 					>
-					{userIn && <SettingsProfile userInInfo={userIn} onDataFromChild={handleDataFromChild}/>}
+					{userIn && <SettingsProfile userInInfo={userIn} formData={formData2} fileToUpload={fileToUpload} onDataFromChild={handleDataFromChild}/>}
 					</motion.div>
 				: null }
 				{ selectedMenu === 'Security' ?

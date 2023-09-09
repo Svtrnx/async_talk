@@ -239,9 +239,6 @@ async def logout(response: Response):
 
     return {"message": "Logged out successfully"}
 
-
-
-
 # POST chat info
 @userRouter.get("/api/check_verification")
 async def show_event(current_user: User = Depends(get_current_user)):
@@ -362,6 +359,7 @@ async def request_reset_password(data: userModel.RequestFormFromVerifEmail, db: 
 @userRouter.patch("/settings/update_user_data")
 async def update_user_settings(
     form_data: userModel.OAuth2ChangeUserDataForm = Depends(),
+    form_data_password: userModel.VerifyPassword = Depends(),
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user)
 ):
@@ -376,6 +374,17 @@ async def update_user_settings(
         db_user.email = form_data.email
     if form_data.username:
         db_user.username = form_data.username
+    if form_data.password:
+       user = userController.authenticate_user(
+        db=db,
+        username=current_user.username,
+        password=form_data_password.password_old
+    )
+       if not user:
+           raise HTTPException(status_code=307, detail="Incorrect user password!")
+       
+       hashed_password = get_password_hash(form_data.password)
+       db_user.password = hashed_password
     if form_data.first_name:
         db_user.first_name = form_data.first_name
     if form_data.last_name:
@@ -386,6 +395,8 @@ async def update_user_settings(
         db_user.country = form_data.country
     if form_data.avatar:
         db_user.avatar = form_data.avatar
+    if form_data.date:
+        db_user.date = form_data.date
     if isinstance(form_data.twoAuth, bool):
         db_user.twoAuth = form_data.twoAuth
 
@@ -394,3 +405,17 @@ async def update_user_settings(
     return {"user": db_user}
 
 
+@userRouter.patch('/settings/change_password')
+async def settings_change_password(db: Session = Depends(get_db), form_data: userModel.OAuth2PasswordRequestFormSignin = Depends()):
+    user = userController.authenticate_user(
+        db=db,
+        username=form_data.username,
+        password=form_data.password
+    )
+    if not user:
+        raise HTTPException(status_code=307, detail="Incorrect user password!")
+    
+    
+    
+    
+    
