@@ -91,17 +91,18 @@ function SettingsProfile({userInInfo, onDataFromChild}) {
 	};
 
 	useEffect(() => {
+
+		axios.defaults.withCredentials = true;
+	  
 		const fetchData = async () => {
 		  try {
 			const response = await axios.get('https://kenzoback.onrender.com/api/check_verification', {
-			  withCredentials: true,
+			  headers: {
+				'Content-Type': 'application/json',
+			  }
 			});
-			// setSelectedAvatar(response.data.user.avatar);
-			// setUserIn(response.data.user)
-			console.log(response.data.user)
-  
+	  
 		  } catch (error) {
-			// navigate('/signin');
 			console.error(error);
 		  }
 		};

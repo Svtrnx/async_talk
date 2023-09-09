@@ -97,6 +97,25 @@ function SettingsSecurity({userInInfo, onDataFromChild}) {
 
 	console.log(twoAuth)
 
+	useEffect(() => {
+
+		axios.defaults.withCredentials = true;
+	  
+		const fetchData = async () => {
+		  try {
+			const response = await axios.get('https://kenzoback.onrender.com/api/check_verification', {
+			  headers: {
+				'Content-Type': 'application/json',
+			  }
+			});
+	  
+		  } catch (error) {
+			console.error(error);
+		  }
+		};
+	  
+		fetchData();
+	}, []);
 
 	function maskEmail(email) {
 		const atIndex = email.indexOf('@');
