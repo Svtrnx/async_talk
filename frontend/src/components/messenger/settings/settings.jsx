@@ -70,7 +70,7 @@ function Settings() {
 		const fetchData = async () => {
 			axios.defaults.withCredentials = true;
 		  try {
-			const response = await axios.get('http://localhost:8000/api/check_verification', {
+			const response = await axios.get('https://kenzoback.onrender.com/api/check_verification', {
 			  withCredentials: true,
 			});
 			setSelectedAvatar(response.data.user.avatar);

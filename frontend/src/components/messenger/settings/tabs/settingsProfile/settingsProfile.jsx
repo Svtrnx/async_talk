@@ -100,7 +100,7 @@ function SettingsProfile({userInInfo, formData, fileToUpload, onDataFromChild}) 
 	  
 		const fetchData = async () => {
 		  try {
-			const response = await axios.get('http://localhost:8000/api/check_verification', {
+			const response = await axios.get('https://kenzoback.onrender.com/api/check_verification', {
 			  headers: {
 				'Content-Type': 'application/json',
 			  }
@@ -184,7 +184,7 @@ function SettingsProfile({userInInfo, formData, fileToUpload, onDataFromChild}) 
 			console.log('catched')
 		}
 		setSendLoader('')
-		const response = await axios.patch('http://localhost:8000/settings/update_user_data', {
+		const response = await axios.patch('https://kenzoback.onrender.com/settings/update_user_data', {
 				email: email,
 				username: username,
 				first_name: fName,
@@ -224,7 +224,7 @@ function SettingsProfile({userInInfo, formData, fileToUpload, onDataFromChild}) 
 	async function sendOTPCodeFirstEmail() {
 		try {
 			setSendLoader3('')
-			const response = await axios.post("http://localhost:8000/send-otp-code", {
+			const response = await axios.post("https://kenzoback.onrender.com/send-otp-code", {
 					email: userInInfo.email,
 					code_length: 5,
 					email_message: 'OTP Code to unlink your email',
@@ -254,7 +254,7 @@ function SettingsProfile({userInInfo, formData, fileToUpload, onDataFromChild}) 
 	async function sendOTPCodeSecondEmail() {
 		try {
 			setSendLoader3('')
-			const response = await axios.post("http://localhost:8000/send-otp-code", {
+			const response = await axios.post("https://kenzoback.onrender.com/send-otp-code", {
 					email: newEmail,
 					code_length: 5,
 					email_message: 'OTP Code to link your email',

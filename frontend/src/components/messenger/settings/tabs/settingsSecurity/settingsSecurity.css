@@ -252,6 +252,69 @@
 	  transform: translateX(-99%);
 	}
   }
+
+.loaderChangePassword {
+	width: 100%;
+	height: 4.8px;
+	display: inline-block;
+	position: relative;
+	overflow: hidden;
+  }
+  .loaderChangePassword::after {
+	content: '';  
+	width: 96px;
+	height: 4.8px;
+	background: #7E57C2;
+	position: absolute;
+	top: 0;
+	left: 0;
+	box-sizing: border-box;
+	animation: hitZakloaderChangePassword 0.6s ease-in-out infinite alternate;
+	border-radius: 18px;
+  }
+  
+  @keyframes hitZakloaderChangePassword {
+	0% {
+	  left: 0;
+	  transform: translateX(-1%);
+	}
+	100% {
+	  left: 100%;
+	  transform: translateX(-99%);
+	}
+  }
+	  
+
+.loaderChangePasswordConfirm {
+	width: 100%;
+	height: 4.8px;
+	display: inline-block;
+	position: relative;
+	overflow: hidden;
+  }
+  .loaderChangePasswordConfirm::after {
+	content: '';  
+	width: 96px;
+	height: 4.8px;
+	background: #388e3c;
+	position: absolute;
+	top: 0;
+	left: 0;
+	box-sizing: border-box;
+	animation: hitZakloaderChangePasswordConfirm 0.6s ease-in-out infinite alternate;
+	border-radius: 18px;
+  }
+  
+  @keyframes hitZakloaderChangePasswordConfirm {
+	0% {
+	  left: 0;
+	  transform: translateX(-1%);
+	}
+	100% {
+	  left: 100%;
+	  transform: translateX(-99%);
+	}
+  }
 	  
 
 

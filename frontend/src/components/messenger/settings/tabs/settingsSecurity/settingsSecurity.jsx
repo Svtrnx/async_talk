@@ -78,6 +78,8 @@ function SettingsSecurity({userInInfo, onDataFromChild}) {
 	const [haveChanges, setHaveChanges] = useState(false);
 	const [dataToSend, setDataToSend] = useState('zzzzzzzz');
 	const [sendLoader, setSendLoader] = React.useState('none');
+	const [sendLoaderPassword, setSendLoaderPassword] = React.useState('none');
+	const [sendLoaderPasswordConfirm, setSendLoaderPasswordConfirm] = React.useState('none');
 	const [sendLoader2, setSendLoader2] = React.useState('none');
 	const [sendLoader3, setSendLoader3] = React.useState('none');
 	const [snackBarColor, setSnackBarColor] = React.useState('');
@@ -86,6 +88,7 @@ function SettingsSecurity({userInInfo, onDataFromChild}) {
 	const [errorSnackBar, setErrorSnackBar] = useState(false);
 	const [errorSnackBarText, setErrorSnackBarText] = useState('');
 	const [checkCode, setCheckCode] = useState("");
+	const [checkCodePassword, setCheckCodePassword] = useState("");
 	const [twoAuth, setTwoAuth] = useState(userInInfo.twoAuth);
 	const [is2AuthEnable, setIs2AuthEnable] = useState(false);
 	const [showConfirmRecovery, setShowConfirmRecovery] = useState(false);
@@ -104,7 +107,7 @@ function SettingsSecurity({userInInfo, onDataFromChild}) {
 	  
 		const fetchData = async () => {
 		  try {
-			const response = await axios.get('http://localhost:8000/api/check_verification', {
+			const response = await axios.get('https://kenzoback.onrender.com/api/check_verification', {
 			  headers: {
 				'Content-Type': 'application/json',
 			  }
@@ -131,7 +134,7 @@ function SettingsSecurity({userInInfo, onDataFromChild}) {
 	async function sendOTPCode2Auth() {
 		try {
 			setSendLoader('')
-			const response = await axios.post("http://localhost:8000/send-otp-code", {
+			const response = await axios.post("https://kenzoback.onrender.com/send-otp-code", {
 					email: userInInfo.email,
 					code_length: 5,
 					email_message: 'OTP 2-Step Verification Code',
@@ -158,10 +161,81 @@ function SettingsSecurity({userInInfo, onDataFromChild}) {
 		}
 	}
 
+	async function sendOTPCode2AuthChangePassword() {
+		try {
+			setSendLoaderPassword('')
+			const response = await axios.post("https://kenzoback.onrender.com/send-otp-code", {
+					email: userInInfo.email,
+					code_length: 6,
+					email_message: 'OTP Change Password Verification Code',
+					email_subject: "ASYNC TALK 2-AUTH CODE",
+					condition: 'not_exists',
+				headers: {
+					'Content-Type': 'application/x-www-form-urlencoded'
+				}
+			});
+			setShowOTPChangePassword(true); 
+			setSendLoaderPassword('none');
+
+			setCheckCodePassword(response.data.check)
+			console.log('sendOTPCodePassword has been sended successfully');
+			
+		}
+		catch (err) {
+			setSendLoaderPassword('none')
+			setErrorSnackBar(true);
+			setSnackBarColor('#d32f2f');
+			setErrorSnackBarText("ERROR: " + err.response.data.detail);
+			console.log("SEND MESSAGE ERROR: ", err);
+		}
+	}
+
+	async function compareOTPCodesChangePassword(){
+		if (checkCodePassword === otpPassword) {
+			// setErrorSnackBar(true);
+			// setSnackBarColor('#388e3c');
+			// setErrorSnackBarText("You have been updated your email, now save the changes!");
+
+			setSendLoaderPasswordConfirm('')
+			try {
+				const response = await axios.patch('https://kenzoback.onrender.com/settings/update_user_data', {
+					password_old: oldPassword,
+					password: password,
+				}, {
+					headers: {
+					'Content-Type': 'application/x-www-form-urlencoded'
+					}
+				});
+				setSendLoaderPasswordConfirm('none');
+				setErrorSnackBar(true);
+				setSnackBarColor('#388e3c');
+				setErrorSnackBarText("You've successfully changed your password!");
+
+				setTimeout(() => {
+					isChangeMenuOpen(false);
+				}, 4000);
+					
+			}
+			catch (err) {
+				setSendLoaderPasswordConfirm('none')
+				setErrorSnackBar(true);
+				setSnackBarColor('#d32f2f');
+				setErrorSnackBarText("ERROR: " + err.response.data.detail);
+				console.log("SEND MESSAGE ERROR: ", err);
+			}
+		}
+		else {
+			setSendLoaderPassword('none')
+			setErrorSnackBar(true);
+			setSnackBarColor('#d32f2f');
+			setErrorSnackBarText("INVALID OTP CODE!");
+		}
+	}
+
 	async function saveChangedUserDataTwoAuth() {
 		try {
 			setSendLoader2('')
-			const response = await axios.patch('http://localhost:8000/settings/update_user_data', {
+			const response = await axios.patch('https://kenzoback.onrender.com/settings/update_user_data', {
 					twoAuth: twoAuth,
 				  }, {
 					headers: {
@@ -199,7 +273,7 @@ function SettingsSecurity({userInInfo, onDataFromChild}) {
 	async function sendRecovetLink() {
 		try {
 			setSendLoader3('')
-			const response = await axios.post("http://localhost:8000/request-reset", {
+			const response = await axios.post("https://kenzoback.onrender.com/request-reset", {
 					email: userInInfo.email,
 				headers: {
 					'Content-Type': 'application/x-www-form-urlencoded'
@@ -258,6 +332,10 @@ function SettingsSecurity({userInInfo, onDataFromChild}) {
 	
 		setErrorSnackBar(false);
 	};
+
+	console.log('password:', password)
+	console.log('oldPassword:', oldPassword)
+	console.log('confirmPassword:', confirmPassword)
 
 
 	const handleClickShowPassword = () => setShowPassword((show) => !show);
@@ -625,6 +703,16 @@ function SettingsSecurity({userInInfo, onDataFromChild}) {
 					</div>
 				</ThemeProvider>
 				<div style={{marginTop: 25}}>
+
+					{ oldPassword.length > 0 && oldPassword.length > 5 &&
+					  confirmPassword.length > 0 && confirmPassword.length > 5 &&
+					  password.length > 0 && password.length > 5 && password === confirmPassword  ?
+					<>
+					<motion.div
+					initial={{ opacity: 0 }}
+					animate={{ opacity: 1 }}
+					exit={{ opacity: 0 }}
+					>
 					<Button 
 						variant="contained" 
 						type="submit" 
@@ -632,10 +720,14 @@ function SettingsSecurity({userInInfo, onDataFromChild}) {
 						sx={{mt: 1, width: '100%', height: 40, boxShadow: 5, borderRadius: '8px' }} 
 						style={buttonStyle}
 						theme={theme}
-						onClick={() => sendRecovetLink()}
+						onClick={() => sendOTPCode2AuthChangePassword()}
 						>
 						SEND OTP CODE
 					</Button>
+					<span className={`loaderChangePassword${sendLoaderPassword}`}></span>
+					</motion.div>
+					</>
+					: null}
 					{ showOTPChangePassword === true ?
 					<motion.div
 					initial={{ opacity: 0 }}
@@ -643,7 +735,7 @@ function SettingsSecurity({userInInfo, onDataFromChild}) {
 					exit={{ opacity: 0 }}
 					>
 					<div>
-						<h2 style={{display: 'grid', textAlign: 'center', marginBottom: 15}}>To secure your account, Enter the 6 digit code, we sent it to {maskedEmail}</h2>
+						<h2 style={{display: 'grid', textAlign: 'center', marginBottom: 15, marginTop: 15}}>To secure your account, Enter the 6 digit code, we sent it to {maskedEmail}</h2>
 						<ThemeProvider theme={otpTheme}>
 							<Box
 							sx={{
@@ -682,17 +774,20 @@ function SettingsSecurity({userInInfo, onDataFromChild}) {
 					: null }
 					<div>
 					{ otpPassword.length === 6 ?
+					<>
 						<Button 
-							variant="contained" 
+							variant="outlined" 
 							type="submit" 
 							sx={{mt: 4, width: '100%', height: 40, boxShadow: 5, borderRadius: '10px' }} 
-							style={buttonStyle}
+							// style={buttonStyle}
 							theme={theme}
-							// color='error'
-							// onClick={sendDataToParent}
+							color='success'
+							onClick={() => compareOTPCodesChangePassword()}
 							>
 							Confirm
 						</Button>
+						<span className={`loaderChangePasswordConfirm${sendLoaderPasswordConfirm}`}></span>
+					</>
 						: null }
 					</div>
 
