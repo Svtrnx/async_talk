@@ -163,7 +163,7 @@ function SettingsProfile({userInInfo, formData, fileToUpload, onDataFromChild}) 
 		const originalFilename = newAvatar.original_filename;
 		const combinedString = originalFilename + "." + format;
 
-		if (combinedString !== fileToUpload.name) {
+		if (combinedString === fileToUpload.name) {
 			const cloud_name = 'dlwuhl9ez';
 			fetch(`https://api.cloudinary.com/v1_1/${cloud_name}/image/upload`, {
 				method: 'POST',
@@ -180,7 +180,7 @@ function SettingsProfile({userInInfo, formData, fileToUpload, onDataFromChild}) 
 			});
 		}
 		else {
-			setNewAvatar('2')
+			setNewAvatar('')
 			console.log('catched')
 		}
 		setSendLoader('')
