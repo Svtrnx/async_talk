@@ -323,11 +323,13 @@ function Messages() {
   // USE EFFECT FOR CHATS QUERY
   useEffect(() => {
 
-  axios.defaults.withCredentials = true;
-
-  const fetchData = async () => {
-    try {
+    
+    const fetchData = async () => {
+      try {
+      axios.defaults.withCredentials = true;
       const response = await axios.get('https://kenzoback.onrender.com/api/check_verification', {
+        withCredentials: true,
+      },{
         headers: {
           'Content-Type': 'application/json',
         }
