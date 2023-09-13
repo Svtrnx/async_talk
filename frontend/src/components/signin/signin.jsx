@@ -93,7 +93,7 @@ function Signin() {
 		setSendLoader('')
 		try {
 			axios.defaults.withCredentials = true;
-			const response = await axios.post("http://localhost:8000/signin", {
+			const response = await axios.post("https://kenzoback.onrender.com/signin", {
 				grant_type: 'password',
 				username: username,
 				password: password,
@@ -128,7 +128,7 @@ function Signin() {
 
 	const fetchData = async () => {
 		try {
-		  const response = await axios.get('http://localhost:8000/api/check_verification', {
+		  const response = await axios.get('https://kenzoback.onrender.com/api/check_verification', {
 			withCredentials: true,
 		  });
 		  console.log(response.data);
