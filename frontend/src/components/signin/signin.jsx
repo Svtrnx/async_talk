@@ -92,24 +92,25 @@ function Signin() {
 		event.preventDefault();
 		setSendLoader('')
 		try {
-		  const response = await axios.post("https://kenzoback.onrender.com/signin", {
-			grant_type: 'password',
-			username: username,
-			password: password,
-			scope: '',
-			client_id: '',
-			client_secret: ''
-		  	}, {
-			withCredentials: true,
-			headers: {
-				'Content-Type': 'application/x-www-form-urlencoded'
-			}
-		  	});
-		  	console.log(response.data);
-			  setSendLoader('none')
+			axios.defaults.withCredentials = true;
+			const response = await axios.post("http://localhost:8000/signin", {
+				grant_type: 'password',
+				username: username,
+				password: password,
+				scope: '',
+				client_id: '',
+				client_secret: ''
+				}, {
+				withCredentials: true,
+				headers: {
+					'Content-Type': 'application/x-www-form-urlencoded'
+				}
+				});
+				console.log(response.data);
+				setSendLoader('none')
 
 
-			navigate('/async/messages');
+				navigate('/async/messages');
 		} catch (error) {
 			setSendLoader('none')
 		  	console.log("SIGN IN ERROR:", error);
@@ -127,7 +128,7 @@ function Signin() {
 
 	const fetchData = async () => {
 		try {
-		  const response = await axios.get('https://kenzoback.onrender.com/api/check_verification', {
+		  const response = await axios.get('http://localhost:8000/api/check_verification', {
 			withCredentials: true,
 		  });
 		  console.log(response.data);

@@ -68,9 +68,9 @@ function Settings() {
 
 	useEffect(() => {
 		const fetchData = async () => {
-			axios.defaults.withCredentials = true;
+		axios.defaults.withCredentials = true;
 		  try {
-			const response = await axios.get('https://kenzoback.onrender.com/api/check_verification', {
+			const response = await axios.get('http://localhost:8000/api/check_verification', {
 			  withCredentials: true,
 			});
 			setSelectedAvatar(response.data.user.avatar);
@@ -121,11 +121,26 @@ function Settings() {
 			formData.append("cloud_name", cloud_name);
 			formData.append("upload_preset", "aecdrcq4");
 
-			setFormData2(formData);
+			
+			// setFormData2(formData);
 			setFileToUpload(fileToUpload);
-
+			
 			const imageUrl = URL.createObjectURL(fileToUpload);
 			setSelectedAvatar(imageUrl)
+			
+			fetch(`https://api.cloudinary.com/v1_1/${cloud_name}/image/upload`, {
+				method: 'POST',
+				body: formData,
+			})
+			.then(response => response.json())
+			.then(data => {
+				console.log('Cloudinary response:', data);
+				// setSelectedAvatar(data.secure_url)
+				setFormData2(data)
+			})
+			.catch(error => {
+				console.error('Error uploading file:', error);
+			});
 		}
 		
     };

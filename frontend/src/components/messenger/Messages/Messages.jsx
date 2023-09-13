@@ -267,7 +267,7 @@ function Messages() {
 
       async function sendMessage() {
         try {
-          const response = await axios.post("https://kenzoback.onrender.com/api/messages/send_message", {
+          const response = await axios.post("http://localhost:8000/api/messages/send_message", {
             text: messageValue,
             chat_id: chatId,
             message_sender:  dataUsername.id,
@@ -327,7 +327,7 @@ function Messages() {
 
   const fetchData = async () => {
     try {
-      const response = await axios.get('https://kenzoback.onrender.com/api/check_verification', {
+      const response = await axios.get('http://localhost:8000/api/check_verification', {
         headers: {
           'Content-Type': 'application/json',
         }
@@ -346,23 +346,25 @@ function Messages() {
 
 
     const fetchUsers = async () => {
-    await axios.get('https://kenzoback.onrender.com/api/messages/users_list', {
-      withCredentials: true,
-    })
-    .then(response => {
-      const users = response.data;
-      console.log(users.users);
-      setUsers(users.users)
-    })
-    .catch(error => {
-      console.error(error);
-      });
-    }
-    fetchUsers();
+      axios.defaults.withCredentials = true;
+      await axios.get('http://localhost:8000/api/messages/users_list', {
+        withCredentials: true,
+      })
+      .then(response => {
+        const users = response.data;
+        console.log(users.users);
+        setUsers(users.users)
+      })
+      .catch(error => {
+        console.error(error);
+        });
+      }
+      fetchUsers();
 
     const fetchChats = async () => {
       try {
-        const response = await axios.get('https://kenzoback.onrender.com/api/messages/chats_list', {
+        axios.defaults.withCredentials = true;
+        const response = await axios.get('http://localhost:8000/api/messages/chats_list', {
           withCredentials: true,
         })
         .then(response => {
@@ -446,7 +448,8 @@ function Messages() {
     }
   
     try {
-      const response = await axios.get(`https://kenzoback.onrender.com/api/messages/messages_list/${chat_Id}`, {
+      axios.defaults.withCredentials = true;
+      const response = await axios.get(`http://localhost:8000/api/messages/messages_list/${chat_Id}`, {
         withCredentials: true,
       });
   
@@ -496,7 +499,7 @@ function Messages() {
             partner_user_avatar: userAvatarChat
           };
           const response = await axios.post(
-            'https://kenzoback.onrender.com/api/messages/create_chat/',
+            'http://localhost:8000/api/messages/create_chat/',
             requestData,
             {
               withCredentials: true,

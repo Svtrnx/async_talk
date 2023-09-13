@@ -63,14 +63,13 @@ const buttonStyleUploadImg = {
 	color: '#e0dfe7'
   };
 
-function SettingsProfile({userInInfo, formData, fileToUpload, onDataFromChild}) {
+function SettingsProfile({userInInfo, formData, onDataFromChild}) {
 	const [fName, setFName] = useState('')
 	const [lName, setLName] = useState('')
 	const [username, setUsername] = useState('');
 	const [aboutMe, setAboutMe] = useState('');
 	const [otpFirstEmail, setOtpFirstEmail] = useState('');
 	const [otpSecondEmail, setOtpSecondEmail] = useState('');
-	const [newAvatar, setNewAvatar] = useState('');
 	const [showFirstOTP, setShowFirstOTP] = useState(false);
 	const [showSecondOTP, setShowSecondOTP] = useState(false);
 	const [email, setEmail] = useState('');
@@ -100,7 +99,7 @@ function SettingsProfile({userInInfo, formData, fileToUpload, onDataFromChild}) 
 	  
 		const fetchData = async () => {
 		  try {
-			const response = await axios.get('https://kenzoback.onrender.com/api/check_verification', {
+			const response = await axios.get('http://localhost:8000/api/check_verification', {
 			  headers: {
 				'Content-Type': 'application/json',
 			  }
@@ -125,93 +124,67 @@ function SettingsProfile({userInInfo, formData, fileToUpload, onDataFromChild}) 
 	}
 	const maskedEmail = maskEmail(userInInfo.email);
 
-	console.log(formData)
-
 
 	async function saveChangedUserData() {
-	try {
-		if (email.length > 3 && isEmailNew === true) {
-			setVerifNewEmail(true);
-			return
-		}
-		if (email.length > 3){
-			if (email !== newEmail) {
-					setErrorSnackBarText(`ERROR: You are trying to connect this email: ${email}, but you added ${newEmail}`);
+		try {
+			if (email.length > 3 && isEmailNew === true) {
+				setVerifNewEmail(true);
+				return
+			}
+			if (email.length > 3){
+				if (email !== newEmail) {
+						setErrorSnackBarText(`ERROR: You are trying to connect this email: ${email}, but you added ${newEmail}`);
+						setErrorSnackBar(true);
+						setSnackBarColor('#d32f2f');
+						return
+					}
+				}
+			if (fName.length > 15 || lName.length > 15 || country === null || country.label === '') {
+				if (fName.length > 15 || lName.length > 15) {
+					setErrorSnackBarText('Your text input is too long! Max length is 15 chars');
 					setErrorSnackBar(true);
 					setSnackBarColor('#d32f2f');
 					return
 				}
 			}
-		if (fName.length > 15 || lName.length > 15 || country === null || country.label === '') {
-			if (fName.length > 15 || lName.length > 15) {
-				setErrorSnackBarText('Your text input is too long! Max length is 15 chars');
-				setErrorSnackBar(true);
-				setSnackBarColor('#d32f2f');
-				return
-			}
-		}
-		const dayjsValue = dayjs(date);
-		
-		const formattedMonth = dayjsValue.format('MMMM');
-		const formattedDay = dayjsValue.format('D');
-		const formattedYear = dayjsValue.format('YYYY');
-		
-		let formDataDate = formattedMonth + ' ' + formattedDay;
-		formDataDate += ' ' + formattedYear
+			const dayjsValue = dayjs(date);
+			
+			const formattedMonth = dayjsValue.format('MMMM');
+			const formattedDay = dayjsValue.format('D');
+			const formattedYear = dayjsValue.format('YYYY');
 
-		const format = newAvatar.format;
-		const originalFilename = newAvatar.original_filename;
-		const combinedString = originalFilename + "." + format;
+			let formDataDate = formattedMonth + ' ' + formattedDay;
+			formDataDate += ' ' + formattedYear
 
-		if (combinedString === fileToUpload.name) {
-			const cloud_name = 'dlwuhl9ez';
-			fetch(`https://api.cloudinary.com/v1_1/${cloud_name}/image/upload`, {
-				method: 'POST',
-				body: formData,
-			})
-			.then(response => response.json())
-			.then(data => {
-				console.log('Cloudinary response:', data);
-				// setSelectedAvatar(data.secure_url)
-				setNewAvatar(data)
-			})
-			.catch(error => {
-				console.error('Error uploading file:', error);
-			});
-		}
-		else {
-			setNewAvatar('')
-			console.log('catched')
-		}
-		setSendLoader('')
-		const response = await axios.patch('https://kenzoback.onrender.com/settings/update_user_data', {
+			setSendLoader('')
+			await axios.patch('http://localhost:8000/settings/update_user_data', {
 				email: email,
 				username: username,
 				first_name: fName,
 				last_name: lName,
-				avatar: newAvatar.secure_url,
+				avatar: formData.secure_url,
 				gender: '',
 				country: country.label,
 				date: formDataDate,
-			  }, {
+				}, {
 				headers: {
-				  'Content-Type': 'application/x-www-form-urlencoded'
+					'Content-Type': 'application/x-www-form-urlencoded'
 				}
-			  });
-		setSendLoader('none');
-		setErrorSnackBar(true);
-		setSnackBarColor('#388e3c');
-		setErrorSnackBarText("You've successfully modified your data!");
-		
-	}
-	catch (err) {
-		setSendLoader('none')
-		setErrorSnackBar(true);
-		setSnackBarColor('#d32f2f');
-		setErrorSnackBarText("ERROR: " + err.response.data.detail);
-		console.log("SEND MESSAGE ERROR: ", err);
+				});
+			setSendLoader('none');
+			setErrorSnackBar(true);
+			setSnackBarColor('#388e3c');
+			setErrorSnackBarText("You've successfully modified your data!");
+			
 		}
-	}
+		catch (err) {
+			setSendLoader('none')
+			setErrorSnackBar(true);
+			setSnackBarColor('#d32f2f');
+			setErrorSnackBarText("ERROR: " + err.response.data.detail);
+			console.log("SEND MESSAGE ERROR: ", err);
+			}
+		}
 
 	const handleChangeOTPFEmail = (newValueFEmail) => {
 		setOtpFirstEmail(newValueFEmail)
@@ -224,7 +197,7 @@ function SettingsProfile({userInInfo, formData, fileToUpload, onDataFromChild}) 
 	async function sendOTPCodeFirstEmail() {
 		try {
 			setSendLoader3('')
-			const response = await axios.post("https://kenzoback.onrender.com/send-otp-code", {
+			const response = await axios.post("http://localhost:8000/send-otp-code", {
 					email: userInInfo.email,
 					code_length: 5,
 					email_message: 'OTP Code to unlink your email',
@@ -254,7 +227,7 @@ function SettingsProfile({userInInfo, formData, fileToUpload, onDataFromChild}) 
 	async function sendOTPCodeSecondEmail() {
 		try {
 			setSendLoader3('')
-			const response = await axios.post("https://kenzoback.onrender.com/send-otp-code", {
+			const response = await axios.post("http://localhost:8000/send-otp-code", {
 					email: newEmail,
 					code_length: 5,
 					email_message: 'OTP Code to link your email',
@@ -396,6 +369,7 @@ function SettingsProfile({userInInfo, formData, fileToUpload, onDataFromChild}) 
 								InputLabelProps={{style: { color: '#8d8d8d' },}} 
 								InputProps={{style: { color: '#e0dfe7' },}} 
 								sx={{...TextFieldStyles, mt: 1, width: 400, boxShadow: 2}}
+								disabled
 								/>
 							</ThemeProvider>
 						</div>
