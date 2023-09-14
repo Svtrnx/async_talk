@@ -57,7 +57,9 @@ ___
 ---
 
 ### Registration
-Here you can [register](https://kenzo-a0ml.onrender.com/signup) your new user account
+- **Here you can [register](https://kenzo-a0ml.onrender.com/signup) your new user account**
+
+
 <img src="./frontend/src/videos/signup.gif" alt="signup">
 
 ___
@@ -69,7 +71,7 @@ User can [login](https://kenzo-a0ml.onrender.com/signin) into his account, if 2F
 <img src="./frontend/src/videos/signin1-1.gif" alt="signin1-1">
 
 
-- **It's [login](https://kenzo-a0ml.onrender.com/signin) with 2FA, user needs to get OTP code from his email, also you can remember your browser to enter next date witout 2FA**
+- **This is a [login](https://kenzo-a0ml.onrender.com/signin) with 2FA, the user needs to get the OTP code from their email, it is also possible to remember the browser to enter next time without 2FA**
 
 <img src="./frontend/src/videos/signin2.gif" alt="signin2">
 
@@ -77,5 +79,15 @@ User can [login](https://kenzo-a0ml.onrender.com/signin) into his account, if 2F
 
 <img src="./frontend/src/videos/signinRecovery.gif" alt="recovery">
 
+___
 
+### Account Settings
+
+- **On [settings](https://kenzo-a0ml.onrender.com/async/settings) page you can change your profile info**
+
+<img src="./frontend/src/videos/settings1.gif" alt="settings1">
+
+- **Also on that [page](https://kenzo-a0ml.onrender.com/async/settings) you have secuirty menu to change 2-Step Verification or password**
+
+<img src="./frontend/src/videos/settings2.gif" alt="settings2">
 

@@ -212,7 +212,7 @@ function SettingsSecurity({userInInfo, onDataFromChild}) {
 				setErrorSnackBarText("You've successfully changed your password!");
 
 				setTimeout(() => {
-					isChangeMenuOpen(false);
+					setIsChangeMenuOpen(false);
 				}, 4000);
 					
 			}
