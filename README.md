@@ -66,7 +66,7 @@ ___
 User can [login](https://kenzo-a0ml.onrender.com/signin) into his account, if 2FA is enabled, you can login only with OTP code from email 
 - **It's login without 2FA**
 
-<img src="./frontend/src/videos/signin2-11.gif" alt="signin2-1">
+<img src="./frontend/src/videos/signin1-1.gif" alt="signin1-1">
 
 
 - **It's [login](https://kenzo-a0ml.onrender.com/signin) with 2FA, user needs to get OTP code from his email, also you can remember your browser to enter next date witout 2FA**
