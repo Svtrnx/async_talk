@@ -9,8 +9,12 @@ import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
 import logoImage from '../../img/logo2.png';
 import ResetSendLink from "../reset/resetSendLink";
-import {Link, useNavigate } from 'react-router-dom';
+import { MuiOtpInput } from 'mui-one-time-password-input';
+import {Link, useNavigate, useLocation } from 'react-router-dom';
 import axios from 'axios';
+import { motion } from 'framer-motion';
+import Checkbox from '@mui/material/Checkbox';
+
 
 // import messenger from '../messenger/messenger.jsx'
 
@@ -67,6 +71,16 @@ const buttonStyleGetStarted = {
 };
 
 
+const otpTheme = createTheme({
+	typography: {
+		fontFamily: 'Montserrat',
+		fontSize: 30,
+	},
+});
+
+
+
+
 function Signin() {
 
 	
@@ -75,10 +89,20 @@ function Signin() {
 	const [username, setUsername] = React.useState('');
 	const [password, setPassword] = React.useState('');
 	const [errorSnackBar, setErrorSnackBar] = useState(false);
+	const [otp, setOtp] = useState('');
+	const [checkCode, setCheckCode] = useState('1');
 	const [showResetLink, setShowResetLink] = useState(false);
+	const [show2Verif, setShow2Verif] = useState(false);
+	const [codeSent, setCodeSent] = useState(false);
+	const [checkbox, setCheckbox] = useState(false);
 	const [errorSnackBarText, setErrorSnackBarText] = useState('');
 	const [sendLoader, setSendLoader] = React.useState('none');
 	const navigate = useNavigate()
+	const location = useLocation();
+
+	const isAuthenticated = localStorage.getItem('authenticated') === 'true';
+
+	
 	
 	const handleCloseSnack = (event, reason) => {
 		if (reason === 'clickaway') {
@@ -88,31 +112,99 @@ function Signin() {
 		setErrorSnackBarText("")
 	}
 
+	const handleChangeOTP = (newValue) => {
+		setOtp(newValue)
+	}
+
+
 	const HandleSigninLocalStorage = async (event) => {
 		event.preventDefault();
 		setSendLoader('')
-		try {
-			axios.defaults.withCredentials = true;
-			const response = await axios.post("https://kenzoback.onrender.com/signin", {
-				grant_type: 'password',
-				username: username,
-				password: password,
-				scope: '',
-				client_id: '',
-				client_secret: ''
+		try 
+		{
+			if (isAuthenticated) {
+				setSendLoader('')
+				const response = await axios.post("http://localhost:8000/signin", {
+					username: username,
+					password: password,
 				}, {
-				withCredentials: true,
-				headers: {
-					'Content-Type': 'application/x-www-form-urlencoded'
-				}
+					withCredentials: true,
+					headers: {
+						'Content-Type': 'application/x-www-form-urlencoded'
+					}
 				});
 				console.log(response.data);
 				setSendLoader('none')
-
-
 				navigate('/async/messages');
+			}
+			axios.defaults.withCredentials = true;
+			const responseCheck = await axios.post("http://localhost:8000/check-2auth", {
+				username: username,
+				password: password,
+			}, {
+				headers: {
+					'Content-Type': 'application/x-www-form-urlencoded'
+				}
+			});
+			if (responseCheck.data.user2Step === true) {
+				if (otp === checkCode.check) {
+					setSendLoader('')
+					const response = await axios.post("http://localhost:8000/signin", {
+						username: username,
+						password: password,
+					}, {
+						withCredentials: true,
+						headers: {
+							'Content-Type': 'application/x-www-form-urlencoded'
+						}
+					});
+					console.log(response.data);
+					if (checkbox === true) { 
+						localStorage.setItem('authenticated', 'true');
+						setTimeout(() => {
+							localStorage.removeItem('authenticated');
+						  }, 7 * 24 * 60 * 60 * 1000);
+					}
+					setSendLoader('none')
+					navigate('/async/messages');
+				}
+				else {
+					if (otp.length > 1) {
+						setErrorSnackBar(true);
+						setErrorSnackBarText('INVALID OTP CODE!')
+					}
+					if (codeSent === false) {
+						const responseOTP = await axios.post("http://localhost:8000/send-otp-code", {
+							email: responseCheck.data.userEmail,
+							code_length: 5,
+							email_message: 'OTP SignIn code',
+							email_subject: "ASYNC TALK 2 Step Verification",
+							condition: 'not_exists',
+						headers: {
+							'Content-Type': 'application/x-www-form-urlencoded'
+						}
+						});
+						setSendLoader('none')
+						setCheckCode(responseOTP.data)
+						setCodeSent(true)
+						setShow2Verif(true);
+					}
+					setSendLoader('none')
+
+				}
+			}
+			else {
+				setSendLoader('none')
+				console.log('errr');
+				navigate('/async/messages');
+			}
+
+			
+
+
 		} catch (error) {
 			setSendLoader('none')
+			console.log(error);
 		  	console.log("SIGN IN ERROR:", error);
 			if (error.response.status === 301) {
 				setErrorSnackBar(true);
@@ -128,7 +220,7 @@ function Signin() {
 
 	const fetchData = async () => {
 		try {
-		  const response = await axios.get('https://kenzoback.onrender.com/api/check_verification', {
+		  const response = await axios.get('http://localhost:8000/api/check_verification', {
 			withCredentials: true,
 		  });
 		  console.log(response.data);
@@ -136,10 +228,6 @@ function Signin() {
 		  console.log("ERROR:", error);
 		}
 	  };
-	  
-	// const handleButtonClick = () => {
-	// return <ResetSendLink/>
-	// };
 
 
 	const handleClickShowPassword = () => setShowPassword((show) => !show);
@@ -148,6 +236,9 @@ function Signin() {
 		event.preventDefault();
 	};
 
+	const handleCheckboxChange = () => {
+		setCheckbox(!checkbox);
+	  };
 	
 	return (
 		<>
@@ -205,6 +296,68 @@ function Signin() {
 							/>
 						</ThemeProvider>
 					</div>
+					{ show2Verif === true ?
+					<motion.div
+						initial={{ y: 10, opacity: 0 }}
+						animate={{ y: 0, opacity: 1 }}
+						exit={{ y: -10, opacity: 0 }}
+						transition={{ duration: 0.3 }}
+					>
+					<div className="twoAuthVerif">
+						<h2>We've sent OTP two step verification code to your email</h2>
+						<ThemeProvider theme={otpTheme}>
+							<Box
+							sx={{
+								"& label.Mui-focused": {
+								color: "#e0dfe7",
+								},
+								"& .MuiOutlinedInput-notchedOutline": {
+									borderColor: errorSnackBar ? "#d32f2f" : "#ffffff",
+								  },
+								"& .MuiInput-underline:after": {
+									borderColor: "#946cdc",
+								},
+								"& .MuiOutlinedInput-root": {
+								"& fieldset": {
+								},
+								"&:hover fieldset": {
+									borderColor: "#946cdc",
+								},
+								"&.Mui-focused fieldset": {
+									borderColor: "#946cdc",
+								},
+								},
+							}}
+							>
+							<MuiOtpInput
+								value={otp}
+								onChange={handleChangeOTP}
+								inputprops={{ style: { color: '#e0dfe7', textAlign: 'center' } }}
+								TextFieldsProps={{ disabled: false, size: 'small', placeholder: '-' }}
+								separator={<span>-</span>}
+								sx={{ gap: 1, width: '400px' }}
+								length={5}
+								/>
+							</Box>
+						</ThemeProvider>
+					</div>
+					<div className="checkbox-area">
+						<Checkbox
+						checked={checkbox}
+						onChange={handleCheckboxChange}
+						sx={{
+							"&.Mui-checked": {
+							color: "rgb(113, 75, 177)",
+							},
+							"&.MuiCheckbox-colorPrimary": {
+								color: "#946cdc !important",
+							},
+						}}
+						/>
+						<h2>Remember</h2>
+					</div>
+					</motion.div>
+					: null }
 					<div className="signin_login">
 					
 					<Button 

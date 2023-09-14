@@ -123,10 +123,31 @@ body {
 	cursor: pointer;
 }
 
+.twoAuthVerif {
+	margin-top: 20px;
+	width: 400px;
+}
 
+.twoAuthVerif h2 {
+	font-family: 'Montserrat', sans-serif;
+	font-size: 14px;
+	font-weight: 100;
+	text-align-last: center;
+}
 
+.css-l88c3e-MuiButtonBase-root-MuiCheckbox-root:hover {
+	background-color: #936cdc08 !important
+}
 
+.checkbox-area {
+	display: flex;
+	align-items: center;
+	margin-top: 10px;
+	margin-bottom: -20px;
+}
 
-
-
-
+.checkbox-area h2 {
+	font-family: 'Montserrat', sans-serif;
+	font-size: 14px;
+	font-weight: 100;
+}

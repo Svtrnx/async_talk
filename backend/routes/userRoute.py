@@ -18,7 +18,6 @@ from config import SECRET_KEY, ALGORITHM, ACCESS_TOKEN_EXPIRE_MINUTES
 from typing import Dict
 import smtplib
 from email.message import EmailMessage
-
 load_dotenv()
 
 # cloudinary.config( 
@@ -224,12 +223,31 @@ async def login_for_access_token(response:Response, request:Request, db: Session
     access_token = create_access_token(
         data={"sub": user.username}, expires_delta=access_token_expires
     )
-    response = RedirectResponse(url="/index",status_code=status.HTTP_302_FOUND)
     
+    response = RedirectResponse(url='/index',status_code=status.HTTP_302_FOUND)
 
     response.set_cookie(key="access_token",value=f"Bearer {access_token}", httponly=True, samesite="None",
                         secure=True, max_age=ACCESS_TOKEN_EXPIRE_MINUTES * 60) 
-    return response    
+    return response
+
+
+@userRouter.post("/check-2auth")
+async def check_2auth_verif(db: Session = Depends(get_db), form_data: userModel.OAuth2PasswordRequestFormSignin = Depends()):
+    user = userController.authenticate_user(
+        db=db,
+        username=form_data.username,
+        password=form_data.password
+    )
+    if not user:
+        raise HTTPException(status_code=301, detail="Incorrect account information")
+    
+    if len(form_data.username) < 4 or len(form_data.username) > 15:
+        raise HTTPException(status_code=400, detail="Invalid username length")
+    
+    if len(form_data.password) < 4 or len(form_data.password) > 25:
+        raise HTTPException(status_code=400, detail="Invalid password length")
+    
+    return {'user2Step': user.twoAuth, 'userEmail': user.email}
 
 
 @userRouter.post("/logout")

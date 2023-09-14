@@ -9,7 +9,7 @@ import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import SettingsProfile from './tabs/settingsProfile/settingsProfile';
 import SettingsSecurity from './tabs/settingsSecurity/settingsSecurity';
-import { motion, useAnimation } from 'framer-motion';
+import { motion } from 'framer-motion';
 
 import axios from 'axios';
 import './settings.css'
@@ -70,7 +70,7 @@ function Settings() {
 		const fetchData = async () => {
 		axios.defaults.withCredentials = true;
 		  try {
-			const response = await axios.get('https://kenzoback.onrender.com/api/check_verification', {
+			const response = await axios.get('http://localhost:8000/api/check_verification', {
 			  withCredentials: true,
 			});
 			setSelectedAvatar(response.data.user.avatar);
