@@ -196,6 +196,18 @@ function Signin() {
 			else {
 				setSendLoader('none')
 				console.log('errr');
+				setSendLoader('')
+				const response = await axios.post("http://localhost:8000/signin", {
+					username: username,
+					password: password,
+				}, {
+					withCredentials: true,
+					headers: {
+						'Content-Type': 'application/x-www-form-urlencoded'
+					}
+				});
+				console.log(response.data);
+				setSendLoader('none')
 				navigate('/async/messages');
 			}
 

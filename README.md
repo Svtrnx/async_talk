@@ -16,6 +16,7 @@
 ![Static Badge](https://img.shields.io/badge/https%3A%2F%2Fimg.shields.io%2Fbadge%2Fany_text-41.0.3-blue?logo=letsencrypt&logoColor=%23816E94&label=Cryptography&color=%23816E94&link=https%3A%2F%2Fcryptography.io%2Fen%2Flatest%2F)
 ![Static Badge](https://img.shields.io/badge/https%3A%2F%2Fimg.shields.io%2Fbadge%2Fany_text-1.7.4-blue?logo=enpass&logoColor=%23FF6B35&label=Passlib&color=%23FF6B35&link=https%3A%2F%2Fpypi.org%2Fproject%2Fpasslib%2F)
 ![Static Badge](https://img.shields.io/badge/https%3A%2F%2Fimg.shields.io%2Fbadge%2Fany_text-2.9.7-blue?logo=databricks&logoColor=%23F1D6B8&label=Psycopg2&color=%23F1D6B8&link=https%3A%2F%2Fpypi.org%2Fproject%2Fpsycopg2%2F)
+![Static Badge](https://img.shields.io/badge/https%3A%2F%2Fimg.shields.io%2Fbadge%2Fany_text--blue?logo=postgresql&logoColor=1F8ACB&label=PostgreSQL&color=1F8ACB&link=https%3A%2F%2Fwww.sqlalchemy.org%2F)
 ![Static Badge](https://img.shields.io/badge/https%3A%2F%2Fimg.shields.io%2Fbadge%2Fany_text-2.8.0-blue?logo=jsonwebtokens&logoColor=%23FFD23F&label=PyJWT&color=%23FFD23F&link=https%3A%2F%2Fpyjwt.readthedocs.io%2Fen%2Fstable%2F)
 ![Static Badge](https://img.shields.io/badge/https%3A%2F%2Fimg.shields.io%2Fbadge%2Fany_text--blue?logo=cookiecutter&logoColor=%23D4AA00&label=Cookies&color=%23D4AA00)
 ![Static Badge](https://img.shields.io/badge/https%3A%2F%2Fimg.shields.io%2Fbadge%2Fany_text--blue?logo=postgresql&logoColor=%23C1BDB3&label=SQL&color=%23C1BDB3)
@@ -27,6 +28,7 @@
 ![Static Badge](https://img.shields.io/badge/https%3A%2F%2Fimg.shields.io%2Fbadge%2Fany_text--blue?logo=mui&logoColor=%23007FFF&label=MUI&color=%23007FFF&link=https%3A%2F%2Fmui.com%2F)
 ![Static Badge](https://img.shields.io/badge/https%3A%2F%2Fimg.shields.io%2Fbadge%2Fany_text-10.16.3-blue?logo=framer&logoColor=%2300ABE7&label=Framer%20Motion&color=%2300ABE7)
 ![Static Badge](https://img.shields.io/badge/https%3A%2F%2Fimg.shields.io%2Fbadge%2Fany_text-9.7.2-blue?logo=npm&logoColor=red&label=npm&color=red&link=https%3A%2F%2Fwww.npmjs.com%2F)
+![Static Badge](https://img.shields.io/badge/https%3A%2F%2Fimg.shields.io%2Fbadge%2Fany_text-18.16.1-blue?logo=nodedotjs&logoColor=339933&label=Node&color=339933&link=https%3A%2F%2Fwww.npmjs.com%2F)
 ![Static Badge](https://img.shields.io/badge/https%3A%2F%2Fimg.shields.io%2Fbadge%2Fany_text--blue?logo=cloudflare&logoColor=%23F38020&label=Cloudinary&color=%23F38020)
 ![Static Badge](https://img.shields.io/badge/https%3A%2F%2Fimg.shields.io%2Fbadge%2Fany_text--blue?logo=json&logoColor=%2384DCC6&label=Json&color=%2384DCC6)
 ![Static Badge](https://img.shields.io/badge/https%3A%2F%2Fimg.shields.io%2Fbadge%2Fany_text--blue?logo=css3&logoColor=%231572B6&label=CSS&color=%231572B6)
@@ -51,5 +53,29 @@ ___
 - **Notifications**: With our notification system, you'll always know what you're liking, commenting and writing about.
 - **Two-factor authentication:** It's protect your data as well as your profile.
 - **And much more...**
+
+---
+
+### Registration
+Here you can [register](https://kenzo-a0ml.onrender.com/signup) your new user account
+<img src="./frontend/src/videos/signup.gif" alt="signup">
+
+___
+
+### Login
+User can [login](https://kenzo-a0ml.onrender.com/signin) into his account, if 2FA is enabled, you can login only with OTP code from email 
+- **It's login without 2FA**
+
+<img src="./frontend/src/videos/signin1.gif" alt="signin1">
+
+
+- **It's [login](https://kenzo-a0ml.onrender.com/signin) with 2FA, user needs to get OTP code from his email, also you can remember your browser to enter next date witout 2FA**
+
+<img src="./frontend/src/videos/signin2.gif" alt="signin2">
+
+- **Also if you forgotten your password, you can recover it on [login](https://kenzo-a0ml.onrender.com/signin) page, you will get a temporary and unique link, just click on it and change your password**
+
+<img src="./frontend/src/videos/signinRecovery.gif" alt="recovery">
+
 
 
