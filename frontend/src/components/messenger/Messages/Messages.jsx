@@ -146,14 +146,11 @@ function Messages() {
   const [currentUserAvatar, setCurrentUserAvatar] = useState('');
   const [currentUserAvatar5, setCurrentUserAvatar5] = useState('');
   const [userAvatar, setUserAvatar] = useState('');
-  const [sortedMessages, setSortedMessages] = useState([]);
+  const [searchQuery, setSearchQuery] = useState('');
   const [isClearingChat, setIsClearingChat] = useState(false);
   const [chatCleared, setChatCleared] = useState(false);
   const [errorSnackBar, setErrorSnackBar] = useState(false);
   const [errorSnackBarText, setErrorSnackBarText] = useState('');
-
-
-
 
   async function clearChatFunction() {
     setChatMessages([]);
@@ -255,9 +252,9 @@ function Messages() {
   const handleSendMessage = () => {
     if (messageValue) {
       if (messageValue.trim() !== '') {
-        if (messageValue.length > 60) {
+        if (messageValue.length > 180) {
           setErrorSnackBar(true);
-          setErrorSnackBarText('Too much symbols! Max: 60')
+          setErrorSnackBarText('Too much symbols! Max: 180')
 
         }
         else {
@@ -279,6 +276,16 @@ function Messages() {
             }
           });
           console.log("MESSAGE RESPONSE: ", response.data);
+
+          setChats((prevChatData) =>
+            prevChatData.map((chat) => {
+              if (chat.chat_id === chatId) {
+                return { ...chat, last_message: messageValue };
+              }
+              return chat;
+            })
+          );
+          
         }
         catch (err) {
           console.log("SEND MESSAGE ERROR: ", err);
@@ -322,29 +329,28 @@ function Messages() {
 
   // USE EFFECT FOR CHATS QUERY
   useEffect(() => {
-
     
-    const fetchData = async () => {
-      try {
-      axios.defaults.withCredentials = true;
-      const response = await axios.get('http://localhost:8000/api/check_verification', {
-        withCredentials: true,
-      },{
-        headers: {
-          'Content-Type': 'application/json',
-        }
-      });
+      const fetchData = async () => {
+        try {
+        axios.defaults.withCredentials = true;
+        const response = await axios.get('http://localhost:8000/api/check_verification', {
+          withCredentials: true,
+        },{
+          headers: {
+            'Content-Type': 'application/json',
+          }
+        });
 
-      setDataUsername(response.data.user);
-      setUserId(response.data.user);
+        setDataUsername(response.data.user);
+        setUserId(response.data.user);
 
-    } catch (error) {
-      console.error(error);
-      console.log(error)
-    }
-  };
+      } catch (error) {
+        console.error(error);
+        console.log(error)
+      }
+    };
 
-  fetchData();
+    fetchData();
 
 
     const fetchUsers = async () => {
@@ -559,10 +565,12 @@ function Messages() {
     console.log("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!CHSSSSSSSS:", chatUsername);
   }, [chatUsername])
 
-
-
-
-
+  const sortedChats = chats.slice().sort((a, b) => {
+    const timestampA = new Date(a.last_message_timestamp).getTime();
+    const timestampB = new Date(b.last_message_timestamp).getTime();
+  
+    return timestampB - timestampA;
+  });
 
   
 	return (
@@ -573,7 +581,10 @@ function Messages() {
 				<div className="leftside-messages-info">
 				  <div className="leftside-messages-info-search">
             <img className="leftside-messages-info-search-searchImg" src={searchImg} alt="" />
-            <input type="text" placeholder="Search people" />
+            <input  type="text"
+                    placeholder="Search people"
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)} />
             </div>
             <img className="leftside-messages-info-search-plusImg" src={leftsideButton} alt="" onClick={handleFindUsers}/>
 				  </div>
@@ -581,7 +592,16 @@ function Messages() {
             <div className="leftside-messages-header-text">
               <h2 className="leftside-messages-header-text-h2">Create Chat</h2>
             </div>
-              { users.map(user => (
+              { users.filter((user) => {
+                  const { username, first_name, last_name } = user;
+                  const query = searchQuery.toLowerCase();
+                  return (
+                    username.toLowerCase().includes(query) ||
+                    first_name.toLowerCase().includes(query) ||
+                    last_name.toLowerCase().includes(query)
+                  );
+                }
+                  ).map(user => (
                     <div
                       className={`leftside-messages-create-chat-users ${selectedUsers.includes(user.id) ? 'selected' : ''}`}
                       key={user.id}
@@ -602,7 +622,16 @@ function Messages() {
           <div style={{overflow: "auto"}}>
 
           
-          {chats.map(chat => {
+          {sortedChats.filter((chat) =>
+            chat.partner_username.toLowerCase().includes(searchQuery.toLowerCase())
+          ).map(chat => {
+            let lastMessage = chat.last_message
+            let chatDate = chat.last_message_timestamp
+            const messageTime = new Date(chat.last_message_timestamp);
+            const options = { day: '2-digit', month: 'short' };
+            const formatter = new Intl.DateTimeFormat('default', options);
+            const formattedTime = formatter.format(messageTime);
+
           const hasMatchingChat = chats.some(chatItem => (
             chatItem.user_id === dataUsername.id ||
             chatItem.partner_user_id === dataUsername.id 
@@ -624,10 +653,11 @@ function Messages() {
               </div>
               <div className="leftside-messages-users-info">
                 <div className="leftside-messages-users-info-username">
-                  <h2>{displayedUsername}</h2>
+                  <h2 style={{width: '100%'}}>{displayedUsername}</h2>
+                  <h2 style={{display: 'flex', width: '100%', justifyContent: 'right', color: '#939393', fontSize: '13px'}}>{formattedTime}</h2>
                 </div>
                 <div className="leftside-messages-users-info-message">
-                  <h2>Привет, как дела?</h2>
+                  <h2 style={{color: '#939393', fontSize: '13px', width: '95%'}}>{lastMessage}</h2>
                 </div>
               </div>
             </div>

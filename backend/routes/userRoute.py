@@ -20,12 +20,6 @@ import smtplib
 from email.message import EmailMessage
 load_dotenv()
 
-# cloudinary.config( 
-#   cloud_name = "dlwuhl9ez", 
-#   api_key = "825156941529614", 
-#   api_secret = "8u__l69vN35HyPIjUWUEMaQq8PA" 
-# )
-
 # instance
 userRouter = APIRouter()
 #templates = Jinja2Templates(directory="templates/") 
@@ -129,7 +123,14 @@ async def create_new_message(
         date_message=datetime.now(), 
         )
     message = create_message(db=db, message=new_message)
-    return {"user": message}, 200
+    
+    chat = db.query(Chat).filter(Chat.chat_id == form_data.chat_id).first()
+
+    chat.last_message = form_data.text
+    chat.last_message_timestamp = datetime.now()
+
+    db.commit()
+    return {"user": message, "last_message": form_data.text}, 200
     
 @userRouter.post('/api/messages/create_chat/')
 async def create_new_chat(
@@ -292,8 +293,6 @@ async def request_reset_password(data: userModel.RequestFormFromVerifEmailResetP
             server.login(smtp_username, smtp_password)
             server.send_message(email)
             server.quit()
-            
-            # logic for updating the reset code in the database
             
             return {"message": "Password reset link sent successfully"}
         except Exception as e:

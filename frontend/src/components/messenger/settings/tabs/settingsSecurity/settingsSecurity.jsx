@@ -483,7 +483,7 @@ function SettingsSecurity({userInInfo, onDataFromChild}) {
 										exit={{ y: -10, opacity: 0 }}
 										transition={{ duration: 0.2 }}
 									>
-									<h2 style={{color: '#8d8d8d', marginRight: '20px'}}>We've sent a verification code to {userInInfo.email}</h2>
+									<h2 style={{color: '#8d8d8d', marginRight: '20px'}}>We've sent a verification code to {maskedEmail}</h2>
 									</motion.div>
 								: null }
 								<Button 

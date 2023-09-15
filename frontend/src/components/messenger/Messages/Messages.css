@@ -204,7 +204,11 @@
 	justify-items: center;
 }
 
-
+.leftside-messages-users-info-username {
+	display: flex;
+    /* justify-content: space-between; */
+    width: 95%;
+}
 
 .leftside-messages-users-info-username h2 {
 	/* background-color: blue; */

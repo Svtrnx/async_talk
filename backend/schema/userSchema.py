@@ -36,6 +36,8 @@ class ChatSchema(BaseModel):
     partner_user_id: Optional[int] = None
     user_avatar: Optional[str] = None
     partner_user_avatar: Optional[str] = None
+    last_message: Optional[str] = None
+    last_message_timestamp: Optional[datetime] = None 
     
     user: "UserSchema"
     messages: List["MessageSchema"]

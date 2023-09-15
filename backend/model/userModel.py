@@ -54,6 +54,8 @@ class Chat(Base):
     partner_user_id = Column(Integer, index=True)
     user_avatar = Column(String, index=True)
     partner_user_avatar = Column(String, index=True)
+    last_message = Column(String, index=True)
+    last_message_timestamp = Column(TIMESTAMP, default=datetime.utcnow, index=True)
 
 
     user = relationship("User", foreign_keys=[user_id], back_populates="chats")
@@ -69,7 +71,7 @@ class Message(Base):
     message_sender = Column(Integer)
     current_user_id = Column(Integer)
     partner_user_id = Column(Integer)  
-    date_message= Column(TIMESTAMP, default=datetime.utcnow, index=True)
+    date_message = Column(TIMESTAMP, default=datetime.utcnow, index=True)
     
     chat = relationship("Chat", back_populates="messages")
     
