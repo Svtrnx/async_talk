@@ -11,6 +11,7 @@ from security.authSecurity import create_access_token, get_current_user, get_use
 from starlette.responses import RedirectResponse
 from model import userModel
 from database.crud import create_user, create_message, create_chat, get_all_users, get_all_chats, get_all_messages, get_user_by_id
+from database.cache import set_message_read_status, get_message_read_status
 import jwt
 from dotenv import load_dotenv
 from config import SMTP_USERNAME, SMTP_PASSWORD
@@ -432,7 +433,41 @@ async def settings_change_password(db: Session = Depends(get_db), form_data: use
     if not user:
         raise HTTPException(status_code=307, detail="Incorrect user password!")
     
-    
+
+
+# ...
+
+@userRouter.post("/mark_as_read/")
+async def mark_message_as_read(request: userModel.MarkAsReadRequest, 
+                               db: Session = Depends(get_db), current_user: User = Depends(get_current_user)):
+    user_id = current_user.id
+    db_user = get_user_by_id(db=db, user_id=user_id)
+    message_id = request.message_id
+
+    # Сначала проверьте статус прочтения в кэше
+    cached_status = get_message_read_status(message_id)
+
+    if cached_status is not None:
+        # Если статус уже есть в кэше, возвращаем его
+        return {"message": "Message status is already cached.", "is_read": cached_status == "True"}
+
+    # Получите сообщение из базы данных по его ID
+    message = db.query(Message).filter(Message.id == message_id).first()
+
+    if message:
+        # Измените статус is_read на True
+        message.is_read = True
+
+        # Сохраните изменения в базе данных
+        db.commit()
+
+        # После обновления в базе данных, установите статус в кэше
+        set_message_read_status(message_id, True)  # Или False в зависимости от логики обновления
+    else:
+        return {"message": "Message not found."}
+
+    # Верните успешный ответ
+    return {"message": "Message status updated in cache and database."}
     
     
     

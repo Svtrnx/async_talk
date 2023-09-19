@@ -4,7 +4,6 @@ from database.connection import engine
 from routes import userRoute
 from fastapi.middleware.cors import CORSMiddleware
 import os
-
 #config DB
 userModel.Base.metadata.create_all(bind=engine)
 
@@ -22,7 +21,6 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
-
 # config routes
 app.include_router(userRoute.userRouter)
 

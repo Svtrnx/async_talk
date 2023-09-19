@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Container, TextField, Button, Box, Typography, Menu, MenuItem, Tooltip,
    Avatar, Badge, IconButton, styled, Alert} from "@mui/material"
@@ -20,8 +20,10 @@ import InputAdornment from '@mui/material/InputAdornment';
 // import { makeStyles } from '@mui/styles';
 import axios from "axios";
 import { Image } from '@cloudinary/react';
+import 'intersection-observer';
 
 import './Messages.css';
+
 // import { display } from "@mui/system";
 
 // Field Text settings
@@ -151,6 +153,37 @@ function Messages() {
   const [chatCleared, setChatCleared] = useState(false);
   const [errorSnackBar, setErrorSnackBar] = useState(false);
   const [errorSnackBarText, setErrorSnackBarText] = useState('');
+  const [msg, setMsg] = useState(null);
+
+  const targetRef = useRef(null);
+  const targetRefs = useRef([]);
+  const [isVisible, setIsVisible] = useState(false);
+
+ 
+  // console.log('isVisible', isVisible)
+  // useEffect(() => {
+  //   const observer = new IntersectionObserver(
+  //     (entries) => {
+  //       const isAnyVisible = entries.some((entry) => entry.isIntersecting);
+  //       setIsVisible(isAnyVisible);
+  //     },
+  //     { threshold: 0.5 }
+  //   );
+  
+  //   targetRefs.current.forEach((ref) => {
+  //     if (ref) {
+  //       observer.observe(ref);
+  //     }
+  //   });
+  
+  //   return () => {
+  //     targetRefs.current.forEach((ref) => {
+  //       if (ref) {
+  //         observer.unobserve(ref);
+  //       }
+  //     });
+  //   };
+  // }, [messagesData]);
 
   async function clearChatFunction() {
     setChatMessages([]);
@@ -572,6 +605,30 @@ function Messages() {
     return timestampB - timestampA;
   });
 
+  // const redis = new ioRedis();
+
+
+
+  // useEffect(() => {
+  //   // Подписываемся на канал Redis, чтобы получать обновления о статусе прочтения
+  //   const redisChannel = 'message_read_status';
+
+  //   redis.subscribe(redisChannel);
+
+  //   redis.on('message', (channel, message) => {
+  //     // Обработка обновления статуса прочтения, message содержит данные об изменении
+  //     // Например, { message_id: 123, is_read: true }
+  //     const data = JSON.parse(message);
+      
+  //     // Обновляем статус прочтения сообщения на frontend
+  //     updateMessageReadStatus(data.message_id, data.is_read);
+  //   });
+
+  //   // Отписываемся от канала при размонтировании компонента
+  //   return () => {
+  //     redis.unsubscribe(redisChannel);
+  //   };
+  // }, []);
   
 	return (
     
@@ -705,33 +762,46 @@ function Messages() {
               <Avatar sx={{width: 40, height: 40}} alt={chatUsername} src={currentUserAvatar} />
               <h2>{getDisplayedUsernameRightside()}</h2>
             </div>
+            {isVisible ? (
+                <p>Див виден</p>
+              ) : (
+                <p>Див не виден</p>
+              )}
             <div className="rightside-messages-header-info-buttons">
               <img src={infoImg} alt=""/>
 
             </div>
 
           </div>
-           
           { chatCleared ? (
-            <div className="rightside-messages-main">
-            
-            {messagesData
-        .concat(chatMessages)
-        .sort((a, b) => moment(b.date_message).valueOf() - moment(a.date_message).valueOf())
-        .map((message, index, array) => {
+            <div className="rightside-messages-main" >
+          {messagesData 
+          .concat(chatMessages)
+          .sort((a, b) => moment(b.date_message).valueOf() - moment(a.date_message).valueOf())
+          .map((message, index, array) => {
           const nextMessageSender = index < array.length - 1 ? array[index + 1].message_sender : null;
           const isCurrentUser = dataUsername.id === message.message_sender;
           const showAvatar = message.message_sender !== nextMessageSender;
           const isWebSocketMessage = chatMessages.includes(message);
   
           const displayedAvatar = isCurrentUser ? dataUsername.avatar : currentUserAvatar;
-  
+          
           const messageTime = new Date(message.date_message);
           const options = { hour: '2-digit', minute: '2-digit' };
           const formattedTime = messageTime.toLocaleTimeString([], options);
 
-          return (
-            <div className={`rightside-messages-main-message${isWebSocketMessage ? " webSocketMessage" : ""}`} key={message.id}>
+          // if (isVisible) {
+          //   if (userId.id === message.message_sender) {
+          //     console.log('not me')
+          //   }
+          //   else {
+          //     console.log('not me')
+          //   }
+          // }
+
+          return ( 
+            <div className={`rightside-messages-main-message${isWebSocketMessage ? " webSocketMessage" : ""}`} key={message.id}
+            >
               <div className="rightside-messages-main-avatar">
                 {showAvatar && (
                   <Avatar
@@ -741,10 +811,14 @@ function Messages() {
                   />
                 )}
               </div>
-              <div className="rightside-messages-main-message-text">
+              <div className="rightside-messages-main-message-text" >
                 <div className="rightside-messages-main-message-text-container">
                   <div className="message-content">
-                    <h2>{message.text}</h2>
+                    <h2 ref={(el) => {
+              if (el) {
+                targetRefs.current.push(el);
+              }
+            }}>{isVisible ? message.text : 'null'}</h2>
                   </div>
                 </div>
                   <div className="messageTime">
@@ -754,7 +828,6 @@ function Messages() {
             </div>
           );
         })}
-        
 
 
 
@@ -762,10 +835,10 @@ function Messages() {
             </div>
           ) : <span class="loader"></span>
 
-          
           }
           
           
+        
           <div className="rightside-messages-footer">
             <div className="rightside-messages-footer-wrapper">
               <div className="rightside-messages-footer-wrapper-upload-file">

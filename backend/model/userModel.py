@@ -72,6 +72,7 @@ class Message(Base):
     current_user_id = Column(Integer)
     partner_user_id = Column(Integer)  
     date_message = Column(TIMESTAMP, default=datetime.utcnow, index=True)
+    is_read = Column(Boolean, default=False, index=True)
     
     chat = relationship("Chat", back_populates="messages")
     
@@ -85,6 +86,8 @@ class RequestFormFromVerifEmail(BaseModel):
 class RequestFormFromVerifEmailResetPasswordLink(BaseModel):
     email: str
     
+class MarkAsReadRequest(BaseModel):
+    message_id: int
     
 class RequestFormFromChangePassword(BaseModel):
     password: str

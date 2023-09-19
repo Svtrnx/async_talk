@@ -55,6 +55,7 @@ class MessageSchema(BaseModel):
     partner_user_id: Optional[int]=None
     date_message: Optional[datetime] = None 
     chat: ChatSchema
+    is_read: bool = False
 
     class Config:
         orm_mode = True

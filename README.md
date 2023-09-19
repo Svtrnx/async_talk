@@ -87,7 +87,7 @@ ___
 
 <img src="./frontend/src/videos/settings1.gif" alt="settings1">
 
-- **Also on that [page](https://kenzo-a0ml.onrender.com/async/settings) you have secuirty menu to change 2-Step Verification or password**
+- **Also on that [page](https://kenzo-a0ml.onrender.com/async/settings) you have security menu to change 2-Step Verification or password**
 
 <img src="./frontend/src/videos/settings2.gif" alt="settings2">
 
