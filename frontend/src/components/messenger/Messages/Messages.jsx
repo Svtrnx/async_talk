@@ -393,7 +393,6 @@ function Messages() {
       })
       .then(response => {
         const users = response.data;
-        console.log(users.users);
         setUsers(users.users)
       })
       .catch(error => {
