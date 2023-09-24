@@ -158,6 +158,14 @@ body {
 		background-color: #936cdc08 !important
 	}
 
+	.css-1mjipq1 {
+		width: 100% ;
+	}
+
+	.css-gnf9a1 {
+		width: 100%;
+	}
+
 	.checkbox-area {
 		display: flex;
 		align-items: center;
@@ -291,6 +299,15 @@ body {
 	.overlay2:hover {
 		opacity: 0.2;
 		cursor: pointer;
+	}
+
+
+	.css-1mjipq1 {
+		width: 400px;
+	}
+
+	.css-gnf9a1 {
+		width: 400px;
 	}
 
 	.twoAuthVerif {
