@@ -10,144 +10,316 @@ body {
 	
 }
 
+@media (max-width: 500px) {
 
-.sginin_wrapper {
-	background-color: #1c1d21;
-	height: 100%;
-	margin: 0 auto; 
-	width: 100%;
-	display: flex;
+	.MuiFormControl-root.MuiTextField-root.css-19fmhcr-MuiFormControl-root-MuiTextField-root {
+		width: 100%;
+	}
+
+	.sginin_wrapper {
+		background-color: #1c1d21;
+		height: 100%;
+		margin: 0 auto; 
+		width: 100%;
+		display: flex;
+		justify-content: center;
+	}
+
+	.signin_wrapper {
+		align-self: center;
+		margin-inline: auto;
+		width: 90%;
+	}
+
+	.signin_logo {
+		display: flex;
+		place-content: center;
+	}
+
+	.signin_text {
+		text-align: -webkit-center;
+	}
+
+	.signin_login {
+		display: inline-grid;
+		width: 100%;
+		justify-items: center !important;
+	}
+
+	.MuiButtonBase-root.MuiButton-root.MuiButton-contained.MuiButton-containedPrimary.MuiButton-sizeMedium.MuiButton-containedSizeMedium.MuiButton-root.MuiButton-contained.MuiButton-containedPrimary.MuiButton-sizeMedium.MuiButton-containedSizeMedium.css-1s1sgub-MuiButtonBase-root-MuiButton-root {
+		width: 90%;
+	}
+
+	.signin_text h2 {
+		font-family: 'Montserrat', sans-serif;
+		font-size: 27px;
+		font-weight: normal;
+	}
+
+	.signin_text h3 {
+		font-family: 'Montserrat', sans-serif;
+		font-size: 13px;
+		font-weight: 100;
+	}
+
+	.signin_text_area {
+		display: inline-grid;
+		width: 100%;
+		justify-items: center !important;
+	}
+
+	.sigin_forgot_password-container {
+		display: flex;
+		justify-content: center;
+		align-items: center;
+		margin-top: 20px;
+	}
+
+	.sigin_forgot_password {
+		cursor: pointer;
+		display: inline-block;
+		position: relative;
+	}
+
+	.sigin_forgot_password h2 {
+		font-family: 'Montserrat', sans-serif;
+		font-size: 14px;
+		font-weight: 100;
+	}
+
+	.sigin_forgot_password::after {
+		content: '';
+		position: absolute;
+		width: 100%;
+		transform: scaleX(0);
+		height: 1px;
+		bottom: 0;
+		left: 0;
+		margin-bottom: 8px;
+		background-color: #e0dfe7;
+		transform-origin: bottom right;
+		transition: transform 0.3s ease-out;
+	}
+
+	.sigin_forgot_password:hover::after {
+		transform: scaleX(1);
+		transform-origin: bottom left;
+	}
+
+
+
+	.signin_registration {
+		display: flex;
+		align-items: center;
+		margin-top: 30px;
+	}
+
+	.signin_registration h2 {
+		font-family: 'Montserrat', sans-serif;
+		font-size: 14px;
+		font-weight: 100;
+	}
+
+	.signin_registration_btn {
+		margin: 0 0 0 auto;
+	}
+
+	.overlay2 {
+		position: absolute;
+		left: 0;
+		top: 0;
+		width: 100%;
+		height: 100%;
+		background-color: rgba(0, 0, 0, 0.2);
+		z-index: 10;
+		display: none;
+		transition: opacity 0.3s ease-out;
+		display: flex;
+	}
+
+	.overlay2:hover {
+		opacity: 0.2;
+		cursor: pointer;
+	}
+
+	.twoAuthVerif {
+		margin-top: 20px;
+		width: 400px;
+	}
+
+	.twoAuthVerif h2 {
+		font-family: 'Montserrat', sans-serif;
+		font-size: 14px;
+		font-weight: 100;
+		text-align-last: center;
+	}
+
+	.css-l88c3e-MuiButtonBase-root-MuiCheckbox-root:hover {
+		background-color: #936cdc08 !important
+	}
+
+	.checkbox-area {
+		display: flex;
+		align-items: center;
+		margin-top: 10px;
+		margin-bottom: -20px;
+	}
+
+	.checkbox-area h2 {
+		font-family: 'Montserrat', sans-serif;
+		font-size: 14px;
+		font-weight: 100;
+	}
 }
 
-.signin_wrapper {
-	align-self: center;
-	margin-inline: auto;
-}
+@media (min-width: 501px) {
 
-.signin_logo {
-	display: flex;
-    place-content: center;
-}
+	.sginin_wrapper {
+		background-color: #1c1d21;
+		height: 100%;
+		margin: 0 auto; 
+		width: 100%;
+		display: flex;
+	}
 
-.signin_text {
-    text-align: -webkit-center;
-}
+	.signin_wrapper {
+		align-self: center;
+		margin-inline: auto;
+	}
 
-.signin_text h2 {
-	font-family: 'Montserrat', sans-serif;
-	font-size: 27px;
-	font-weight: normal;
-}
+	.signin_logo {
+		display: flex;
+		place-content: center;
+	}
 
-.signin_text h3 {
-	font-family: 'Montserrat', sans-serif;
-	font-size: 13px;
-	font-weight: 100;
-}
+	.signin_text {
+		text-align: -webkit-center;
+	}
 
-.signin_text_area {
-	display: inline-grid;
-}
+	.signin_text h2 {
+		font-family: 'Montserrat', sans-serif;
+		font-size: 27px;
+		font-weight: normal;
+	}
 
-.sigin_forgot_password-container {
-	display: flex;
-	justify-content: center;
-	align-items: center;
-	margin-top: 20px;
-}
-
-.sigin_forgot_password {
-	cursor: pointer;
-	display: inline-block;
-	position: relative;
-}
-
-.sigin_forgot_password h2 {
-	font-family: 'Montserrat', sans-serif;
-	font-size: 14px;
-	font-weight: 100;
-}
-
-.sigin_forgot_password::after {
-	content: '';
-	position: absolute;
-	width: 100%;
-	transform: scaleX(0);
-	height: 1px;
-	bottom: 0;
-	left: 0;
-	margin-bottom: 8px;
-	background-color: #e0dfe7;
-	transform-origin: bottom right;
-	transition: transform 0.3s ease-out;
-}
-
-.sigin_forgot_password:hover::after {
-	transform: scaleX(1);
-	transform-origin: bottom left;
-}
+	.MuiFormControl-root.MuiTextField-root.css-19fmhcr-MuiFormControl-root-MuiTextField-root {
+		width: 400px;
+	}
 
 
 
-.signin_registration {
-	display: flex;
-	align-items: center;
-	margin-top: 30px;
-}
+	.signin_text h3 {
+		font-family: 'Montserrat', sans-serif;
+		font-size: 13px;
+		font-weight: 100;
+	}
 
-.signin_registration h2 {
-	font-family: 'Montserrat', sans-serif;
-	font-size: 14px;
-	font-weight: 100;
-}
+	.signin_text_area {
+		display: inline-grid;
+		width: 100%;
+	}
 
-.signin_registration_btn {
-	margin: 0 0 0 auto;
-}
+	.sigin_forgot_password-container {
+		display: flex;
+		justify-content: center;
+		align-items: center;
+		margin-top: 20px;
+	}
 
-.overlay2 {
-	position: absolute;
-	left: 0;
-	top: 0;
-	width: 100%;
-	height: 100%;
-	background-color: rgba(0, 0, 0, 0.2);
-	z-index: 10;
-	display: none;
-	transition: opacity 0.3s ease-out;
-	display: flex;
-}
+	.sigin_forgot_password {
+		cursor: pointer;
+		display: inline-block;
+		position: relative;
+	}
 
-.overlay2:hover {
-	opacity: 0.2;
-	cursor: pointer;
-}
+	.sigin_forgot_password h2 {
+		font-family: 'Montserrat', sans-serif;
+		font-size: 14px;
+		font-weight: 100;
+	}
 
-.twoAuthVerif {
-	margin-top: 20px;
-	width: 400px;
-}
+	.sigin_forgot_password::after {
+		content: '';
+		position: absolute;
+		width: 100%;
+		transform: scaleX(0);
+		height: 1px;
+		bottom: 0;
+		left: 0;
+		margin-bottom: 8px;
+		background-color: #e0dfe7;
+		transform-origin: bottom right;
+		transition: transform 0.3s ease-out;
+	}
 
-.twoAuthVerif h2 {
-	font-family: 'Montserrat', sans-serif;
-	font-size: 14px;
-	font-weight: 100;
-	text-align-last: center;
-}
+	.sigin_forgot_password:hover::after {
+		transform: scaleX(1);
+		transform-origin: bottom left;
+	}
 
-.css-l88c3e-MuiButtonBase-root-MuiCheckbox-root:hover {
-	background-color: #936cdc08 !important
-}
 
-.checkbox-area {
-	display: flex;
-	align-items: center;
-	margin-top: 10px;
-	margin-bottom: -20px;
-}
 
-.checkbox-area h2 {
-	font-family: 'Montserrat', sans-serif;
-	font-size: 14px;
-	font-weight: 100;
+	.signin_registration {
+		display: flex;
+		align-items: center;
+		margin-top: 30px;
+	}
+
+	.signin_registration h2 {
+		font-family: 'Montserrat', sans-serif;
+		font-size: 14px;
+		font-weight: 100;
+	}
+
+	.signin_registration_btn {
+		margin: 0 0 0 auto;
+	}
+
+	.overlay2 {
+		position: absolute;
+		left: 0;
+		top: 0;
+		width: 100%;
+		height: 100%;
+		background-color: rgba(0, 0, 0, 0.2);
+		z-index: 10;
+		display: none;
+		transition: opacity 0.3s ease-out;
+		display: flex;
+	}
+
+	.overlay2:hover {
+		opacity: 0.2;
+		cursor: pointer;
+	}
+
+	.twoAuthVerif {
+		margin-top: 20px;
+		width: 400px;
+	}
+
+	.twoAuthVerif h2 {
+		font-family: 'Montserrat', sans-serif;
+		font-size: 14px;
+		font-weight: 100;
+		text-align-last: center;
+	}
+
+	.css-l88c3e-MuiButtonBase-root-MuiCheckbox-root:hover {
+		background-color: #936cdc08 !important
+	}
+
+	.checkbox-area {
+		display: flex;
+		align-items: center;
+		margin-top: 10px;
+		margin-bottom: -20px;
+	}
+
+	.checkbox-area h2 {
+		font-family: 'Montserrat', sans-serif;
+		font-size: 14px;
+		font-weight: 100;
+	}
+
 }

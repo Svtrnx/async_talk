@@ -43,11 +43,11 @@ function App() {
     
     return (
       <Routes>
-      <Route path="/signin" element={<Signin />} />
-      <Route path="/" element={<Signin />} />
-      <Route path="/signup" element={<Signup />} />
-      <Route path="/async/*" element={<Messenger />} />
-      <Route path="/reset-password/" element={<ResetPassword />} />
+        <Route path="/signin" element={<Signin />} />
+        <Route path="/" element={<Signin />} />
+        <Route path="/signup" element={<Signup />} />
+        <Route path="/async/*" element={<Messenger />} />
+        <Route path="/reset-password/" element={<ResetPassword />} />
     </Routes>
   );
   

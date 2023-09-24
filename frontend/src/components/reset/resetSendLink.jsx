@@ -5,7 +5,10 @@ import Snackbar from '@mui/material/Snackbar';
 import sendEmail1 from '../../img/ref.png'
 import sendEmail2 from '../../img/send_email.png'
 import logoImage from '../../img/logo2.png';
+import logoClose from '../../img/close1.svg';
 import axios from 'axios';
+
+import Signin from '../signin/signin';
 
 import './resetSendLink.css'
 
@@ -42,12 +45,17 @@ const buttonStyleUploadImg = {
   };
 
 
-function ResetSendLink() {
+function ResetSendLink({ onClose }) {
 	const [sendEmail, setSendEmail] = React.useState('');
 	const [isSended, setIsSended] = React.useState('1');
 	const [errorSnackBar, setErrorSnackBar] = React.useState(false);
 	const [errorSnackBarText, setErrorSnackBarText] = React.useState('');
 	const [sendLoader, setSendLoader] = React.useState('none');
+
+	function handleResetLinkClose() {
+		onClose();
+	  }
+
 	const handleCloseSnack = (event, reason) => {
 		if (reason === 'clickaway') {
 		  return;
@@ -64,7 +72,7 @@ function ResetSendLink() {
 			}
 			else {
 				setSendLoader('')
-				const response = await axios.post("http://localhost:8000/request-reset", {
+				const response = await axios.post("https://kenzoback.onrender.com//request-reset", {
 						email: sendEmail,
 					headers: {
 						'Content-Type': 'application/x-www-form-urlencoded'
@@ -91,6 +99,9 @@ function ResetSendLink() {
 			<div className='resend-wrapper'>
 				{isSended === '1' ?
 					<>
+					<div className='close-reset'>
+						<img src={logoClose} onClick={handleResetLinkClose} alt="" />
+					</div>
 					<div className='resetLogo'>
 						<div className="signin_logo" style={{marginTop: '25px'}}>
 							<img className="reg_logo" src={logoImage} alt="logo"  />	
@@ -130,6 +141,9 @@ function ResetSendLink() {
 					:
 					<>
 						<div className='resetLogo'>
+							<div className='close-reset'>
+						<img src={logoClose} onClick={handleResetLinkClose} alt="" />
+						</div>
 							<div className="signin_logo" style={{marginTop: '25px'}}>
 								<img className="reg_logo" src={logoImage} alt="logo"  />	
 							</div>	

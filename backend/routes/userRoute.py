@@ -1,5 +1,5 @@
 from datetime import timedelta, datetime
-from fastapi import Depends, APIRouter, Request, Response, status, HTTPException, Cookie, Depends, HTTPException, status, WebSocket, Request, Body, Form, Path
+from fastapi import Depends, APIRouter, Request, Response, status, Cookie, Depends, HTTPException, status, WebSocket, Request, Body, Form, Path
 from sqlalchemy.orm import Session
 from sqlalchemy import or_
 from database.connection import get_db
@@ -228,7 +228,7 @@ async def login_for_access_token(response:Response, request:Request, db: Session
     
     response = RedirectResponse(url='/index',status_code=status.HTTP_302_FOUND)
 
-    response.set_cookie(key="access_token",value=f"Bearer {access_token}", httponly=True, samesite="None",
+    response.set_cookie(key="access_token",value=f"Bearer {access_token}", httponly=True, samesite='Lax',
                         secure=True, max_age=ACCESS_TOKEN_EXPIRE_MINUTES * 60) 
     return response
 

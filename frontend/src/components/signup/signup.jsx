@@ -276,7 +276,7 @@ function Signup() {
 		setToSignin(true);
 		setSendLoader('')
 		try {
-			const response = await axios.post("http://localhost:8000/signup", {
+			const response = await axios.post("https://kenzoback.onrender.com//signup", {
 				grant_type: 'password',
 				email: email,
 				username: username,
@@ -347,7 +347,7 @@ function Signup() {
 		else {
 			try {
 				setSendLoader('')
-				const response = await axios.post("http://localhost:8000/send-otp-code", {
+				const response = await axios.post("https://kenzoback.onrender.com//send-otp-code", {
 						email: email,
 						code_length: 4,
 						email_message: 'OTP Registration code',
@@ -534,7 +534,7 @@ function Signup() {
 					top: 0,
 					marginTop: '5px',
 					right: 0,
-					marginRight: '10px'
+					marginRight: '20px'	
 				}} 
 				style={buttonStyleGetStarted} 
 				theme={themeGetStarted}
@@ -543,23 +543,6 @@ function Signup() {
 				>
 				SIGN IN
 			</Button>
-			{/* ) :  */}
-			{/* (<Button 
-				variant="contained" 
-				sx={{width: 130, height: 50, boxShadow: 2, borderRadius: '4px', 
-					position: 'absolute',
-					top: 0,
-					marginTop: '5px',
-					right: 0,
-					marginRight: '10px'
-				}} 
-				style={buttonStyleGetStarted} 
-				theme={themeGetStarted}
-				onClick={() => handleLevel3()}
-				>
-				SKIP
-			</Button>)
-			} */}
 				{level > 0 &&
 				<div className="backButton" onClick={handleBackClick}>
 					<img src={imgBack} alt="backBtn" />
@@ -1078,9 +1061,10 @@ function Signup() {
 				// <h2>{draggedFileName}</h2>
 				: 
 				<div className='signupUploadImg-upload-area' style={drag ? { border: 'none' } : { border: 'none' }}>
-					<div style={{ display: 'inline', textAlignLast: 'center' }}>
+					<div className='signupUploadImg-upload-area-wrapper' style={{ display: 'inline', textAlignLast: 'center' }}>
 						<img src={uploadImg} alt="" style={{ width: '80px' }} />
-						<h2>Drop and drag an image</h2>
+						<h2 id='upload1'>Drop and drag an image</h2>
+						<h2 id='upload2'>Upload an image</h2>
 						<div className="or-container">
 							<div className="line"></div>
 							<span className="or-text">OR</span>
