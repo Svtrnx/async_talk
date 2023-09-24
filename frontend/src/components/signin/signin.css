@@ -166,6 +166,16 @@ body {
 		width: 100%;
 	}
 
+	.MuiFormControl-root.MuiTextField-root.signin_text_area_input2.css-1mjipq1 {
+		width: 100%;
+	}
+	.MuiFormControl-root.MuiTextField-root.signin_text_area_input1.css-1mjipq1 {
+		width: 100%;
+	}
+
+	.MuiButtonBase-root.MuiButton-root.MuiButton-contained.MuiButton-containedPrimary.MuiButton-sizeMedium.MuiButton-containedSizeMedium.MuiButton-root.MuiButton-contained.MuiButton-containedPrimary.MuiButton-sizeMedium.MuiButton-containedSizeMedium.css-gnf9a1 {
+		width: 100%;
+	}
 	.checkbox-area {
 		display: flex;
 		align-items: center;
