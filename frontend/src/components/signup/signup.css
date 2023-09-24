@@ -332,7 +332,8 @@ body {
 	.rightside_reg_information_radio {
 		display: flex;
 		display: inline-grid;
-    	width: 90%;
+    	width: 100%;
+		justify-content: center;
 	}
 
 	.rightside_reg_information_country {

@@ -297,7 +297,7 @@ function Messages() {
 
       async function sendMessage() {
         try {
-          const response = await axios.post("https://kenzoback.onrender.com//api/messages/send_message", {
+          const response = await axios.post("https://kenzoback.onrender.com/api/messages/send_message", {
             text: messageValue,
             chat_id: chatId,
             message_sender:  dataUsername.id,
@@ -366,7 +366,7 @@ function Messages() {
       const fetchData = async () => {
         try {
         axios.defaults.withCredentials = true;
-        const response = await axios.get('https://kenzoback.onrender.com//api/check_verification', {
+        const response = await axios.get('https://kenzoback.onrender.com/api/check_verification', {
           withCredentials: true,
         },{
           headers: {
@@ -388,7 +388,7 @@ function Messages() {
 
     const fetchUsers = async () => {
       axios.defaults.withCredentials = true;
-      await axios.get('https://kenzoback.onrender.com//api/messages/users_list', {
+      await axios.get('https://kenzoback.onrender.com/api/messages/users_list', {
         withCredentials: true,
       })
       .then(response => {
@@ -405,7 +405,7 @@ function Messages() {
     const fetchChats = async () => {
       try {
         axios.defaults.withCredentials = true;
-        const response = await axios.get('https://kenzoback.onrender.com//api/messages/chats_list', {
+        const response = await axios.get('https://kenzoback.onrender.com/api/messages/chats_list', {
           withCredentials: true,
         })
         .then(response => {
@@ -490,7 +490,7 @@ function Messages() {
   
     try {
       axios.defaults.withCredentials = true;
-      const response = await axios.get(`https://kenzoback.onrender.com//api/messages/messages_list/${chat_Id}`, {
+      const response = await axios.get(`https://kenzoback.onrender.com/api/messages/messages_list/${chat_Id}`, {
         withCredentials: true,
       });
   
@@ -540,7 +540,7 @@ function Messages() {
             partner_user_avatar: userAvatarChat
           };
           const response = await axios.post(
-            'https://kenzoback.onrender.com//api/messages/create_chat/',
+            'https://kenzoback.onrender.com/api/messages/create_chat/',
             requestData,
             {
               withCredentials: true,

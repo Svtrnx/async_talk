@@ -47,7 +47,7 @@ body {
 	}
 
 	.MuiButtonBase-root.MuiButton-root.MuiButton-contained.MuiButton-containedPrimary.MuiButton-sizeMedium.MuiButton-containedSizeMedium.MuiButton-root.MuiButton-contained.MuiButton-containedPrimary.MuiButton-sizeMedium.MuiButton-containedSizeMedium.css-1s1sgub-MuiButtonBase-root-MuiButton-root {
-		width: 90%;
+		width: 90% !important;
 	}
 
 	.signin_text h2 {

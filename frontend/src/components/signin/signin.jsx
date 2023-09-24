@@ -127,7 +127,7 @@ function Signin() {
 		{
 			if (isAuthenticated) {
 				setSendLoader('')
-				const response = await axios.post("https://kenzoback.onrender.com//signin", {
+				const response = await axios.post("https://kenzoback.onrender.com/signin", {
 					username: username,
 					password: password,
 				}, {
@@ -141,7 +141,7 @@ function Signin() {
 				navigate('/async/messages');
 			}
 			axios.defaults.withCredentials = true;
-			const responseCheck = await axios.post("https://kenzoback.onrender.com//check-2auth", {
+			const responseCheck = await axios.post("https://kenzoback.onrender.com/check-2auth", {
 				username: username,
 				password: password,
 			}, {
@@ -152,7 +152,7 @@ function Signin() {
 			if (responseCheck.data.user2Step === true) {
 				if (otp === checkCode.check) {
 					setSendLoader('')
-					const response = await axios.post("https://kenzoback.onrender.com//signin", {
+					const response = await axios.post("https://kenzoback.onrender.com/signin", {
 						username: username,
 						password: password,
 					}, {
@@ -177,7 +177,7 @@ function Signin() {
 						setErrorSnackBarText('INVALID OTP CODE!')
 					}
 					if (codeSent === false) {
-						const responseOTP = await axios.post("https://kenzoback.onrender.com//send-otp-code", {
+						const responseOTP = await axios.post("https://kenzoback.onrender.com/send-otp-code", {
 							email: responseCheck.data.userEmail,
 							code_length: 5,
 							email_message: 'OTP SignIn code',
@@ -200,7 +200,7 @@ function Signin() {
 				setSendLoader('none')
 				console.log('errr');
 				setSendLoader('')
-				const response = await axios.post("https://kenzoback.onrender.com//signin", {
+				const response = await axios.post("https://kenzoback.onrender.com/signin", {
 					username: username,
 					password: password,
 				}, {
@@ -235,7 +235,7 @@ function Signin() {
 
 	const fetchData = async () => {
 		try {
-		  const response = await axios.get('https://kenzoback.onrender.com//api/check_verification', {
+		  const response = await axios.get('https://kenzoback.onrender.com/api/check_verification', {
 			withCredentials: true,
 		  });
 		  console.log(response.data);

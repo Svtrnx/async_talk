@@ -72,7 +72,7 @@ function ResetSendLink({ onClose }) {
 			}
 			else {
 				setSendLoader('')
-				const response = await axios.post("https://kenzoback.onrender.com//request-reset", {
+				const response = await axios.post("https://kenzoback.onrender.com/request-reset", {
 						email: sendEmail,
 					headers: {
 						'Content-Type': 'application/x-www-form-urlencoded'
