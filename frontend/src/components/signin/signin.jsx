@@ -198,7 +198,6 @@ function Signin() {
 			}
 			else {
 				setSendLoader('none')
-				console.log('errr');
 				setSendLoader('')
 				const response = await axios.post("https://kenzoback.onrender.com/signin", {
 					username: username,

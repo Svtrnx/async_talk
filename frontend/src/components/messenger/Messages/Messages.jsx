@@ -813,11 +813,12 @@ function Messages() {
               <div className="rightside-messages-main-message-text" >
                 <div className="rightside-messages-main-message-text-container">
                   <div className="message-content">
-                    <h2 ref={(el) => {
+                    {/* <h2 ref={(el) => {
               if (el) {
                 targetRefs.current.push(el);
               }
-            }}>{isVisible ? message.text : 'null'}</h2>
+            }}>{isVisible ? message.text : 'null'}</h2> */}
+                  <h2>{message.text}</h2>
                   </div>
                 </div>
                   <div className="messageTime">
