@@ -228,8 +228,8 @@ async def login_for_access_token(response:Response, request:Request, db: Session
     
     response = RedirectResponse(url='https://kenzoback.onrender.com',status_code=status.HTTP_302_FOUND)
 
-    response.set_cookie(key="access_token",value=f"Bearer {access_token}", httponly=True, samesite='Lax',domain=".onrender.com",
-                        secure=True, max_age=ACCESS_TOKEN_EXPIRE_MINUTES * 60) 
+    response.set_cookie(key="access_token",value=f"Bearer {access_token}", httponly=True, samesite='None',
+                        secure=True,max_age=ACCESS_TOKEN_EXPIRE_MINUTES * 60) 
     return response
 
 

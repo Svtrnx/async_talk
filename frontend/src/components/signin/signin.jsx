@@ -127,7 +127,7 @@ function Signin() {
 		{
 			if (isAuthenticated) {
 				setSendLoader('')
-				const response = await axios.post("https://kenzoback.onrender.com/signin", {
+				const response = await axios.get("https://kenzoback.onrender.com/signin", {
 					username: username,
 					password: password,
 				}, {
