@@ -1,6 +1,7 @@
 import React, {useEffect, useState} from 'react';
-import { TextField, Button, Avatar, Autocomplete, Box, Snackbar, Alert} from "@mui/material"
-import { createTheme, ThemeProvider } from '@mui/material/styles';
+import { TextField, Button, Autocomplete, Box, Snackbar, Alert} from "@mui/material"
+import { ThemeProvider } from '@mui/material/styles';
+import {buttonStyleUploadImg, TextFieldStyles, theme, buttonStyle, otpTheme} from '../../../utils/utils';
 import {countries} from '../../../../signup/signup';
 import { LocalizationProvider } from '@mui/x-date-pickers';
 import { MuiOtpInput } from 'mui-one-time-password-input';
@@ -13,57 +14,8 @@ import dayjs from 'dayjs';
 import './settingsProfile.css';
 
 
-const TextFieldStyles = {
-	"& label.Mui-focused": {
-	color: "orange",
-	},
-	"& .MuiInput-underline:after": {
-	borderBottomColor: "orange",
-	},
-	"& .MuiOutlinedInput-root": {
-	"& fieldset": {
-		borderColor: "#8d8d8d",
-	},
-	"&:hover fieldset": {
-		borderColor: "#946cdc",
-	},
-	"&.Mui-focused fieldset": {
-		borderColor: "#7f56da",
-	}},
-}
 
-
-const otpTheme = createTheme({
-	typography: {
-		fontFamily: 'Montserrat',
-		fontSize: 30,
-	},
-	});
-
-
-const theme = createTheme({
-	typography: {
-	  fontFamily: 'Montserrat',
-	  fontSize: 13,
-	},
-	palette: {
-		text: {
-		  primary: '#7f56da',
-		},
-	  },
-  });
-
-  const buttonStyle = {
-	backgroundColor: '#5d38b1',
-	color: '#e0dfe7'
-};
-
-const buttonStyleUploadImg = {
-	borderColor: '#5d38b1',
-	color: '#e0dfe7'
-  };
-
-function SettingsProfile({userInInfo, formData, onDataFromChild}) {
+function SettingsProfile({userInInfo, formData, onDataFromChild, formDataHeaderImg}) {
 	const [fName, setFName] = useState('')
 	const [lName, setLName] = useState('')
 	const [username, setUsername] = useState('');
@@ -88,6 +40,7 @@ function SettingsProfile({userInInfo, formData, onDataFromChild}) {
 	const [verifNewEmail, setVerifNewEmail] = useState(false);
 	const [errorSnackBarText, setErrorSnackBarText] = useState('');
 	const [snackBarColor, setSnackBarColor] = React.useState('');
+	const [isHeaderImgRepeated, setIsHeaderImgRepeated] = React.useState(false);
 
 	const sendDataToParent = () => {
 		onDataFromChild(dataToSend);
@@ -163,6 +116,7 @@ function SettingsProfile({userInInfo, formData, onDataFromChild}) {
 				first_name: fName,
 				last_name: lName,
 				avatar: formData.secure_url,
+				headerImg: formDataHeaderImg.secure_url,
 				gender: '',
 				country: country.label,
 				date: formDataDate,
@@ -175,6 +129,8 @@ function SettingsProfile({userInInfo, formData, onDataFromChild}) {
 			setErrorSnackBar(true);
 			setSnackBarColor('#388e3c');
 			setErrorSnackBarText("You've successfully modified your data!");
+			// formData.JSON.stringify(formData);
+			// console.log('formDataformData',formData)
 			
 		}
 		catch (err) {
@@ -316,7 +272,7 @@ function SettingsProfile({userInInfo, formData, onDataFromChild}) {
 					<h2 style={{fontSize: '15px', color: 'rgb(159 159 159 / 61%)', marginTop: '3px'}}>Here you can change your account information</h2>
 				</div>
 					{ fName.length > 3 || lName.length > 3 || username.length > 3 || 
-					aboutMe.length > 3 || email.length > 3 || typeof formData === 'object' ||
+					aboutMe.length > 3 || email.length > 3 || typeof formData === 'object' || typeof formDataHeaderImg === 'object' ||
 					((country && country.label) && country.label.length > 2)  || date !== null?
 					
 				<div style={{marginInlineStart: 'auto'}}>

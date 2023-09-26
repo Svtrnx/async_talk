@@ -1,7 +1,8 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef } from 'react';
 import { Container, TextField, Button, Box, Snackbar, Stack, Autocomplete, Radio, InputAdornment,
 		FormControlLabel ,RadioGroup, FormLabel, FormControl, IconButton, Avatar} from "@mui/material"
-import { createTheme, ThemeProvider } from '@mui/material/styles';
+import { ThemeProvider } from '@mui/material/styles';
+import {styles, TextFieldStyles, theme, searchTheme, themeGetStarted, buttonStyleGetStarted, buttonStyle, otpTheme, buttonStyleUploadImg} from '../messenger/utils/utils'
 import logoImage from '../../img/logo2.png';
 import imgDone from '../../img/leftside_reg_done.png';
 import imgActive from '../../img/leftside_reg_active.png';
@@ -26,76 +27,9 @@ import "./signup.css";
 
 
 
-
-const TextFieldStyles = {
-	"& label.Mui-focused": {
-	color: "orange",
-	},
-	"& .MuiInput-underline:after": {
-	borderBottomColor: "orange",
-	},
-	"& .MuiOutlinedInput-root": {
-	"& fieldset": {
-		borderColor: "#e0dfe7",
-	},
-	"&:hover fieldset": {
-		borderColor: "#946cdc",
-	},
-	"&.Mui-focused fieldset": {
-		borderColor: "#7f56da",
-	}},
-}
-
-	  
-
-	  const themeGetStarted = createTheme({
-		typography: {
-			fontFamily: 'Montserrat',
-			fontSize: 15,
-			fontWeightBold: 300
-		},
-		});
-	
-	const buttonStyleGetStarted = {
-		backgroundColor: '#333438',
-		color: '#e0dfe7',
-	};
-
-	// Field Text settings
-	const theme = createTheme({
-		typography: {
-		  fontFamily: 'Montserrat',
-		  fontSize: 13,
-		},
-		palette: {
-			text: {
-			  primary: '#7f56da',
-			},
-		  },
-		  
-	  });
-
-	  const otpTheme = createTheme({
-		typography: {
-			fontFamily: 'Montserrat',
-			fontSize: 30,
-		},
-	  });
-
-	  const buttonStyle = {
-		backgroundColor: '#673EC2',
-		color: '#e0dfe7',
-	  };
-	  
-	  const buttonStyleUploadImg = {
-		borderColor: '#5d38b1',
-		color: '#e0dfe7'
-	  };
-
-
-	const Alert = React.forwardRef(function Alert(props, ref) {
-	return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
-	});
+const Alert = React.forwardRef(function Alert(props, ref) {
+return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
+});
 
 function Signup() {
 
@@ -845,7 +779,9 @@ function Signup() {
   									helperText={email.length > 0 && email.length < 5 && "Email should be at least 5 characters"}
 									/>
 								</ThemeProvider>
-								<span className={`loader5${sendLoader}`}></span>
+								<div>
+									<span className={`loader5${sendLoader}`} style={{width: 400}}></span>
+								</div>
 								<div className="rightside_button">
 									{
 									<Button 
@@ -860,6 +796,7 @@ function Signup() {
 									</Button>
 									}
 								</div>
+								
 								
 						</div>
 						</>

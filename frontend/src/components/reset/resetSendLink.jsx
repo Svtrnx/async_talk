@@ -1,6 +1,7 @@
 import React from 'react';
 import { Container, TextField, Button, Alert} from "@mui/material"
-import { createTheme, ThemeProvider } from '@mui/material/styles';
+import { ThemeProvider } from '@mui/material/styles';
+import {TextFieldStyles, theme, buttonStyleUploadImg} from '../messenger/utils/utils';
 import Snackbar from '@mui/material/Snackbar';
 import sendEmail1 from '../../img/ref.png'
 import sendEmail2 from '../../img/send_email.png'
@@ -12,37 +13,6 @@ import Signin from '../signin/signin';
 
 import './resetSendLink.css'
 
-
-const TextFieldStyles = {
-	"& label.Mui-focused": {
-	color: "orange",
-	},
-	"& .MuiInput-underline:after": {
-	borderBottomColor: "orange",
-	},
-	"& .MuiOutlinedInput-root": {
-	"& fieldset": {
-		borderColor: "#e0dfe7",
-	},
-	"&:hover fieldset": {
-		borderColor: "#946cdc",
-	},
-	"&.Mui-focused fieldset": {
-		borderColor: "#7f56da",
-	}},
-}
-
-const theme = createTheme({
-	typography: {
-		fontFamily: 'Montserrat',
-		fontSize: 13,
-	},
-});
-
-const buttonStyleUploadImg = {
-	borderColor: '#5d38b1',
-	color: '#e0dfe7'
-  };
 
 
 function ResetSendLink({ onClose }) {

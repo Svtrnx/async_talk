@@ -1,7 +1,8 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import { Routes, Route, useNavigate } from "react-router-dom";
-import { Container, TextField, Button, Box, Typography, Menu, MenuItem, Tooltip, Avatar, Badge, IconButton, styled} from "@mui/material"
-import { createTheme, ThemeProvider } from '@mui/material/styles';
+import { Container, TextField, Box, Typography, MenuItem, Tooltip, Avatar, Badge, IconButton, styled} from "@mui/material"
+import { ThemeProvider } from '@mui/material/styles';
+import {StyledMenu, TextFieldStyles, theme, searchTheme} from '../messenger/utils/utils';
 import axios from "axios";
 import logoImage from '../../img/logo2.png';
 import feedImg from '../../img/feed.png';
@@ -19,66 +20,6 @@ import Settings from "./settings/settings";
 
 import './messenger.css';
 
-
-const StyledMenu = styled(Menu)(({ theme }) => ({
-  '& .MuiMenuItem-root': {
-    color: '#e0dfe7', 
-    fontFamily: 'Exo', 
-    '&:hover': {
-      color: '#ffffff',
-      backgroundColor: '#222328',
-     },
-  },
-  '& .MuiPaper-root': {
-    backgroundColor: '#1c1d21',
-  },
-}));
-
-
-
-const TextFieldStyles = {
-	"& label.Mui-focused": {
-	color: "orange",
-	},
-	"& .MuiInput-underline:after": {
-	borderBottomColor: "orange",
-	},
-	"& .MuiOutlinedInput-root": {
-	"& fieldset": {
-		borderColor: "#e0dfe7",
-	},
-	"&:hover fieldset": {
-		borderColor: "#946cdc",
-	},
-	"&.Mui-focused fieldset": {
-		borderColor: "#7f56da",
-	}},
-}
-
-// Field Text settings
-const theme = createTheme({
-    typography: {
-        fontFamily: 'Montserrat',
-        fontSize: 13,
-    },
-    palette: {
-        text: {
-            primary: '#7f56da',
-        },
-        },
-    });
-
-const searchTheme = createTheme({
-    typography: {
-        fontFamily: 'Montserrat',
-        fontSize: 11,
-    },
-    });
-
-
-    
-    
-    
 
 
 

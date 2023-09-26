@@ -1,7 +1,8 @@
 import React, {useEffect, useState,useRef } from 'react';
-import { Container, TextField, Button, Alert, Avatar, Autocomplete, Box, InputAdornment, IconButton,
+import { TextField, Button, Alert, Box, InputAdornment, IconButton,
 		Snackbar} from "@mui/material"
-import { createTheme, ThemeProvider } from '@mui/material/styles';
+import { ThemeProvider } from '@mui/material/styles';
+import {buttonStyle2, buttonStyle3, TextFieldStyles, theme, buttonStyle, otpTheme} from '../../../utils/utils';
 import { MuiOtpInput } from 'mui-one-time-password-input';
 import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/Visibility';
@@ -10,58 +11,6 @@ import closeImg from '../../../../../img/close1.svg';
 import { motion, useAnimation } from 'framer-motion';
 import axios from 'axios';
 
-const TextFieldStyles = {
-	"& label.Mui-focused": {
-	color: "orange",
-	},
-	"& .MuiInput-underline:after": {
-	borderBottomColor: "orange",
-	},
-	"& .MuiOutlinedInput-root": {
-	"& fieldset": {
-		borderColor: "#8d8d8d",
-	},
-	"&:hover fieldset": {
-		borderColor: "#946cdc",
-	},
-	"&.Mui-focused fieldset": {
-		borderColor: "#7f56da",
-	}},
-}
-
-
-
-const theme = createTheme({
-	typography: {
-	  fontFamily: 'Montserrat',
-	  fontSize: 13,
-	},
-	palette: {
-		text: {
-		  primary: '#7f56da',
-		},
-	  },
-  });
-
-const otpTheme = createTheme({
-typography: {
-	fontFamily: 'Montserrat',
-	fontSize: 30,
-},
-});
-
-const buttonStyle = {
-	backgroundColor: '#5d38b1',
-	color: '#e0dfe7'
-  };
-const buttonStyle3 = {
-	borderColor: '#5d38b1',
-	color: '#e0dfe7'
-  };
-const buttonStyle2 = {
-	backgroundColor: 'rgb(51, 52, 56)',
-	color: '#e0dfe7'
-  };
 
 function SettingsSecurity({userInInfo, onDataFromChild}) {
 	const [password, setPassword] = useState('');

@@ -23,6 +23,7 @@ class User(Base):
     date = Column(String, unique=False, index=True)
     date_reg = Column(TIMESTAMP, default=datetime.utcnow, index=True)
     avatar = Column(String, unique=False, index=True)
+    headerImg = Column(String, unique=False, index=True)
     is_Admin = Column("is_Admin", Boolean, default=False)
     is_Active = Column(Boolean, default=True)
     twoAuth = Column(Boolean, default=False)
@@ -160,6 +161,7 @@ class OAuth2ChangeUserDataForm:
         first_name: str = Form(default=None),
         last_name: str = Form(default=None),
         avatar: str = Form(default=None),
+        headerImg: str = Form(default=None),
         gender: str = Form(default=None),
         country: str = Form(default=None),
         date: str = Form(default=None),
@@ -171,6 +173,7 @@ class OAuth2ChangeUserDataForm:
         self.first_name = first_name
         self.last_name = last_name
         self.avatar = avatar
+        self.headerImg = headerImg
         self.gender = gender
         self.country = country
         self.date = date

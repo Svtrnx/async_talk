@@ -1,9 +1,8 @@
 import React, { useEffect, useState, useRef } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { Container, TextField, Button, Box, Typography, Menu, MenuItem, Tooltip,
-   Avatar, Badge, IconButton, styled, Alert} from "@mui/material"
+import { TextField, Button, Avatar, Alert} from "@mui/material"
 import NotificationsNoneOutlinedIcon from '@mui/icons-material/NotificationsNoneOutlined';
-import { createTheme, ThemeProvider } from '@mui/material/styles';
+import { ThemeProvider } from '@mui/material/styles';
 import Snackbar from '@mui/material/Snackbar';
 import searchImg from '../../../img/search.png';
 import plusImg from '../../../img/plus.png';
@@ -17,99 +16,12 @@ import micImg from '../../../img/mic.png';
 import sendImg from '../../../img/send.png';
 import createChat from '../../../img/createChat.png';
 import InputAdornment from '@mui/material/InputAdornment';
-// import { makeStyles } from '@mui/styles';
+import {styles, TextFieldStyles, theme, themeGetStarted, buttonStyleGetStarted} from '../utils/utils';
 import axios from "axios";
 import { Image } from '@cloudinary/react';
 import 'intersection-observer';
 
 import './Messages.css';
-
-// import { display } from "@mui/system";
-
-// Field Text settings
-const styles = {
-  root: {
-      "& label.Mui-focused": {
-      color: "#e0dfe7",
-      },
-      "& .MuiInput-underline:after": {
-      borderBottomColor: "#e0dfe7",
-      },
-      "& .MuiOutlinedInput-root": {
-      "& fieldset": {
-          borderColor: "#e0dfe7",
-      },
-      "&:hover fieldset": {
-          borderColor: "#946cdc",
-      },
-      "&.Mui-focused fieldset": {
-          borderColor: "#7f56da",
-      },
-      },
-  },
-};
-
-
-
-const TextFieldStyles = {
-	"& label.Mui-focused": {
-	color: "orange",
-	},
-	"& .MuiInput-underline:after": {
-	borderBottomColor: "orange",
-	},
-	"& .MuiOutlinedInput-root": {
-	"& fieldset": {
-		borderColor: "#e0dfe7",
-	},
-	"&:hover fieldset": {
-		borderColor: "#946cdc",
-	},
-	"&.Mui-focused fieldset": {
-		borderColor: "#7f56da",
-	}},
-}
-
-
-// Field Text settings
-const theme = createTheme({
-  typography: {
-      fontFamily: 'Montserrat',
-      fontSize: 13,
-  },
-  palette: {
-      text: {
-          primary: '#7f56da',
-      },
-      },
-  });
-
-const searchTheme = createTheme({
-  typography: {
-      fontFamily: 'Montserrat',
-      fontSize: 11,
-  },
-  });
-
-const themeGetStarted = createTheme({
-  typography: {
-    fontFamily: 'Montserrat',
-    fontSize: 13,
-    fontWeightBold: 300
-  },
-  });
-
-const buttonStyleGetStarted = {
-  backgroundColor: '#333438',
-  color: '#e0dfe7',
-};
-  
-// export const cloudinary = new Cloudinary({
-//   cloud: {
-//     cloudName: 'dlwuhl9ez',
-//   },
-// });
-
 
 function Messages() {
   const moment = require('moment');
@@ -121,11 +33,9 @@ function Messages() {
   const [recipient, setRecipient] = useState('');
   const [message, setMessage] = useState('');
   const [messageValue, setMessageValue] = useState('');
-  const [chatsDialogUsername, setChatsDialogUsername] = useState('');
   const [username, setUsername] = useState('');
   const [user_Id, setUser_Id] = useState(0);
   const [chatId, setChatId] = useState(0);
-  const [userMessageId, setUserMessageId] = useState(0);
   const [partnerUsername, setPartnerUsername] = useState(0);
   const [partnerUserId, setPartnerUserId] = useState(null);
   const [currentUserId, setCurrentUserId] = useState(null);
@@ -135,7 +45,6 @@ function Messages() {
   const [displayNoneAddChat, setDisplayNoneAddChat] = useState('none');
   const [displayNoneChats, setDisplayNoneChats] = useState('grid');
   const [leftsideButton, setLeftsideButton] = useState(plusImg);
-  const [leftsideButtonChat, setLeftsideButtonChat] = useState(doneImg);
   const [selectedUsers, setSelectedUsers] = useState([]);
   const [showRightsideChat, setShowRightsideChat] = useState(false);
   const [messagesData, setMessagesData] = useState([]);
@@ -216,7 +125,6 @@ function Messages() {
   
 
   
-  // console.log("USERNANNNNNNNNNNNNNNNNNNNNN:", dataUsername.avatar )
 
   useEffect(() => {
     const newUserId = generateUserId();
@@ -604,30 +512,7 @@ function Messages() {
     return timestampB - timestampA;
   });
 
-  // const redis = new ioRedis();
-
-
-
-  // useEffect(() => {
-  //   // Подписываемся на канал Redis, чтобы получать обновления о статусе прочтения
-  //   const redisChannel = 'message_read_status';
-
-  //   redis.subscribe(redisChannel);
-
-  //   redis.on('message', (channel, message) => {
-  //     // Обработка обновления статуса прочтения, message содержит данные об изменении
-  //     // Например, { message_id: 123, is_read: true }
-  //     const data = JSON.parse(message);
-      
-  //     // Обновляем статус прочтения сообщения на frontend
-  //     updateMessageReadStatus(data.message_id, data.is_read);
-  //   });
-
-  //   // Отписываемся от канала при размонтировании компонента
-  //   return () => {
-  //     redis.unsubscribe(redisChannel);
-  //   };
-  // }, []);
+ 
   
 	return (
     
@@ -682,10 +567,9 @@ function Messages() {
             chat.partner_username.toLowerCase().includes(searchQuery.toLowerCase())
           ).map(chat => {
             let lastMessage = chat.last_message
-            let chatDate = chat.last_message_timestamp
             const messageTime = new Date(chat.last_message_timestamp);
             const options = { day: '2-digit', month: 'short' };
-            const formatter = new Intl.DateTimeFormat('default', options);
+            const formatter = new Intl.DateTimeFormat('en-MD', options);
             const formattedTime = formatter.format(messageTime);
 
           const hasMatchingChat = chats.some(chatItem => (
@@ -761,11 +645,11 @@ function Messages() {
               <Avatar sx={{width: 40, height: 40}} alt={chatUsername} src={currentUserAvatar} />
               <h2>{getDisplayedUsernameRightside()}</h2>
             </div>
-            {isVisible ? (
-                <p>Див виден</p>
+            {/* {isVisible ? (
+                <p>Not visible</p>
               ) : (
-                <p>Див не виден</p>
-              )}
+                <p>Visible</p>
+              )} */}
             <div className="rightside-messages-header-info-buttons">
               <img src={infoImg} alt=""/>
 

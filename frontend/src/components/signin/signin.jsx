@@ -1,7 +1,8 @@
 import React, { Component, useState, useEffect } from "react";
 import "./signin.css"
-import { Container, Typography, TextField, Button, Box, Alert } from "@mui/material"
-import { createTheme, ThemeProvider, styled } from '@mui/material/styles';
+import { Container, TextField, Button, Box, Alert } from "@mui/material"
+import { ThemeProvider } from '@mui/material/styles';
+import { TextFieldStyles, theme, themeGetStarted, buttonStyleGetStarted, buttonStyle, otpTheme} from '../messenger/utils/utils'
 import Snackbar from '@mui/material/Snackbar';
 import InputAdornment from '@mui/material/InputAdornment';
 import IconButton from '@mui/material/IconButton';
@@ -14,69 +15,6 @@ import {Link, useNavigate, useLocation } from 'react-router-dom';
 import axios from 'axios';
 import { motion } from 'framer-motion';
 import Checkbox from '@mui/material/Checkbox';
-
-
-// import messenger from '../messenger/messenger.jsx'
-
-
-// Field Text settings
-
-
-
-const TextFieldStyles = {
-	"& label.Mui-focused": {
-	color: "orange",
-	},
-	"& .MuiInput-underline:after": {
-	borderBottomColor: "orange",
-	},
-	"& .MuiOutlinedInput-root": {
-	"& fieldset": {
-		borderColor: "#e0dfe7",
-	},
-	"&:hover fieldset": {
-		borderColor: "#946cdc",
-	},
-	"&.Mui-focused fieldset": {
-		borderColor: "#7f56da",
-	}},
-}
-
-
-// Field Text settings
-const theme = createTheme({
-	typography: {
-		fontFamily: 'Montserrat',
-		fontSize: 13,
-	},
-});
-	
-const themeGetStarted = createTheme({
-	typography: {
-		fontFamily: 'Montserrat',
-		fontSize: 13,
-		fontWeightBold: 300
-	},
-	});
-
-	// Button settings
-const buttonStyle = {
-	backgroundColor: '#5D38B1',
-	color: '#e0dfe7',
-};
-
-const buttonStyleGetStarted = {
-	backgroundColor: '#333438',
-	color: '#e0dfe7',
-};
-
-
-const otpTheme = createTheme({
-	typography: {
-		fontFamily: 'Montserrat',
-		fontSize: 30,
-	},
-});
 
 
 

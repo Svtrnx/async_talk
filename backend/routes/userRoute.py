@@ -229,7 +229,7 @@ async def login_for_access_token(response:Response, request:Request, db: Session
     response = RedirectResponse(url='/index',status_code=status.HTTP_302_FOUND)
 
     response.set_cookie(key="access_token",value=f"Bearer {access_token}", samesite='none', httponly=True,
-                        secure=True, expires=60 * 60 * 24, domain="onrender.com") 
+                        secure=True, max_age=ACCESS_TOKEN_EXPIRE_MINUTES * 60, domain="localhost") 
     return response
 
 
@@ -262,9 +262,12 @@ async def logout(response: Response):
 # POST chat info
 @userRouter.get("/api/check_verification")
 async def show_event(current_user: User = Depends(get_current_user)):
+    print("Location: @userRouter.get(/api/check_verification), show current user::", current_user)
     if current_user is None:
+        print('current_user1', current_user)
         return {"message": "Not authorized"}, 303
     else:
+        print('current_user2', current_user)
         return {"Verification": "Authorized", "user": current_user}
 
 
@@ -413,6 +416,8 @@ async def update_user_settings(
         db_user.country = form_data.country
     if form_data.avatar:
         db_user.avatar = form_data.avatar
+    if form_data.headerImg:
+        db_user.headerImg = form_data.headerImg
     if form_data.date:
         db_user.date = form_data.date
     if isinstance(form_data.twoAuth, bool):
@@ -435,7 +440,6 @@ async def settings_change_password(db: Session = Depends(get_db), form_data: use
     
 
 
-# ...
 
 @userRouter.post("/mark_as_read/")
 async def mark_message_as_read(request: userModel.MarkAsReadRequest, 
@@ -444,25 +448,20 @@ async def mark_message_as_read(request: userModel.MarkAsReadRequest,
     db_user = get_user_by_id(db=db, user_id=user_id)
     message_id = request.message_id
 
-    # Сначала проверьте статус прочтения в кэше
     cached_status = get_message_read_status(message_id)
 
     if cached_status is not None:
-        # Если статус уже есть в кэше, возвращаем его
         return {"message": "Message status is already cached.", "is_read": cached_status == "True"}
 
-    # Получите сообщение из базы данных по его ID
     message = db.query(Message).filter(Message.id == message_id).first()
 
     if message:
-        # Измените статус is_read на True
         message.is_read = True
 
-        # Сохраните изменения в базе данных
         db.commit()
 
-        # После обновления в базе данных, установите статус в кэше
-        set_message_read_status(message_id, True)  # Или False в зависимости от логики обновления
+        
+        set_message_read_status(message_id, True)  
     else:
         return {"message": "Message not found."}
 

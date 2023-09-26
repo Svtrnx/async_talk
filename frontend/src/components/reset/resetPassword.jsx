@@ -1,6 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { Container, TextField, Button, InputAdornment, IconButton, Snackbar} from "@mui/material"
-import { createTheme, ThemeProvider } from '@mui/material/styles';
+import { ThemeProvider } from '@mui/material/styles';
+import {TextFieldStyles, theme, buttonStyleUploadImg} from '../messenger/utils/utils';
 import MuiAlert from '@mui/material/Alert';
 import logoImage from '../../img/logo2.png';
 import Visibility from '@mui/icons-material/Visibility';
@@ -11,46 +12,11 @@ import securityGif from '../../img/securityGif.gif'
 import axios from 'axios';
 import './resetPassword.css'
 
-// Field Text settings
-const theme = createTheme({
-	typography: {
-		fontFamily: 'Montserrat',
-		fontSize: 13,
-	},
-	palette: {
-		text: {
-			primary: '#7f56da',
-		},
-		},
-	});
-
-const TextFieldStyles = {
-	"& label.Mui-focused": {
-	color: "orange",
-	},
-	"& .MuiInput-underline:after": {
-	borderBottomColor: "orange",
-	},
-	"& .MuiOutlinedInput-root": {
-	"& fieldset": {
-		borderColor: "#e0dfe7",
-	},
-	"&:hover fieldset": {
-		borderColor: "#946cdc",
-	},
-	"&.Mui-focused fieldset": {
-		borderColor: "#7f56da",
-	}},
-}
 	
 const Alert = React.forwardRef(function Alert(props, ref) {
 	return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
 });
 
-const buttonStyleUploadImg = {
-	borderColor: '#5d38b1',
-	color: '#e0dfe7'
-  };
 
 function ResetPassword() {
 	const [isAuthorized, setIsAuthorized] = React.useState(false);
@@ -73,7 +39,7 @@ function ResetPassword() {
 		async function VerifyToken() {
 			try {
 				const currentDate = new Date();
-				const response = await axios.get("https://kenzoback.onrender.com/reset-password-verify", {
+				const response = await axios.get("http://localhost:8000/reset-password-verify", {
 					params: {
 						token: token_verif,
 						email: email_verif,
@@ -137,7 +103,7 @@ function ResetPassword() {
 				return
 			}
 			else {
-				const response = await axios.post('https://kenzoback.onrender.com/change-password', 
+				const response = await axios.post('http://localhost:8000/change-password', 
 				{	token: token_verif,
 					email: email_verif, 
 					new_password: password,

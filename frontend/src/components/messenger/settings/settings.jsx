@@ -1,12 +1,7 @@
 import React, {useEffect, useState, useRef} from 'react';
 import { useNavigate } from "react-router-dom";
-import { Container, TextField, Button, Alert, Avatar, Autocomplete, Box} from "@mui/material"
-import { createTheme, ThemeProvider } from '@mui/material/styles';
-import test from '../../../img/shapes/stacked-waves-haikei (35).png';
-import {countries} from '../../signup/signup';
-import { LocalizationProvider } from '@mui/x-date-pickers';
-import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
-import { DatePicker } from '@mui/x-date-pickers/DatePicker';
+import { Button, Avatar} from "@mui/material"
+import {theme, buttonStyleUploadImg} from '../utils/utils';
 import SettingsProfile from './tabs/settingsProfile/settingsProfile';
 import SettingsSecurity from './tabs/settingsSecurity/settingsSecurity';
 import { motion } from 'framer-motion';
@@ -15,52 +10,19 @@ import axios from 'axios';
 import './settings.css'
 
 
-const TextFieldStyles = {
-	"& label.Mui-focused": {
-	color: "orange",
-	},
-	"& .MuiInput-underline:after": {
-	borderBottomColor: "orange",
-	},
-	"& .MuiOutlinedInput-root": {
-	"& fieldset": {
-		borderColor: "#8d8d8d",
-	},
-	"&:hover fieldset": {
-		borderColor: "#946cdc",
-	},
-	"&.Mui-focused fieldset": {
-		borderColor: "#7f56da",
-	}},
-}
-
-
-
-const theme = createTheme({
-	typography: {
-	  fontFamily: 'Montserrat',
-	  fontSize: 13,
-	},
-	palette: {
-		text: {
-		  primary: '#7f56da',
-		},
-	  },
-  });
-
-const buttonStyleUploadImg = {
-	borderColor: '#5d38b1',
-	color: '#e0dfe7'
-  };
 
 function Settings() {
 	const [headerImg, setHeaderImg] = React.useState('');
 	const [formData2, setFormData2] = React.useState('');
+	const [formDataHeaderImg, setFormDataHeaderImg] = React.useState('');
 	const [userIn, setUserIn] = useState('');
 	const [selectedMenu, setSelectedMenu] = useState('My Profile');
 	const [selectedAvatar, setSelectedAvatar] = useState('');
+	const [selectedHeaderImg, setSelectedHeaderImg] = useState('');
 	const [fileToUpload, setFileToUpload] = useState('');
+	// const [fileToUploadHeaderImg, setFileToUploadHeaderImg] = useState('');
 	const fileInputRef = useRef(null);
+	const fileInputRefHeader = useRef(null);
 
 	const navigate = useNavigate();
 
@@ -74,7 +36,9 @@ function Settings() {
 			  withCredentials: true,
 			});
 			setSelectedAvatar(response.data.user.avatar);
+			setSelectedHeaderImg(response.data.user.headerImg)
 			setUserIn(response.data.user)
+			console.log(response.data.user)
   
 		  } catch (error) {
 			navigate('/signin');
@@ -106,6 +70,9 @@ function Settings() {
 	const openFileInput = () => {
         fileInputRef.current.click();
     };
+	const openFileInputHeaderImg = () => {
+        fileInputRefHeader.current.click();
+    };
 
 	
 	const handleFileUpload = (event) => {
@@ -122,7 +89,6 @@ function Settings() {
 			formData.append("upload_preset", "aecdrcq4");
 
 			
-			// setFormData2(formData);
 			setFileToUpload(fileToUpload);
 			
 			const imageUrl = URL.createObjectURL(fileToUpload);
@@ -135,7 +101,6 @@ function Settings() {
 			.then(response => response.json())
 			.then(data => {
 				console.log('Cloudinary response:', data);
-				// setSelectedAvatar(data.secure_url)
 				setFormData2(data)
 			})
 			.catch(error => {
@@ -145,6 +110,42 @@ function Settings() {
 		
     };
 
+	const handleFileUploadHeader = (event) => {
+        const file = event.target.files;
+		
+		if (file.length > 0) {
+			const fileToUpload = file[0];
+			
+			const cloud_name = 'dlwuhl9ez';
+			
+			const formData = new FormData();
+			formData.append('file', fileToUpload);
+			formData.append("cloud_name", cloud_name);
+			formData.append("upload_preset", "aecdrcq4");
+
+			
+			// setFileToUploadHeaderImg(fileToUpload);
+			
+			const imageUrl = URL.createObjectURL(fileToUpload);
+			setSelectedHeaderImg(imageUrl)
+			
+			fetch(`https://api.cloudinary.com/v1_1/${cloud_name}/image/upload`, {
+				method: 'POST',
+				body: formData,
+			})
+			.then(response => response.json())
+			.then(data => {
+				setFormDataHeaderImg(data)
+			})
+			.catch(error => {
+				console.error('Error uploading file:', error);
+			});
+		}
+		
+    };
+
+	console.log('fileToUpload', fileToUpload)
+	console.log('formData2', formData2)
 	
 	function call() {
 
@@ -172,19 +173,36 @@ function Settings() {
 			<div className='settings-wrapper'>
 				<div className='settings-header-container'>
 					<div className='settings-header'>
-							<div style={{position: 'absolute'}}>
-								<Button 
+							<div style={{position: 'absolute', right: 0}}>
+								{/* <Button 
 									variant="outlined" 
 									type="submit" 
-									sx={{mt: 2, width: '150px', height: 30, boxShadow: 5, borderRadius: '8px' }} 
+									sx={{mt: 1, mr: 4, width: '100px', height: 30, boxShadow: 5, borderRadius: '8px' }} 
 									style={buttonStyleUploadImg}
 									theme={theme}
 									onClick={() => call()}
 									>
+									RANDOMIZE
+								</Button> */}
+								<Button 
+									variant="outlined" 
+									type="submit" 
+									sx={{mt: 1, mr: 4, width: '100px', height: 30, boxShadow: 5, borderRadius: '8px' }} 
+									style={buttonStyleUploadImg}
+									theme={theme}
+									onClick={openFileInputHeaderImg}
+									>
 									EDIT
 								</Button>
 							</div>
-							<img src={test} alt="" />
+							<img src={selectedHeaderImg} alt=""/>
+							<input
+							type="file"
+							accept="image/*"
+							onChange={handleFileUploadHeader}
+							style={{ display: 'none' }}
+							ref={fileInputRefHeader}
+							/>
 							<Avatar onClick={openFileInput} className="headerAvatarSettings" alt={userIn.username} src={selectedAvatar} />
 							<input
 							type="file"
@@ -228,7 +246,8 @@ function Settings() {
 						exit={{ y: -10, opacity: 0 }}
 						transition={{ duration: 0.3 }}
 					>
-					{userIn && <SettingsProfile userInInfo={userIn} formData={formData2} fileToUpload={fileToUpload} onDataFromChild={handleDataFromChild}/>}
+					{userIn && <SettingsProfile userInInfo={userIn} formData={formData2} formDataHeaderImg={formDataHeaderImg}
+					fileToUpload={fileToUpload} onDataFromChild={handleDataFromChild}/>}
 					</motion.div>
 				: null }
 				{ selectedMenu === 'Security' ?
