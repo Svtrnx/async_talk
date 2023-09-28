@@ -27,7 +27,7 @@
 
 .settings-header img{
 	width: 100%;.css-2w911j-MuiButtonBase-root-MuiButton-root:hover {
-		border: 1px solid #1976d2;
+	border: none;
 	}
     height: 100%;
 	border-radius: 10px;
@@ -44,6 +44,7 @@
     height: 75px !important;
     transform: translate(-50%, 0%);
     margin-top: 5px;
+	
 }
 
 .headerAvatarSettings {

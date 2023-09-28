@@ -3,6 +3,7 @@ import Signup from './components/signup/signup';
 import Signin from './components/signin/signin';
 import Messenger from './components/messenger/messenger';
 import ResetPassword from './components/reset/resetPassword';
+import UserProfile from './components/messenger/profile/userProfile';
 import Settings from './components/messenger/settings/settings';
 import Messages from './components/messenger/Messages/Messages';
 import React, { useEffect } from 'react';
@@ -14,32 +15,6 @@ import './App.css'
 function App() {
   const [isAuthorized, setIsAuthorized] = React.useState(false);
   const navigate = useNavigate();
-
-  // useEffect(() => {
-  //   axios.defaults.withCredentials = true;
-  //   const fetchData = async () => {
-  //     try {
-  //       const response = await axios.get('https://kenzoback.onrender.com/api/check_verification', {
-  //         headers: {
-  //           'Content-Type': 'application/json',
-  //         }
-  //       });
-        
-  //       navigate('/async/messages', { replace: true });
-
-  //     } catch (error) {
-  //       setIsAuthorized(false);
-  //       console.error(error);
-  //     }
-  //   };
-
-  //   fetchData();
-  // }, [navigate]);
-
-  // if (isLoading === null) {
-  //   return <div style={{display: 'flex', justifyContent: 'center', marginTop: '50vh'}}><span className="loaderApp" style={{display: 'flex'}}></span></div>
-    
-  // }
     
     return (
       <Routes>
@@ -48,6 +23,7 @@ function App() {
         <Route path="/signup" element={<Signup />} />
         <Route path="/async/*" element={<Messenger />} />
         <Route path="/reset-password/" element={<ResetPassword />} />
+        <Route path="/profile/:username" element={<UserProfile />} />
     </Routes>
   );
   

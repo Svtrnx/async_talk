@@ -17,6 +17,7 @@ import notificationImg from '../../img/notification.png';
 
 import Messages from './Messages/Messages.jsx';
 import Settings from "./settings/settings";
+import UserProfile from "./profile/userProfile";
 
 import './messenger.css';
 
@@ -41,7 +42,7 @@ function Messenger() {
     if (setting === 'Logout') {
       try {
         const response = await axios.post(
-          "https://kenzoback.onrender.com/logout",
+          "http://localhost:8000/logout",
           {},
           {
             withCredentials: true,
@@ -61,6 +62,7 @@ function Messenger() {
     } 
     else if (setting === 'Profile'){
       console.log(`Clicked on ${setting}`);
+      navigate(`profile/${userInfo.username}`);
     }
     else if (setting === 'Account'){
       console.log(`Clicked on ${setting}`);
@@ -97,7 +99,7 @@ function Messenger() {
       const fetchData = async () => {
         try {
           axios.defaults.withCredentials = true;
-          const response = await axios.get('https://kenzoback.onrender.com/api/check_verification', {
+          const response = await axios.get('http://localhost:8000/api/check_verification', {
             withCredentials: true,
           });
           console.log("RESPONSE HEADER:-", response.data);
@@ -199,7 +201,7 @@ function Messenger() {
             <div className="sidebar">
               <ul>
                 <li 
-                  className="list" onClick={() => setTextOption('Profile')}>
+                  className="list" onClick={() => {setTextOption('Profile'); navigate(`profile/${userInfo.username}`);}}>
                   <img src={userPageImg} alt="" />
                   <h2>Profile</h2>
                 </li>
@@ -238,6 +240,7 @@ function Messenger() {
               <Routes>
                 <Route path="/messages" element={<Messages />} />
                 <Route path="/settings" element={<Settings userIn={userInfo} />} />
+                <Route path="/profile/:username" element={<UserProfile />} />
               </Routes>
               
 

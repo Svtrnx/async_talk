@@ -210,7 +210,7 @@ function Signup() {
 		setToSignin(true);
 		setSendLoader('')
 		try {
-			const response = await axios.post("https://kenzoback.onrender.com/signup", {
+			const response = await axios.post("http://localhost:8000/signup", {
 				grant_type: 'password',
 				email: email,
 				username: username,
@@ -281,7 +281,7 @@ function Signup() {
 		else {
 			try {
 				setSendLoader('')
-				const response = await axios.post("https://kenzoback.onrender.com/send-otp-code", {
+				const response = await axios.post("http://localhost:8000/send-otp-code", {
 						email: email,
 						code_length: 4,
 						email_message: 'OTP Registration code',
