@@ -20,10 +20,12 @@ class User(Base):
     last_name = Column(String, unique=False, index=True)
     gender = Column(String, unique=False, index=True)
     country = Column(String, unique=False, index=True)
+    city = Column(String, unique=False, index=True)
     date = Column(String, unique=False, index=True)
     date_reg = Column(TIMESTAMP, default=datetime.utcnow, index=True)
     avatar = Column(String, unique=False, index=True)
     headerImg = Column(String, unique=False, index=True)
+    user_status = Column(String, unique=False, index=True)
     is_Admin = Column("is_Admin", Boolean, default=False)
     is_Active = Column(Boolean, default=True)
     twoAuth = Column(Boolean, default=False)
@@ -69,13 +71,33 @@ class Message(Base):
     id = Column(Integer, primary_key=True, index=True)
     text = Column(String)
     chat_id = Column(String, ForeignKey("chats.chat_id"))
-    message_sender = Column(Integer)
-    current_user_id = Column(Integer)
-    partner_user_id = Column(Integer)  
+    message_sender = Column(Integer, index=True)
+    current_user_id = Column(Integer, index=True)
+    partner_user_id = Column(Integer, index=True)  
     date_message = Column(TIMESTAMP, default=datetime.utcnow, index=True)
     is_read = Column(Boolean, default=False, index=True)
     
     chat = relationship("Chat", back_populates="messages")
+    
+    
+class Picture(Base):
+    __tablename__ = "pictures"
+
+    id = Column(Integer, primary_key=True, index=True)
+    username = Column(String, index=True)
+    likes = Column(Integer, index=True)
+    picture_url = Column(String, index=True)
+    date_picture = Column(TIMESTAMP, default=datetime.utcnow, index=True)
+    
+class Like(Base):
+    __tablename__ = "likes"
+
+    id = Column(Integer, primary_key=True, index=True)
+    post_id = Column(Integer, index=True)
+    like = Column(Integer, index=True)
+    owner_username = Column(String, index=True)
+    liker_username = Column(String, index=True)
+    
     
 class RequestFormFromVerifEmail(BaseModel):
     email: str
@@ -114,6 +136,28 @@ class MessageRequestForm:
         self.current_user_id = current_user_id
         self.partner_user_id = partner_user_id
         
+class PictureRequestForm:
+    def __init__(
+        self,
+        username: str = Form(),
+        picture_url: str = Form(),
+    ):
+        self.username = username
+        self.picture_url = picture_url
+        
+        
+class LikesRequestForm:
+    def __init__(
+        self,
+        post_id: int = Form(),
+        like: int = Form(),
+        owner_username: str = Form(),
+    ):
+        self.post_id = post_id
+        self.like = like
+        self.owner_username = owner_username
+        
+        
 
 class MyResponse(BaseModel):
 	request: str
@@ -133,6 +177,7 @@ class OAuth2PasswordRequestFormSignup:
         avatar: str = Form(default=""),
         gender: str = Form(default=""),
         country: str = Form(default=""),
+        city: str = Form(default=""),
         date: str = Form(default=""),
         scope: str = Form(default=""),
         client_id: Optional[str] = Form(default=None),
@@ -147,6 +192,7 @@ class OAuth2PasswordRequestFormSignup:
         self.avatar = avatar
         self.gender = gender
         self.country = country
+        self.city = city
         self.date = date
         self.scopes = scope.split()
         self.client_id = client_id
@@ -164,6 +210,8 @@ class OAuth2ChangeUserDataForm:
         headerImg: str = Form(default=None),
         gender: str = Form(default=None),
         country: str = Form(default=None),
+        user_status: str = Form(default=None),
+        city: str = Form(default=None),
         date: str = Form(default=None),
         twoAuth: Optional[bool] = Form(default=False),
     ):
@@ -176,6 +224,8 @@ class OAuth2ChangeUserDataForm:
         self.headerImg = headerImg
         self.gender = gender
         self.country = country
+        self.user_status = user_status
+        self.city = city
         self.date = date
         self.twoAuth = twoAuth
 

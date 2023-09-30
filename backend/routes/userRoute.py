@@ -5,12 +5,12 @@ from sqlalchemy import or_
 from database.connection import get_db
 from fastapi.security import OAuth2PasswordRequestForm
 from controller import userController
-from model.userModel import User, MyResponse, Message, Chat
+from model.userModel import User, MyResponse, Message, Chat, Picture, Like
 from schema.userSchema import Token
 from security.authSecurity import create_access_token, get_current_user, get_user_by_username, get_password_hash, oauth2_scheme, get_user_by_email, generate_reset_token, generate_reset_code, verify_reset_token
 from starlette.responses import RedirectResponse
 from model import userModel
-from database.crud import create_user, create_message, create_chat, get_all_users, get_all_chats, get_all_messages, get_user_by_id
+from database.crud import create_user, create_message, create_chat, get_all_users, get_all_chats, get_all_messages, get_user_by_id, create_picture, get_picture_by_id, create_like, get_picture_by_id_in_likes, delete_like
 from database.cache import set_message_read_status, get_message_read_status
 import jwt
 from dotenv import load_dotenv
@@ -157,7 +157,21 @@ async def create_new_chat(
 @userRouter.get('/api/messages/users_list')
 async def get_users(db: Session = Depends(get_db)):
     users = get_all_users(db=db)
-    return {"users": users}
+    user_data = [{
+        
+                    "id": user.id,
+                    "email": user.email, 
+                    "username": user.username, 
+                    "first_name": user.first_name, 
+                    "gender": user.gender, 
+                    "date": user.date, 
+                    "avatar": user.avatar, 
+                    "last_name": user.last_name, 
+                    "country": user.country, 
+                    "date_reg": user.date_reg, 
+                    "headerImg": user.headerImg, 
+                    "is_Active": user.is_Active} for user in users]
+    return {"users": user_data}, 200
 
 
 @userRouter.get('/api/messages/chats_list')
@@ -200,6 +214,7 @@ async def create_new_user(request: Request, db: Session = Depends(get_db), form_
             avatar=form_data.avatar,
             gender=form_data.gender,
             country=form_data.country,
+            city=form_data.city,
             date=form_data.date,
             )
         user = create_user(db=db, user=new_user)
@@ -262,12 +277,9 @@ async def logout(response: Response):
 # POST chat info
 @userRouter.get("/api/check_verification")
 async def show_event(current_user: User = Depends(get_current_user)):
-    print("Location: @userRouter.get(/api/check_verification), show current user::", current_user)
     if current_user is None:
-        print('current_user1', current_user)
         return {"message": "Not authorized"}, 303
     else:
-        print('current_user2', current_user)
         return {"Verification": "Authorized", "user": current_user}
 
 
@@ -334,9 +346,6 @@ async def change_password(data: userModel.ChangePasswordRequest, db: Session = D
 async def request_reset_password(data: userModel.RequestFormFromVerifEmail, db: Session = Depends(get_db)):
     user_email = data.email
     db_user = get_user_by_email(db=db, email=user_email)
-    print("db user", db_user)
-    # user = db_user.email
-    print("user_email", user_email)
     # if db_user != None:
     #     raise HTTPException(status_code=502, detail="Failed, this email already exists!")
     if data.condition == 'exists':
@@ -386,8 +395,6 @@ async def update_user_settings(
 ):
     user_id = current_user.id
     db_user = get_user_by_id(db=db, user_id=user_id)
-    print("USERNAME:", user_id)
-    print("db_user:", db_user)
     if not db_user:
         raise HTTPException(status_code=404, detail="User not found")
 
@@ -414,10 +421,14 @@ async def update_user_settings(
         db_user.gender = form_data.gender
     if form_data.country:
         db_user.country = form_data.country
+    if form_data.city:
+        db_user.city = form_data.city
     if form_data.avatar:
         db_user.avatar = form_data.avatar
     if form_data.headerImg:
         db_user.headerImg = form_data.headerImg
+    if form_data.user_status:
+        db_user.user_status = form_data.user_status
     if form_data.date:
         db_user.date = form_data.date
     if isinstance(form_data.twoAuth, bool):
@@ -439,8 +450,6 @@ async def settings_change_password(db: Session = Depends(get_db), form_data: use
         raise HTTPException(status_code=307, detail="Incorrect user password!")
     
 
-
-
 @userRouter.post("/mark_as_read/")
 async def mark_message_as_read(request: userModel.MarkAsReadRequest, 
                                db: Session = Depends(get_db), current_user: User = Depends(get_current_user)):
@@ -459,14 +468,152 @@ async def mark_message_as_read(request: userModel.MarkAsReadRequest,
         message.is_read = True
 
         db.commit()
-
         
         set_message_read_status(message_id, True)  
     else:
         return {"message": "Message not found."}
 
     # Верните успешный ответ
-    return {"message": "Message status updated in cache and database."}
+    return {"message": "Message status updated in cache and database."}   
+    
+@userRouter.get("/api/get_selected_user")
+async def get_profile_user(username: str, db: Session = Depends(get_db), current_user: User = Depends(get_current_user)):
+    if current_user is None:
+        return {"message": "Not authorized"}, 303
+    else:
+        selected_user = db.query(User).filter_by(username=username).first()
+        if selected_user is None:
+            raise HTTPException(status_code=308, detail="Can't find selected user!")
+        return {     
+            "selected_user": {
+            "id": selected_user.id,
+            "email": selected_user.email,
+            "username": selected_user.username,
+            "first_name": selected_user.first_name,
+            "gender": selected_user.gender,
+            "date": selected_user.date,
+            "avatar": selected_user.avatar,
+            "last_name": selected_user.last_name,
+            "country": selected_user.country,
+            "city": selected_user.city,
+            "user_status": selected_user.user_status,
+            "date_reg": selected_user.date_reg,
+            "headerImg": selected_user.headerImg,
+            "is_Active": selected_user.is_Active,
+            }}
+
+
+@userRouter.post("/api/upload_picture")
+async def upload_picture(
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+    form_data: userModel.PictureRequestForm = Depends()
+    ):
+    if current_user is None:
+        return {"message": "Not authorized"}, 303
+    else:
+        new_picture = Picture(
+            username=form_data.username,
+            picture_url=form_data.picture_url,
+        )
+        picture = create_picture(db=db, picture=new_picture)
+        
+        return {"Picture": picture}
     
     
+@userRouter.get("/api/get_picture")
+async def get_picture(
+    username: str,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+    ):
+    if current_user is None:
+        return {"message": "Not authorized"}, 303
+    else:
+        # if (username):
+        #     raise HTTPException(status_code=309, detail="Can't find selected user pictures!")
+        # else:
+        pictures = db.query(Picture).filter_by(username=username).all()
+        user_data = db.query(User).filter_by(username=username).one()
+        picture_data = [{"picture_url": picture.picture_url, "date_picture": picture.date_picture, 
+                        "username": picture.username, "first_name": user_data.first_name, "last_name": user_data.last_name,
+                        "avatar": user_data.avatar, "likes": picture.likes, "id": picture.id} for picture in pictures]
+        return {"Pictures": picture_data}
+
+
+@userRouter.post('/api/like_picture')
+async def like_or_unlike_picture(
+    picture_id: int = Body(..., embed=True),
+    like: bool = Body(..., embed=True),
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user)
+):
+    db_picture = get_picture_by_id(db=db, picture_id=picture_id)
+
+    if not db_picture:
+        raise HTTPException(status_code=404, detail="Picture not found")
+
+    if not current_user:
+        raise HTTPException(status_code=404, detail="User not found")
+
+    if like:
+        db_picture.likes += 1
+    else:
+        db_picture.likes -= 1
+
+    db.commit()
+    db.refresh(db_picture)
+
+    return {"picture": db_picture}
+
+@userRouter.post('/api/create_like')
+async def like_or_unlike_picture(
+    type_like: str = Body(..., embed=True),
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+    form_data: userModel.LikesRequestForm = Depends()
+):
+    if current_user is None:
+        return {"message": "Not authorized"}, 303
     
+    if form_data.post_id and form_data.owner_username:
+        if type_like == 'picture':
+            db_picture = get_picture_by_id(db=db, picture_id=form_data.post_id)
+            db_picture_in_likes = get_picture_by_id_in_likes(db=db, post_id=form_data.post_id)
+            if db_picture is None:
+                return {"message": "Can't find post"}, 303
+            
+            if db_picture_in_likes:
+                like = delete_like(db=db, post_id=form_data.post_id)
+                return {"like": like}
+            else:
+                new_like = Like(
+                    owner_username=form_data.owner_username,
+                    liker_username=current_user.username,
+                    post_id=form_data.post_id,
+                    like=form_data.like,
+                )
+                like = create_like(db=db, like=new_like)
+                return {"like": like}
+        elif type_like == 'post':
+            pass
+    else:
+        return {"message": "Can't find post"}, 410
+    
+
+@userRouter.get('/api/search_like')
+async def like_or_unlike_picture(
+    post_id: int,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user)
+):
+    if current_user is None:
+        return {"message": "Not authorized"}, 303
+    
+    if post_id:
+        db_picture_in_likes = get_picture_by_id_in_likes(db=db, post_id=post_id)
+        if db_picture_in_likes is None:
+            return {"message": None}
+        return {"message": db_picture_in_likes}
+    else:
+        return {"message": "Can't find post"}, 410

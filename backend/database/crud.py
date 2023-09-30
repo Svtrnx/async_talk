@@ -35,6 +35,14 @@ def get_user_by_id(db: Session, user_id: int):
     query = select(userModel.User).filter(userModel.User.id == user_id)
     return db.execute(query).scalars().first()
 
+def get_picture_by_id(db: Session, picture_id: int):
+    query = select(userModel.Picture).filter(userModel.Picture.id == picture_id)
+    return db.execute(query).scalars().first()
+
+def get_picture_by_id_in_likes(db: Session, post_id: int):
+    query = select(userModel.Like).filter(userModel.Like.post_id == post_id)
+    return db.execute(query).scalars().first()
+
 
 def create_user(db: Session, user: userSchema.UserSchema):
     new_user = userModel.User(
@@ -45,6 +53,7 @@ def create_user(db: Session, user: userSchema.UserSchema):
         last_name  = user.last_name,
         avatar     = user.avatar,
         gender     = user.gender,
+        city       = user.city,
         country    = user.country,
         date       = user.date,
         is_Admin   = user.is_Admin,
@@ -54,6 +63,35 @@ def create_user(db: Session, user: userSchema.UserSchema):
     db.commit()
     db.refresh(new_user)
     return new_user
+
+def create_picture(db: Session, picture: userSchema.PictureSchema):
+    new_picture = userModel.Picture(
+        username      = picture.username,
+        picture_url   = picture.picture_url,
+    )
+    db.add(new_picture)
+    db.commit()
+    db.refresh(new_picture)
+    return new_picture
+
+def create_like(db: Session, like: userSchema.LikeSchema):
+    new_like = userModel.Like(
+        owner_username      = like.owner_username,
+        liker_username      = like.liker_username,
+        post_id             = like.post_id,
+        like                = like.like,
+    )
+    db.add(new_like)
+    db.commit()
+    db.refresh(new_like)
+    return new_like
+
+def delete_like(db: Session, post_id: int):
+    like_to_delete = db.query(userModel.Like).filter_by(post_id=post_id).first()
+    
+    if like_to_delete:
+        db.delete(like_to_delete)
+        db.commit()
 
 
 
@@ -81,11 +119,6 @@ def update_user(db: Session, user_id: int, updated_data: userSchema.UserSchema):
     db.refresh(user)
     return user
 
-
-
-# def get_messages(db: Session, skip: int = 0, limit: int = 100):
-#     query = select(userModel.User).offset(skip).limit(limit)
-#     return db.execute(query).scalars().all()
 
 
 

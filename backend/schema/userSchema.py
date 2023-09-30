@@ -16,8 +16,10 @@ class UserSchema(BaseModel):
     last_name: Optional[str]=None
     gender: Optional[str]=None
     country: Optional[str]=None
+    city: Optional[str]=None
     avatar: Optional[str]=None
     headerImg: Optional[str]=None
+    user_status: Optional[str]=None
     date: Optional[str]=None
     date_reg: Optional[datetime] = None 
     is_Admin: Optional[bool]=None
@@ -61,12 +63,30 @@ class MessageSchema(BaseModel):
     class Config:
         orm_mode = True
         
+class PictureSchema(BaseModel):
+    id: int
+    username: Optional[str]=None
+    likes: Optional[int]=0
+    picture_url: Optional[str]=None
+    date_picture: Optional[datetime] = None 
+
+    class Config:
+        orm_mode = True
+        
+class LikeSchema(BaseModel):
+    id: int
+    post_id: Optional[int]=None
+    like: Optional[int]=None
+    owner_username: Optional[str]=None
+    liker_username: Optional[str]=None
+
+    class Config:
+        orm_mode = True
+        
         
 class RequestUser(BaseModel):
     parameter: UserSchema = Field(...)
     
-    
-# MESSAGE SCHEMA
     
         
 class RequestMessage(BaseModel):
