@@ -76,21 +76,14 @@ def create_access_token(data: dict, expires_delta: Union[timedelta, None] = None
 
 def get_current_user(token: str = Depends(oauth2_scheme), db: Session = Depends(get_db)):
     payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
-    print("Location: get_current_user, show payload::", payload)
-    print("Location: get_current_user, show !TOKEN!::", token)
-    print("Location: get_current_user, show !SECRET_KEY!::", SECRET_KEY)
-    print("Location: get_current_user, show !ALGORITHM!::", ALGORITHM)
     user = get_user_by_username(db=db, username=payload.get("sub"))
-    print("Location: get_current_user, user::", payload)
     if not user:
-        print("Location: get_current_user, if not user")
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Invalid authentication credentials",
             headers={"WWW-Authenticate": "Bearer"},
         )
     if user.username != payload.get("sub"):
-        print("Location: get_current_user, if user exists")
         raise HTTPException(
         status_code=status.HTTP_403_FORBIDDEN,
         detail="Access forbidden",

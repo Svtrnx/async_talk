@@ -20,13 +20,14 @@ import {styles, TextFieldStyles, theme, themeGetStarted, buttonStyleGetStarted} 
 import axios from "axios";
 import { Image } from '@cloudinary/react';
 import 'intersection-observer';
-
+import { motion } from 'framer-motion';
 import './Messages.css';
 
 function Messages() {
   const moment = require('moment');
 
   const [userId, setUserId] = useState(0);
+  const [lastMessageWs, setLastMessageWs] = useState('');
   const [websocketUserId, setWebsocketUserId] = useState(0);
   const [ws, setWs] = useState(null);
   const [chatMessages, setChatMessages] = useState([]);
@@ -62,12 +63,34 @@ function Messages() {
   const [chatCleared, setChatCleared] = useState(false);
   const [errorSnackBar, setErrorSnackBar] = useState(false);
   const [errorSnackBarText, setErrorSnackBarText] = useState('');
-  const [msg, setMsg] = useState(null);
 
-  const targetRef = useRef(null);
-  const targetRefs = useRef([]);
-  const [isVisible, setIsVisible] = useState(false);
+  const sortedChats = chats.slice().sort((a, b) => {
+    const timestampA = new Date(a.last_message_timestamp).getTime();
+    const timestampB = new Date(b.last_message_timestamp).getTime();
+  
+    return timestampB - timestampA;
+  });
 
+  useEffect(() => {
+    fetchChats()
+  }, [chatMessages]);
+  
+
+
+  // useEffect(() => {
+  //   if (messagesData.length && chatMessages.length) {
+  //     console.log('11111111111111111111111\n\n\n\n')
+  //     const allMessages = messagesData
+  //       .concat(chatMessages)
+  //       .sort((a, b) => moment(b.date_message).valueOf() - moment(a.date_message).valueOf());
+  
+  //     const lastMessage = allMessages[0]; 
+  //     console.log('lastMessage', lastMessage.text)
+  
+  //     setLastMessageWs(lastMessage.text);
+  //   }
+  // }, [messagesData, chatMessages]);
+  
  
   // console.log('isVisible', isVisible)
   // useEffect(() => {
@@ -132,7 +155,7 @@ function Messages() {
   
     if (chatId && dataUsername.username) {
       if (!ws) {
-        const newWs = new WebSocket(`wss://kenzoback.onrender.com/ws/${chatId}/${dataUsername.username}`);
+        const newWs = new WebSocket(`wss://kenzo-a0ml.onrender.com/ws/${chatId}/${dataUsername.username}`);
         setWs(newWs);
   
         
@@ -217,7 +240,7 @@ function Messages() {
             }
           });
           console.log("MESSAGE RESPONSE: ", response.data);
-
+          fetchChats()
           setChats((prevChatData) =>
             prevChatData.map((chat) => {
               if (chat.chat_id === chatId) {
@@ -233,7 +256,7 @@ function Messages() {
         }
       }
     
-
+      
 
       sendMessage();
       if (ws && ws.readyState === WebSocket.OPEN) {
@@ -265,8 +288,20 @@ function Messages() {
   }
   };
 
-
-  
+  const fetchChats = async () => {
+    try {
+      axios.defaults.withCredentials = true;
+      const response = await axios.get('http://localhost:8000/api/messages/chats_list', {
+        withCredentials: true,
+      })
+      .then(response => {
+        const chatsData = response.data[0].chats;
+        setChats(chatsData);
+      })
+    } catch (error) {
+      console.error(error);
+    }
+  };
 
   // USE EFFECT FOR CHATS QUERY
   useEffect(() => {
@@ -300,8 +335,8 @@ function Messages() {
         withCredentials: true,
       })
       .then(response => {
-        const users = response.data;
-        setUsers(users.users)
+        const users = response.data[0].users;
+        setUsers(users)
       })
       .catch(error => {
         console.error(error);
@@ -309,21 +344,6 @@ function Messages() {
       }
       fetchUsers();
 
-    const fetchChats = async () => {
-      try {
-        axios.defaults.withCredentials = true;
-        const response = await axios.get('http://localhost:8000/api/messages/chats_list', {
-          withCredentials: true,
-        })
-        .then(response => {
-          const chatsData = response.data[0].chats;
-          setChats(chatsData);
-          console.log(chatsData);
-        })
-      } catch (error) {
-        console.error(error);
-      }
-    };
     
     fetchChats();
     
@@ -400,10 +420,7 @@ function Messages() {
       const response = await axios.get(`http://localhost:8000/api/messages/messages_list/${chat_Id}`, {
         withCredentials: true,
       });
-  
-      console.log(response.data);
       setMessagesData(response.data.messages);
-      console.log(messagesData.text);
       setShowRightsideChat(true);
     } catch (error) {
       console.log(error);
@@ -485,38 +502,39 @@ function Messages() {
 
   function getDisplayedAvatar(chat, dataAvatarChats) {
     if (dataAvatarChats === chat.user_avatar) {
+      console.log('90', chat.partner_user_avatar)
       return chat.partner_user_avatar;
     } else if (dataAvatarChats === chat.partner_user_avatar) {
       return chat.user_avatar;
     } else {
-      return '...';
+      // console.log('90', chat.user_avatar)
+      return chat.partner_user_avatar;
     }
   }
 
 
   function getInfoOnChats(username, avatar) {
-    console.log("CHSSSSSSSS:", username);
     setChatUsername(username);
     setCurrentUserAvatar(avatar);
   }
 
 
-  useEffect(() => {
-    console.log("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!CHSSSSSSSS:", chatUsername);
-  }, [chatUsername])
 
-  const sortedChats = chats.slice().sort((a, b) => {
-    const timestampA = new Date(a.last_message_timestamp).getTime();
-    const timestampB = new Date(b.last_message_timestamp).getTime();
-  
-    return timestampB - timestampA;
-  });
 
- 
+
+
+ console.log('user.iduser.id', users)
   
 	return (
-    
 		<>
+    { users ?
+      <motion.div
+				initial={{ y: 10, opacity: 0 }}
+				animate={{ y: 0, opacity: 1 }}
+				exit={{ y: -10, opacity: 0 }}
+				transition={{ duration: 0.3 }}
+        style={{height: '100%'}}
+			>
 		<div className="messages">
 			<div className="leftside-messages">
 				<div className="leftside-messages-info">
@@ -578,7 +596,7 @@ function Messages() {
           ));
           const displayedUsername = getDisplayedUsername(chat, dataUsername.username);
           const displayedAvatar = getDisplayedAvatar(chat, dataUsername.avatar);
-          
+          console.log('displayedAvatar', displayedAvatar)
 
           return hasMatchingChat && (
             <div onClick={() => getInfoOnChats(displayedUsername, displayedAvatar)}>
@@ -642,8 +660,10 @@ function Messages() {
          <div className="rightside-messages" style={{display: showRightside}}>
           <div className="rightside-messages-header">
             <div className="rightside-messages-header-user-info">
-              <Avatar sx={{width: 40, height: 40}} alt={chatUsername} src={currentUserAvatar} />
-              <h2>{getDisplayedUsernameRightside()}</h2>
+            <Link to={`/async/profile/${chatUsername}`}>
+                <Avatar sx={{width: 40, height: 40}} alt={chatUsername} src={currentUserAvatar} />
+            </Link>
+              <a className="rightside-messages-header-user-info-a" href={`/async/profile/${chatUsername}`}>{getDisplayedUsernameRightside()}</a>
             </div>
             {/* {isVisible ? (
                 <p>Not visible</p>
@@ -662,13 +682,15 @@ function Messages() {
           .concat(chatMessages)
           .sort((a, b) => moment(b.date_message).valueOf() - moment(a.date_message).valueOf())
           .map((message, index, array) => {
+          {/* setLastMessageWs(message.id) */}
           const nextMessageSender = index < array.length - 1 ? array[index + 1].message_sender : null;
           const isCurrentUser = dataUsername.id === message.message_sender;
           const showAvatar = message.message_sender !== nextMessageSender;
           const isWebSocketMessage = chatMessages.includes(message);
   
           const displayedAvatar = isCurrentUser ? dataUsername.avatar : currentUserAvatar;
-          
+
+          const whoIsAvatar = dataUsername.avatar === displayedAvatar ? dataUsername.username : chatUsername;
           const messageTime = new Date(message.date_message);
           const options = { hour: '2-digit', minute: '2-digit' };
           const formattedTime = messageTime.toLocaleTimeString([], options);
@@ -683,15 +705,18 @@ function Messages() {
           // }
 
           return ( 
+            
             <div className={`rightside-messages-main-message${isWebSocketMessage ? " webSocketMessage" : ""}`} key={message.id}
             >
               <div className="rightside-messages-main-avatar">
                 {showAvatar && (
-                  <Avatar
-                    sx={{ width: 25, height: 25 }}
-                    alt=""
-                    src={displayedAvatar}
-                  />
+                  <Link to={`/async/profile/${whoIsAvatar}`}>
+                    <Avatar
+                      sx={{ width: 25, height: 25 }}
+                      alt=""
+                      src={displayedAvatar}
+                    />
+                  </Link>
                 )}
               </div>
               <div className="rightside-messages-main-message-text" >
@@ -720,7 +745,6 @@ function Messages() {
           ) : <span class="loader"></span>
 
           }
-          
           
         
           <div className="rightside-messages-footer">
@@ -780,6 +804,9 @@ function Messages() {
         
       </div>
 		</div>
+    </motion.div>
+    : null
+    }
     <Snackbar open={errorSnackBar} autoHideDuration={6000} onClose={handleCloseSnack}>
       <Alert onClose={handleCloseSnack} severity="error" 
         sx={{ width: 'auto', backgroundColor: "#d32f2f", color: '#fff' }}>

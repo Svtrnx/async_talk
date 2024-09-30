@@ -39,8 +39,8 @@ def get_picture_by_id(db: Session, picture_id: int):
     query = select(userModel.Picture).filter(userModel.Picture.id == picture_id)
     return db.execute(query).scalars().first()
 
-def get_picture_by_id_in_likes(db: Session, post_id: int):
-    query = select(userModel.Like).filter(userModel.Like.post_id == post_id)
+def get_picture_by_id_in_likes(db: Session, post_id: int, user: str):
+    query = select(userModel.Like).filter((userModel.Like.post_id == post_id) & (userModel.Like.liker_username == user))
     return db.execute(query).scalars().first()
 
 
@@ -52,6 +52,7 @@ def create_user(db: Session, user: userSchema.UserSchema):
         first_name = user.first_name,
         last_name  = user.last_name,
         avatar     = user.avatar,
+        headerImg  = user.headerImg,
         gender     = user.gender,
         city       = user.city,
         country    = user.country,

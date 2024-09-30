@@ -5,7 +5,7 @@ import {theme, buttonStyleUploadImg} from '../utils/utils';
 import SettingsProfile from './tabs/settingsProfile/settingsProfile';
 import SettingsSecurity from './tabs/settingsSecurity/settingsSecurity';
 import { motion } from 'framer-motion';
-
+import { randomizeHeaderImg } from '../utils/utils';
 import axios from 'axios';
 import './settings.css'
 
@@ -144,22 +144,6 @@ function Settings() {
 		
     };
 
-	console.log('fileToUpload', fileToUpload)
-	console.log('formData2', formData2)
-	
-	function call() {
-
-		const photos = require.context(`./${'../../../img/shapes'}`, false, /\.(jpg|jpeg|png|gif|bmp)$/);
-		const photoArray = photos.keys().map(photos);
-		
-		const randomIndex = Math.floor(Math.random() * photoArray.length);
-		const selectedPhoto = photoArray[randomIndex];
-		
-		setHeaderImg(selectedPhoto);
-		console.log(selectedPhoto)
-	}
-
-		
 	
 	return (
 		<>
@@ -223,15 +207,15 @@ function Settings() {
 					<div className='setting-main-container-bar'>
 					{menuItems.map((menuItem) => (
 					<div
-					key={menuItem.id}
-					className={`setting-main-container-bar-menu ${selectedMenu === menuItem.name ? 'selected' : ''}`}
-					style={{
-						color: selectedMenu === menuItem.name ? '#724acb' : '#fff',
-						marginTop: selectedMenu === menuItem.name ? '0' : '15px',
-					}}
-					onClick={() => handleMenuClick(menuItem.name)}
-					>
-					<h2 style={{fontWeight: selectedMenu === menuItem.name ? 'bold' : '400'}}>{menuItem.name}</h2>
+						key={menuItem.id}
+						className={`setting-main-container-bar-menu ${selectedMenu === menuItem.name ? 'selected' : ''}`}
+						style={{
+							color: selectedMenu === menuItem.name ? '#724acb' : '#fff',
+							marginTop: selectedMenu === menuItem.name ? '0' : '15px',
+						}}
+						onClick={() => handleMenuClick(menuItem.name)}
+						>
+						<h2 style={{fontWeight: selectedMenu === menuItem.name ? 'bold' : '400'}}>{menuItem.name}</h2>
 					</div>
 					))}
 						<div className='setting-main-container-bar-menu' style={{marginTop: '15px', display: 'flex', width: '110px', justifySelf: 'right', marginRight: '30px', border: '1px solid rgba(211, 47, 47, 0.5)', borderBottom: 'none'}}>

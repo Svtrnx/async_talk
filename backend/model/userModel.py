@@ -85,7 +85,7 @@ class Picture(Base):
 
     id = Column(Integer, primary_key=True, index=True)
     username = Column(String, index=True)
-    likes = Column(Integer, index=True)
+    likes = Column(Integer, index=True, default=0)
     picture_url = Column(String, index=True)
     date_picture = Column(TIMESTAMP, default=datetime.utcnow, index=True)
     
@@ -175,6 +175,7 @@ class OAuth2PasswordRequestFormSignup:
         first_name: str = Form(),
         last_name: str = Form(),
         avatar: str = Form(default=""),
+        headerImg: str = Form(default=""),
         gender: str = Form(default=""),
         country: str = Form(default=""),
         city: str = Form(default=""),
@@ -190,6 +191,7 @@ class OAuth2PasswordRequestFormSignup:
         self.first_name = first_name
         self.last_name = last_name
         self.avatar = avatar
+        self.headerImg = headerImg
         self.gender = gender
         self.country = country
         self.city = city

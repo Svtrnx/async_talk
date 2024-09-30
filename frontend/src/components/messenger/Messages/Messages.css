@@ -19,7 +19,11 @@
 	height: 100vh;
 } */
 
-
+html, body, #root {
+	height: 100%;
+	margin: 0;
+	padding: 0;
+  }
 ::-webkit-scrollbar {
 	width: 7px; 
   }
@@ -274,6 +278,17 @@
 	font-size: 17px;
 	font-weight: 500;
 	margin-left: 7px;
+}
+.rightside-messages-header-user-info-a {
+	font-family: 'Qucksand', sans-serif;
+	font-size: 17px;
+	font-weight: 500;
+	margin-left: 7px;
+	text-decoration: none;
+	color: #71aaeb;
+}
+.rightside-messages-header-user-info-a:hover {
+	text-decoration: underline;
 }
 .rightside-messages-header-info-buttons {
 	display: flex;

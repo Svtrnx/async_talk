@@ -34,7 +34,7 @@ export const TextFieldStyles = {
 	color: "orange",
 	},
 	"& .MuiInput-underline:after": {
-	borderBottomColor: "orange",
+	borderBottomColor: "#946cdc",
 	},
 	"& .MuiOutlinedInput-root": {
 	"& fieldset": {
@@ -115,8 +115,30 @@ export const StyledMenu = styled(Menu)(({ theme }) => ({
 export const buttonStyle3 = {
 	borderColor: '#5d38b1',
 	color: '#e0dfe7'
-  };
+};
+
+export const buttonStyleGraphitBorder = {
+	borderColor: '#333438',
+	color: '#e0dfe7'
+};
+
+export const buttonStyleOutlined = {
+	borderColor: '#5d38b1',
+	color: '#e0dfe7'
+};
 export const buttonStyle2 = {
 	backgroundColor: 'rgb(51, 52, 56)',
 	color: '#e0dfe7'
-  };
+};
+
+
+export function randomizeHeaderImg() {
+
+  const photos = require.context(`./${'../../../img/shapes'}`, false, /\.(jpg|jpeg|png|gif|bmp)$/);
+  const photoArray = photos.keys().map(photos);
+
+  const randomIndex = Math.floor(Math.random() * photoArray.length);
+  const selectedPhoto = photoArray[randomIndex];
+
+  return selectedPhoto
+}

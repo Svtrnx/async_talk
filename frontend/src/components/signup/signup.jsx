@@ -40,6 +40,7 @@ function Signup() {
 	const [date, setDate] = useState(null)
 	const [gender, setGender] = useState('')
 	const [username, setUsername] = useState("");
+	const [city, setCity] = useState("");
 	const [checkCode, setCheckCode] = useState("");
 	const [password, setPassword] = useState("");
 	const [confirmPassword, setConfirmPassword] = useState("");
@@ -60,6 +61,7 @@ function Signup() {
 	const [showUploadMenu, setShowUploadMenu] = useState('none');
 	const [sendLoader, setSendLoader] = React.useState('none');
 	const fileInputRef = useRef(null);
+	const [successSnackBar, setSuccessSnackBar] = useState(false);
 	
 	const [drag, setDrag] = useState(false);
 	const [draggedFileName, setDraggedFileName] = useState('');
@@ -182,7 +184,6 @@ function Signup() {
 		}
 	}
 	
-	
 
 	const handleAvatarClick = (avatarUrl) => {
 		if (selectedAvatar === avatarUrl) {
@@ -190,7 +191,25 @@ function Signup() {
 		} else {
 		  setSelectedAvatar(avatarUrl);
 		}
-	  };
+	};
+
+	
+	async function uploadPictureFunc() {
+		try {
+			const responsePic = await axios.post("http://localhost:8000/api/upload_picture", {
+				username: username,
+				picture_url: selectedAvatar
+			}, {
+				withCredentials: true,
+				headers: {
+					'Content-Type': 'application/x-www-form-urlencoded'
+				}
+			});
+			console.log(responsePic.data);
+			} catch (error) {
+			console.error(error);
+		  }
+	};
 
 	const handleSubmit = async (event) => {
 		event.preventDefault();
@@ -220,6 +239,8 @@ function Signup() {
 				avatar: selectedAvatar,
 				gender: gender,
 				country: country.label,
+				city: city,
+				headerImg: 'https://res.cloudinary.com/dlwuhl9ez/image/upload/v1695881815/stacked-waves-haikei_14_bdriie.png',
 				date: formData,
 				scope: '',
 				client_id: '',
@@ -231,7 +252,11 @@ function Signup() {
 			});
 			console.log("SIGNUP RESPONSE: ", response.data);
 			setSendLoader('none')
-			navigate("/signin");
+			setSuccessSnackBar(true);
+			uploadPictureFunc();
+				setTimeout(() => {
+					navigate('/signin', { replace: true });
+				  }, 3000);
 		} catch (err) {
 			setSendLoader('none')
 			setErrorSnackBar(true);
@@ -323,7 +348,7 @@ function Signup() {
   	const handleContinueClick = () => {
 		setHasError(false);
 		if (level === 0) {
-			if (fName.length < 4 || fName.length > 15 
+			if (fName.length < 4 || fName.length > 15 || city.length < 3 || city.length > 15 
 				|| lName.length < 4 || lName.length > 15 || country === null || country.label === '') {
 					console.log('w')
 					if (fName.length > 15 || lName.length > 15) {
@@ -592,6 +617,21 @@ function Signup() {
 								)}
 								/>
 						</ThemeProvider>
+						<ThemeProvider theme={theme}>
+								<TextField 
+								value={city}
+								onChange={(event) => setCity(event.target.value)}
+								id="outlined-basic" 
+								label="City" 
+								variant="outlined" 
+								InputLabelProps={{style: { color: '#e0dfe7' },}} 
+								InputProps={{style: { color: '#e0dfe7' },}} 
+								sx={{...TextFieldStyles, mt: 3, width: 400, boxShadow: 2}}
+								error={city.length > 0 && city.length < 3}
+  								helperText={city.length > 0 && city.length < 3 && "City should be at least 3 characters"}
+								autoFocus
+								/>
+							</ThemeProvider>
 						</div>
 						<div className='rightside_reg_information_date'>
 							<ThemeProvider theme={theme}>
@@ -964,6 +1004,11 @@ function Signup() {
 					{errorSnackBarText}
 				</Alert>
 			</Snackbar>
+			<Snackbar open={successSnackBar} autoHideDuration={3000} onClose={handleClose}>
+					<Alert onClose={handleClose} severity="success" sx={{ width: 'auto' }}>
+						Registration has been successful!
+					</Alert>
+			</Snackbar>
 
 			<div className='signupUploadImg'  style={{display: showUploadMenu}}>
 				<div className='signupUploadImg-logo'>
@@ -1013,7 +1058,7 @@ function Signup() {
 						onChange={handleFileUpload}
 						style={{ display: 'none' }}
 						ref={fileInputRef}
-					/>
+						/>
 						<Button
 							variant="outlined"
 							onClick={openFileInput}

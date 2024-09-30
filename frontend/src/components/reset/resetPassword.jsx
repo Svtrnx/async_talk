@@ -38,7 +38,6 @@ function ResetPassword() {
 	useEffect(() => {
 		async function VerifyToken() {
 			try {
-				const currentDate = new Date();
 				const response = await axios.get("http://localhost:8000/reset-password-verify", {
 					params: {
 						token: token_verif,

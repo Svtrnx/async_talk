@@ -14,6 +14,7 @@ import messagesImg from '../../img/messages.png';
 import userPageImg from '../../img/userpage.png';
 import communityImg from '../../img/community.png';
 import notificationImg from '../../img/notification.png';
+import { motion } from 'framer-motion';
 
 import Messages from './Messages/Messages.jsx';
 import Settings from "./settings/settings";
@@ -63,6 +64,7 @@ function Messenger() {
     else if (setting === 'Profile'){
       console.log(`Clicked on ${setting}`);
       navigate(`profile/${userInfo.username}`);
+      setTextOption('Profile');
     }
     else if (setting === 'Account'){
       console.log(`Clicked on ${setting}`);
@@ -130,6 +132,14 @@ function Messenger() {
 
     return (
         <>
+       {
+        userInfo ?
+        <motion.div
+				initial={{ y: 10, opacity: 0 }}
+				animate={{ y: 0, opacity: 1 }}
+				exit={{ y: -10, opacity: 0 }}
+				transition={{ duration: 0.3 }}
+			>
         <Container sx={{minWidth: "1200px",  mx: 'auto'}}>	
           <div className="wrapper">
             <div className="navbar">
@@ -248,6 +258,9 @@ function Messenger() {
 
           </div>
 		    </Container>
+        </motion.div>
+        : null
+        }
         
         </>
     );

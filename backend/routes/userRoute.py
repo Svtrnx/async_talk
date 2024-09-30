@@ -109,7 +109,7 @@ def show_event(request: Request, username: str, current_user: User = Depends(get
         return {"request": request.url, "user": current_user}
 
 
-
+import time
 @userRouter.post('/api/messages/send_message')
 async def create_new_message(
     db: Session = Depends(get_db), 
@@ -130,8 +130,11 @@ async def create_new_message(
     chat.last_message = form_data.text
     chat.last_message_timestamp = datetime.now()
 
+
     db.commit()
-    return {"user": message, "last_message": form_data.text}, 200
+    
+ 
+    return {"user": {}, "last_message": form_data.text}, 200
     
 @userRouter.post('/api/messages/create_chat/')
 async def create_new_chat(
@@ -212,6 +215,7 @@ async def create_new_user(request: Request, db: Session = Depends(get_db), form_
             first_name=form_data.first_name,
             last_name=form_data.last_name,
             avatar=form_data.avatar,
+            headerImg=form_data.headerImg,
             gender=form_data.gender,
             country=form_data.country,
             city=form_data.city,
@@ -611,7 +615,8 @@ async def like_or_unlike_picture(
         return {"message": "Not authorized"}, 303
     
     if post_id:
-        db_picture_in_likes = get_picture_by_id_in_likes(db=db, post_id=post_id)
+        db_picture_in_likes = get_picture_by_id_in_likes(db=db, post_id=post_id, user=current_user.username)
+        print(db_picture_in_likes)
         if db_picture_in_likes is None:
             return {"message": None}
         return {"message": db_picture_in_likes}

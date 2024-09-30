@@ -18,7 +18,8 @@ import './settingsProfile.css';
 function SettingsProfile({userInInfo, formData, onDataFromChild, formDataHeaderImg}) {
 	const [fName, setFName] = useState('')
 	const [lName, setLName] = useState('')
-	const [username, setUsername] = useState('');
+	const [userStatus, setUserStatus] = useState('');
+	const [city, setCity] = useState('');
 	const [aboutMe, setAboutMe] = useState('');
 	const [otpFirstEmail, setOtpFirstEmail] = useState('');
 	const [otpSecondEmail, setOtpSecondEmail] = useState('');
@@ -33,6 +34,7 @@ function SettingsProfile({userInInfo, formData, onDataFromChild, formDataHeaderI
 	const [sendLoader3, setSendLoader3] = React.useState('none');
 	const [checkCodeFirst, setCheckCodeFirst] = useState("");
 	const [checkCodeSecond, setCheckCodeSecond] = useState("");
+	const [tes, setTes] = useState("");
 	const [isDisabledInput, setIsDisabledInput] = useState(false);
 	const [changeEmailStep, setChangeEmailStep] = useState(0);
 	const [errorSnackBar, setErrorSnackBar] = useState(false);
@@ -78,6 +80,23 @@ function SettingsProfile({userInInfo, formData, onDataFromChild, formDataHeaderI
 	const maskedEmail = maskEmail(userInInfo.email);
 
 
+	async function uploadPictureFunc() {
+		try {
+			const responsePic = await axios.post("http://localhost:8000/api/upload_picture", {
+				username: userInInfo.username,
+				picture_url: formData.secure_url
+			}, {
+				withCredentials: true,
+				headers: {
+					'Content-Type': 'application/x-www-form-urlencoded'
+				}
+			});
+			console.log(responsePic.data);
+			} catch (error) {
+			console.error(error);
+		  }
+	};
+
 	async function saveChangedUserData() {
 		try {
 			if (email.length > 3 && isEmailNew === true) {
@@ -86,13 +105,13 @@ function SettingsProfile({userInInfo, formData, onDataFromChild, formDataHeaderI
 			}
 			if (email.length > 3){
 				if (email !== newEmail) {
-						setErrorSnackBarText(`ERROR: You are trying to connect this email: ${email}, but you added ${newEmail}`);
+						setErrorSnackBarText(`ERROR: You are trying to connect this email: ${maskedEmail}, but you added ${newEmail}`);
 						setErrorSnackBar(true);
 						setSnackBarColor('#d32f2f');
 						return
 					}
 				}
-			if (fName.length > 15 || lName.length > 15 || country === null || country.label === '') {
+			if (fName.length > 15 || city.length > 15 || lName.length > 15 || country === null || country.label === '') {
 				if (fName.length > 15 || lName.length > 15) {
 					setErrorSnackBarText('Your text input is too long! Max length is 15 chars');
 					setErrorSnackBar(true);
@@ -100,31 +119,38 @@ function SettingsProfile({userInInfo, formData, onDataFromChild, formDataHeaderI
 					return
 				}
 			}
-			const dayjsValue = dayjs(date);
-			
-			const formattedMonth = dayjsValue.format('MMMM');
-			const formattedDay = dayjsValue.format('D');
-			const formattedYear = dayjsValue.format('YYYY');
+			const dayjsValue = date ? dayjs(date) : null; // Проверка на null
+			const formattedMonth = dayjsValue ? dayjsValue.format('MMMM') : '';
+			const formattedDay = dayjsValue ? dayjsValue.format('D') : '';
+			const formattedYear = dayjsValue ? dayjsValue.format('YYYY') : '';
 
-			let formDataDate = formattedMonth + ' ' + formattedDay;
-			formDataDate += ' ' + formattedYear
+			let formDataDate = '';
+			if (dayjsValue) {
+			formDataDate = formattedMonth + ' ' + formattedDay;
+			formDataDate += ' ' + formattedYear;
+			}
+			
 
 			setSendLoader('')
 			await axios.patch('http://localhost:8000/settings/update_user_data', {
 				email: email,
-				username: username,
 				first_name: fName,
 				last_name: lName,
 				avatar: formData.secure_url,
 				headerImg: formDataHeaderImg.secure_url,
+				user_status: userStatus,
 				gender: '',
 				country: country.label,
+				city: city,
 				date: formDataDate,
 				}, {
 				headers: {
 					'Content-Type': 'application/x-www-form-urlencoded'
 				}
-				});
+			});
+			if (formData.secure_url !== undefined) {
+				uploadPictureFunc()
+			}
 			setSendLoader('none');
 			setErrorSnackBar(true);
 			setSnackBarColor('#388e3c');
@@ -244,7 +270,7 @@ function SettingsProfile({userInInfo, formData, onDataFromChild, formDataHeaderI
 	function cancelAll() {
 		setFName('');
 		setLName('');
-		setUsername('');
+		setUserStatus('');
 		setAboutMe('');
 		setEmail('');
 		setCountry({ code: '', label: '', phone: '' });
@@ -261,9 +287,6 @@ function SettingsProfile({userInInfo, formData, onDataFromChild, formDataHeaderI
 	};
 
 
-	console.log(formData)
-	console.log('1',typeof(formData))
-
 	return (
 		<div className='setting-main-container'>
 			<div className='setting-main-container-header'>
@@ -271,7 +294,7 @@ function SettingsProfile({userInInfo, formData, onDataFromChild, formDataHeaderI
 					<h2>Account Settings</h2>
 					<h2 style={{fontSize: '15px', color: 'rgb(159 159 159 / 61%)', marginTop: '3px'}}>Here you can change your account information</h2>
 				</div>
-					{ fName.length > 3 || lName.length > 3 || username.length > 3 || 
+					{ fName.length > 3 || lName.length > 3 || userStatus.length > 1 || city.length > 3 ||
 					aboutMe.length > 3 || email.length > 3 || typeof formData === 'object' || typeof formDataHeaderImg === 'object' ||
 					((country && country.label) && country.label.length > 2)  || date !== null?
 					
@@ -313,19 +336,18 @@ function SettingsProfile({userInInfo, formData, onDataFromChild, formDataHeaderI
 				<div className='setting-main-container-body-first-block'>
 					<div style={{display: 'flex', justifyContent: 'space-between'}}>
 						<div>
-							<h2 style={{marginLeft: '10px'}}>Username</h2>
+							<h2 style={{marginLeft: '10px'}}>User Status</h2>
 							<ThemeProvider theme={theme}>
 								<TextField 
-								value={username}
-								onChange={(event) => setUsername(event.target.value)}
+								value={userStatus}
+								onChange={(event) => setUserStatus(event.target.value)}
 								id="outlined-basic" 
-								label={userInInfo.username}
+								label={userInInfo.user_status === null || '' ? 'User Status' : userInInfo.user_status}
 								variant="outlined" 
 								size='small'
 								InputLabelProps={{style: { color: '#8d8d8d' },}} 
 								InputProps={{style: { color: '#e0dfe7' },}} 
 								sx={{...TextFieldStyles, mt: 1, width: 400, boxShadow: 2}}
-								disabled
 								/>
 							</ThemeProvider>
 						</div>
@@ -456,6 +478,23 @@ function SettingsProfile({userInInfo, formData, onDataFromChild, formDataHeaderI
 							</ThemeProvider>
 						</div>
 					</div>
+					<div>
+						<h2 style={{marginLeft: '10px', marginTop: '30px'}}>City</h2>
+						<ThemeProvider theme={theme}>
+							<TextField 
+							value={city}
+							aria-describedby="none"
+							onChange={(event) => setCity(event.target.value)}
+							id="outlined-basic" 
+							label={userInInfo.city}
+							variant="outlined" 
+							size='small'
+							InputLabelProps={{style: { color: '#8d8d8d' },}} 
+							InputProps={{style: { color: '#e0dfe7' },}} 
+							sx={{...TextFieldStyles, mt: 1, width: '100%', boxShadow: 2}}
+							/>
+							</ThemeProvider>
+						</div>
 						<div style={{marginTop: '25px'}}>
 							<h2 style={{marginLeft: '10px'}}>About Me</h2>
 							<ThemeProvider theme={theme}>

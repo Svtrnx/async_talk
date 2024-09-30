@@ -48,16 +48,16 @@
   }
   
   /* The slider */
-  .slider {
+.slider {
 	position: absolute;
 	cursor: pointer;
 	inset: 0;
 	border: 2px solid #414141;
 	border-radius: 50px;
 	transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-  }
+}
   
-  .slider:before {
+.slider:before {
 	position: absolute;
     content: "";
     height: 10px;
@@ -68,16 +68,16 @@
     border-radius: inherit;
     transition: all 0.4s cubic-bezier(0.23, 1, 0.320, 1);
     margin-bottom: 2.5px;
-  }
+}
   
-  .switch input:checked + .slider {
+.switch input:checked + .slider {
 	box-shadow: 0 0 20px rgba(92, 56, 177, 0.486);
 	border: 2px solid rgb(93, 56, 177);
-  }
+}
   
-  .switch input:checked + .slider:before {
+.switch input:checked + .slider:before {
 	transform: translateX(1.5em);
-  }
+}
 
 
 
