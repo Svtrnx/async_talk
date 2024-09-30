@@ -38,7 +38,7 @@ function ResetPassword() {
 	useEffect(() => {
 		async function VerifyToken() {
 			try {
-				const response = await axios.get("http://localhost:8000/reset-password-verify", {
+				const response = await axios.get("https://kenzoback.onrender.com/reset-password-verify", {
 					params: {
 						token: token_verif,
 						email: email_verif,
@@ -102,7 +102,7 @@ function ResetPassword() {
 				return
 			}
 			else {
-				const response = await axios.post('http://localhost:8000/change-password', 
+				const response = await axios.post('https://kenzoback.onrender.com/change-password', 
 				{	token: token_verif,
 					email: email_verif, 
 					new_password: password,

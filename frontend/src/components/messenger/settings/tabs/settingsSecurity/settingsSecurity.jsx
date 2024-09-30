@@ -56,7 +56,7 @@ function SettingsSecurity({userInInfo, onDataFromChild}) {
 	  
 		const fetchData = async () => {
 		  try {
-			const response = await axios.get('http://localhost:8000/api/check_verification', {
+			const response = await axios.get('https://kenzoback.onrender.com/api/check_verification', {
 			  headers: {
 				'Content-Type': 'application/json',
 			  }
@@ -83,7 +83,7 @@ function SettingsSecurity({userInInfo, onDataFromChild}) {
 	async function sendOTPCode2Auth() {
 		try {
 			setSendLoader('')
-			const response = await axios.post("http://localhost:8000/send-otp-code", {
+			const response = await axios.post("https://kenzoback.onrender.com/send-otp-code", {
 					email: userInInfo.email,
 					code_length: 5,
 					email_message: 'OTP 2-Step Verification Code',
@@ -113,7 +113,7 @@ function SettingsSecurity({userInInfo, onDataFromChild}) {
 	async function sendOTPCode2AuthChangePassword() {
 		try {
 			setSendLoaderPassword('')
-			const response = await axios.post("http://localhost:8000/send-otp-code", {
+			const response = await axios.post("https://kenzoback.onrender.com/send-otp-code", {
 					email: userInInfo.email,
 					code_length: 6,
 					email_message: 'OTP Change Password Verification Code',
@@ -147,7 +147,7 @@ function SettingsSecurity({userInInfo, onDataFromChild}) {
 
 			setSendLoaderPasswordConfirm('')
 			try {
-				const response = await axios.patch('http://localhost:8000/settings/update_user_data', {
+				const response = await axios.patch('https://kenzoback.onrender.com/settings/update_user_data', {
 					password_old: oldPassword,
 					password: password,
 				}, {
@@ -184,7 +184,7 @@ function SettingsSecurity({userInInfo, onDataFromChild}) {
 	async function saveChangedUserDataTwoAuth() {
 		try {
 			setSendLoader2('')
-			const response = await axios.patch('http://localhost:8000/settings/update_user_data', {
+			const response = await axios.patch('https://kenzoback.onrender.com/settings/update_user_data', {
 					twoAuth: twoAuth,
 				  }, {
 					headers: {
@@ -222,7 +222,7 @@ function SettingsSecurity({userInInfo, onDataFromChild}) {
 	async function sendRecovetLink() {
 		try {
 			setSendLoader3('')
-			const response = await axios.post("http://localhost:8000/request-reset", {
+			const response = await axios.post("https://kenzoback.onrender.com/request-reset", {
 					email: userInInfo.email,
 				headers: {
 					'Content-Type': 'application/x-www-form-urlencoded'

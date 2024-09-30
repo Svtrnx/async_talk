@@ -196,7 +196,7 @@ function Signup() {
 	
 	async function uploadPictureFunc() {
 		try {
-			const responsePic = await axios.post("http://localhost:8000/api/upload_picture", {
+			const responsePic = await axios.post("https://kenzoback.onrender.com/api/upload_picture", {
 				username: username,
 				picture_url: selectedAvatar
 			}, {
@@ -229,7 +229,7 @@ function Signup() {
 		setToSignin(true);
 		setSendLoader('')
 		try {
-			const response = await axios.post("http://localhost:8000/signup", {
+			const response = await axios.post("https://kenzoback.onrender.com/signup", {
 				grant_type: 'password',
 				email: email,
 				username: username,
@@ -306,7 +306,7 @@ function Signup() {
 		else {
 			try {
 				setSendLoader('')
-				const response = await axios.post("http://localhost:8000/send-otp-code", {
+				const response = await axios.post("https://kenzoback.onrender.com/send-otp-code", {
 						email: email,
 						code_length: 4,
 						email_message: 'OTP Registration code',

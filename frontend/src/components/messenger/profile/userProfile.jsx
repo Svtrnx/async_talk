@@ -46,7 +46,7 @@ function UserProfile() {
       const fetchData = async () => {
         try {
           axios.defaults.withCredentials = true;
-          const response = await axios.get('http://localhost:8000/api/check_verification', {
+          const response = await axios.get('https://kenzoback.onrender.com/api/check_verification', {
             withCredentials: true,
           });
           setUserInfo(response.data.user);
@@ -63,7 +63,7 @@ function UserProfile() {
 	useEffect(() => {
 		const fetchPictures = async () => {
 			try {
-			  const response = await axios.get('http://localhost:8000/api/get_picture',{
+			  const response = await axios.get('https://kenzoback.onrender.com/api/get_picture',{
 				params: {
 					username: lastSegment
 				}
@@ -94,7 +94,7 @@ function UserProfile() {
 	useEffect(() => {
 	  const fetchSelectedUser = async () => {
         try {
-          const response = await axios.get('http://localhost:8000/api/get_selected_user',{
+          const response = await axios.get('https://kenzoback.onrender.com/api/get_selected_user',{
 			params: {
 				username: lastSegment,
 			},
@@ -150,7 +150,7 @@ function UserProfile() {
 
 	async function uploadPictureFunc(url) {
 		try {
-			await axios.post("http://localhost:8000/api/upload_picture", {
+			await axios.post("https://kenzoback.onrender.com/api/upload_picture", {
 				username: userInfo.username,
 				picture_url: url
 			}, {
@@ -172,7 +172,7 @@ function UserProfile() {
 
 	async function searchPictureLike(id) {
 		try {
-			const responseLike = await axios.get("http://localhost:8000/api/search_like", {
+			const responseLike = await axios.get("https://kenzoback.onrender.com/api/search_like", {
 				params: {
 					post_id: id
 				}
@@ -192,7 +192,7 @@ function UserProfile() {
 
 	async function pictureLike(boolLike) {
 		try {
-			await axios.post("http://localhost:8000/api/like_picture", {
+			await axios.post("https://kenzoback.onrender.com/api/like_picture", {
 				
 				picture_id: selectedImage.id,
 				like: boolLike
@@ -211,7 +211,7 @@ function UserProfile() {
 
 	async function changeAvatar() {
 		try {
-			await axios.patch('http://localhost:8000/settings/update_user_data', {
+			await axios.patch('https://kenzoback.onrender.com/settings/update_user_data', {
 				avatar: selectedImage.picture_url,
 				}, {
 				headers: {
@@ -231,7 +231,7 @@ function UserProfile() {
 	
 	async function createLike() {
 		try {
-			const responseLike = await axios.post("http://localhost:8000/api/create_like", {
+			const responseLike = await axios.post("https://kenzoback.onrender.com/api/create_like", {
 				
 				type_like: 'picture',
 				post_id: selectedImage.id,
